@@ -3,7 +3,48 @@
 // /deal-angle 세션(Claude)이 md·index.json을 생성한다. 고정 스키마 파서 없음 — 포맷이 진화해도 안 깨짐.
 
 const INDEX_URL = './data/index.json';
-const MAX_DAYS = 14;
+const BIZ_DAYS_KEPT = 10;   // 보드 노출: 최근 10영업일 (주말·공휴일 제외). 지난 회차 md는 data\에 남되 보드에서만 숨김.
+
+// 한국 공휴일 (연 1회 갱신 필요 — /deal-angle 스킬 주의사항 참조)
+const KR_HOLIDAYS = new Set([
+  '2026-01-01',                               // 신정
+  '2026-02-16', '2026-02-17', '2026-02-18',   // 설 연휴
+  '2026-03-02',                               // 삼일절 대체(3/1 일)
+  '2026-05-05',                               // 어린이날
+  '2026-05-25',                               // 부처님오신날 대체(5/24 일)
+  '2026-06-03',                               // 지방선거
+  '2026-08-17',                               // 광복절 대체(8/15 토)
+  '2026-09-24', '2026-09-25', '2026-09-26',   // 추석 연휴
+  '2026-10-05',                               // 개천절 대체(10/3 토)
+  '2026-10-09',                               // 한글날
+  '2026-12-25',                               // 성탄절
+  '2027-01-01'                                // 신정
+]);
+
+function fmtDate(d) {
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+function isBizDay(d) {
+  const wd = d.getDay();
+  return wd !== 0 && wd !== 6 && !KR_HOLIDAYS.has(fmtDate(d));
+}
+
+// 오늘 포함 최근 n영업일의 가장 오래된 날짜(YYYY-MM-DD) — 이보다 이전 회차는 보드에서 제외
+function bizCutoff(n) {
+  const d = new Date();
+  let counted = 0;
+  for (let i = 0; i < 90; i++) {
+    if (isBizDay(d)) {
+      counted++;
+      if (counted >= n) return fmtDate(d);
+    }
+    d.setDate(d.getDate() - 1);
+  }
+  return fmtDate(d);
+}
+
 let state = { dates: [], current: null, cache: {} };
 
 // ─── clock ────────────────────────────────────────────────
@@ -20,7 +61,8 @@ async function loadIndex() {
     const res = await fetch(`${INDEX_URL}?_=${Date.now()}`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    state.dates = (data.dates || []).slice().sort().reverse().slice(0, MAX_DAYS);
+    const cutoff = bizCutoff(BIZ_DAYS_KEPT);
+    state.dates = (data.dates || []).filter(d => d >= cutoff).sort().reverse();
     renderPills();
     if (state.dates.length > 0) {
       await loadDate(state.dates[0]);
