@@ -1,0 +1,16 @@
+# Secrets — NEVER commit
+config.json
+*.key
+*.pem
+.env
+
+# Working files (regenerated per run) — only data/YYYY-MM-DD.md + data/index.json are versioned
+data/raw-*.json
+data/majorstock-*.json
+data/docs/
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini

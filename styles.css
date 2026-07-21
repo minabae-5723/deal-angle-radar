@@ -1,0 +1,186 @@
+:root {
+  --navy: #1e3a5f;
+  --navy-dark: #0f1f3a;
+  --navy-light: #2c5282;
+  --gold: #b89968;
+  --bg: #f5f6f8;
+  --card-bg: #ffffff;
+  --border: #e2e6eb;
+  --border-strong: #cdd3da;
+  --text: #1a1f2c;
+  --text-muted: #6b7280;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic",
+    "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── top bar ─────────────────────────────────────────── */
+.topbar {
+  background: var(--navy-dark);
+  color: #fff;
+  border-bottom: 3px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.topbar-inner {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-ico { font-size: 26px; }
+.brand-title { font-size: 17px; font-weight: 700; letter-spacing: .3px; }
+.brand-sub { font-size: 11.5px; color: #b6c2d4; margin-top: 2px; }
+.topbar-meta { font-size: 11.5px; color: #b6c2d4; white-space: nowrap; }
+
+/* ── layout ──────────────────────────────────────────── */
+.main { max-width: 1020px; margin: 0 auto; padding: 18px 20px 40px; }
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.controls-label { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.date-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.date-pill {
+  border: 1px solid var(--border-strong);
+  background: var(--card-bg);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 12.5px;
+  cursor: pointer;
+  color: var(--text);
+}
+.date-pill:hover { border-color: var(--navy-light); }
+.date-pill.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+  font-weight: 700;
+}
+.pill-rel {
+  margin-left: 6px;
+  font-size: 10.5px;
+  color: var(--gold);
+  font-weight: 700;
+}
+.loading { color: var(--text-muted); font-size: 12.5px; }
+
+/* ── document ────────────────────────────────────────── */
+.doc-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy-dark);
+  margin: 4px 0 8px;
+}
+
+.meta {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 8px 0 14px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px 14px;
+  margin: 0 0 14px;
+  box-shadow: 0 1px 2px rgba(15, 31, 58, .04);
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.h3 {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--navy-light);
+  margin: 12px 0 6px;
+}
+
+.p { margin: 6px 0; }
+
+.list { margin: 6px 0 8px; padding-left: 18px; }
+.list li { margin: 4px 0; }
+
+.table-wrap { overflow-x: auto; margin: 8px 0 10px; }
+.table-wrap table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+.table-wrap th {
+  background: var(--navy);
+  color: #fff;
+  font-weight: 600;
+  padding: 6px 10px;
+  text-align: left;
+  white-space: nowrap;
+}
+.table-wrap td {
+  border-bottom: 1px solid var(--border);
+  padding: 6px 10px;
+  vertical-align: top;
+}
+.table-wrap tr:nth-child(even) td { background: var(--bg); }
+
+.card a, .meta a { color: var(--navy-light); }
+code {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12px;
+}
+
+/* ── empty / footer ──────────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--card-bg);
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  color: var(--text-muted);
+}
+.empty-ico { font-size: 34px; margin-bottom: 8px; }
+.empty h3 { margin: 6px 0; color: var(--text); }
+
+.footer {
+  margin-top: 26px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+@media (max-width: 640px) {
+  .topbar-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .main { padding: 14px 12px 32px; }
+}
