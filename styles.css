@@ -184,3 +184,43 @@ code {
   .topbar-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
   .main { padding: 14px 12px 32px; }
 }
+
+/* ── flow diagram (>> 라벨: A → B → C) ───────────────── */
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 7px;
+  margin: 8px 0;
+  padding: 9px 11px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+.flow-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--navy-light);
+  border-radius: 4px;
+  padding: 2px 7px;
+  letter-spacing: .5px;
+  flex-shrink: 0;
+}
+.flow-angle .flow-label { background: var(--gold); }
+.flow-node {
+  background: var(--card-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.flow-angle .flow-node { border-color: var(--gold); background: #fffdf7; }
+.flow-arrow {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.flow-node strong { color: var(--navy); }

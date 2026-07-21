@@ -178,6 +178,22 @@ function renderMd(md) {
     if (line.startsWith('# ')) {
       closeCard();
       html += `<h1 class="doc-title">${inline(line.slice(2))}</h1>`;
+    } else if (line.startsWith('>> ')) {
+      // 도식 라인: ">> 라벨: A → B → C" — 노드 체인을 칩+화살표로 렌더링. 라벨 앵글/시나리오는 골드 강조.
+      closeList();
+      let content = line.slice(3);
+      let label = '', kind = '';
+      const m = content.match(/^(팩트|구조|앵글|시나리오)\s*:\s*(.*)$/);
+      if (m) {
+        label = m[1];
+        content = m[2];
+        if (label === '앵글' || label === '시나리오') kind = ' flow-angle';
+      }
+      const nodes = content.split('→').map(s => s.trim()).filter(Boolean);
+      html += `<div class="flow${kind}">`
+        + (label ? `<span class="flow-label">${escapeHtml(label)}</span>` : '')
+        + nodes.map(n => `<span class="flow-node">${inline(n)}</span>`).join('<span class="flow-arrow">→</span>')
+        + '</div>';
     } else if (line.startsWith('## ')) {
       closeCard();
       html += `<section class="card"><h2 class="card-title">${inline(line.slice(3))}</h2>`;
