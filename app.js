@@ -218,4 +218,27 @@ function renderMd(md) {
   return `<div class="doc">${html}</div>`;
 }
 
+// ─── view switching (일별 레이더 ↔ 자금소요 스크리너) ─────────
+const VIEW_FOOT = {
+  radar: 'Source: DART OpenAPI (주요사항보고 · 지분공시) + 뉴스 크로스체크 · 스크리닝: /deal-angle 세션 · Reverent Partners 내부용',
+  funding: 'Source: 국내기업 Screening Masterfile (KISVALUE 재무패널) + DART OpenAPI 공시이력 · 산출: funding\\build.ps1 · Reverent Partners 내부용',
+};
+
+function switchView(name) {
+  document.querySelectorAll('.viewtab').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  document.getElementById('view-radar').hidden = (name !== 'radar');
+  document.getElementById('view-funding').hidden = (name !== 'funding');
+  const foot = document.getElementById('footNote');
+  if (foot) foot.textContent = VIEW_FOOT[name] || VIEW_FOOT.radar;
+  if (name === 'funding' && window.initFunding) window.initFunding();
+  if (location.hash.slice(1) !== name) history.replaceState(null, '', '#' + name);
+  window.scrollTo({ top: 0 });
+}
+
+document.getElementById('viewTabs').addEventListener('click', e => {
+  const btn = e.target.closest('.viewtab');
+  if (btn) switchView(btn.dataset.view);
+});
+
 loadIndex();
+if (location.hash.slice(1) === 'funding') switchView('funding');

@@ -15,36 +15,52 @@
       <span class="brand-ico">📡</span>
       <div>
         <div class="brand-title">Deal Angle Radar</div>
-        <div class="brand-sub">DART 주요사항보고 · 지분공시 24h 스크리닝 → PE 딜 앵글 시그널</div>
+        <div class="brand-sub">DART 공시 24h 스크리닝 + 재무 바텀업 자금소요 진단 → PE 딜 앵글</div>
       </div>
     </div>
     <div class="topbar-meta">
       <span id="clock">—</span>
     </div>
   </div>
+  <nav class="viewtabs" id="viewTabs">
+    <button class="viewtab active" data-view="radar">📡 일별 공시 레이더</button>
+    <button class="viewtab" data-view="funding">💰 자금소요 스크리너</button>
+  </nav>
 </header>
 
 <main class="main">
-  <div class="controls">
-    <span class="controls-label">일자</span>
-    <div class="date-pills" id="datePills">
-      <span class="loading">로딩 중…</span>
-    </div>
-  </div>
 
-  <div id="body" class="radar-body">
-    <div class="empty">
-      <div class="empty-ico">🎯</div>
-      <h3>아직 저장된 스크리닝이 없습니다</h3>
-      <p>/deal-angle 세션이 DART 공시를 스크리닝하면 여기에 표시됩니다.</p>
+  <!-- ═══════════ view: 일별 공시 레이더 ═══════════ -->
+  <section id="view-radar" class="view">
+    <div class="controls">
+      <span class="controls-label">일자</span>
+      <div class="date-pills" id="datePills">
+        <span class="loading">로딩 중…</span>
+      </div>
     </div>
-  </div>
+
+    <div id="body" class="radar-body">
+      <div class="empty">
+        <div class="empty-ico">🎯</div>
+        <h3>아직 저장된 스크리닝이 없습니다</h3>
+        <p>/deal-angle 세션이 DART 공시를 스크리닝하면 여기에 표시됩니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ view: 자금소요 스크리너 ═══════════ -->
+  <section id="view-funding" class="view" hidden>
+    <div id="fundingRoot">
+      <div class="empty"><div class="empty-ico">💰</div><h3>로딩 중…</h3></div>
+    </div>
+  </section>
 
   <footer class="footer">
-    <p>Source: DART OpenAPI (주요사항보고 · 지분공시) + 뉴스 크로스체크 · 스크리닝: /deal-angle 세션 · Reverent Partners 내부용</p>
+    <p id="footNote">Source: DART OpenAPI (주요사항보고 · 지분공시) + 뉴스 크로스체크 · 스크리닝: /deal-angle 세션 · Reverent Partners 내부용</p>
   </footer>
 </main>
 
 <script src="app.js"></script>
+<script src="funding.js"></script>
 </body>
 </html>
