@@ -1,0 +1,19 @@
+{
+  "00938721": {"product": "Laser TGV·레이저 가공장비(OLED·2차전지 병행)", "angle": "유리기판 전환 핵심 TGV 레이저 장비 세계 첫 공급 수혜 · rev 4,109억·CAGR +40%", "onThesis": true},
+  "00765569": {"product": "반도체 기판 광학검사(AOI)·수리(AOR) 장비", "angle": "유리기판 검사 밸류체인 수혜(TGV·Glass RDL 검사 개발) · rev 261억·CAGR +18%", "onThesis": true},
+  "00619507": {"product": "반도체 포토레지스트·현상액·CMP슬러리·유리기판용 유리코팅제", "angle": "유리기판 소재 국산화 수혜(유리코팅제·구리도금 PR) · rev 703억·CAGR +5%·need 39 DISTRESS", "onThesis": true},
+  "00447575": {"product": "강화유리 커버글라스·커넥터, 반도체 TGV 유리기판·HDD 유리플래터", "angle": "유리기판 전환 직접 수혜(TGV 전용공장 양산) · rev 2,732억·CAGR +3%", "onThesis": true},
+  "01305036": {"product": "RF 모듈 제조", "angle": "'코어' 키워드 오탐 · RF모듈 업체로 유리기판 무관", "onThesis": false},
+  "00868167": {"product": "선박 기계부품·선박 안전설비 점검·검사대행", "angle": "'검사' 키워드 오탐 · 선박검사업", "onThesis": false},
+  "00140955": {"product": "반도체 전구체(Precursor)·과산화수소·2차전지 소재", "angle": "소재 국산화 수혜, 반도체 전구체 라인업으로 Mo 전환 대응 · rev 7,764억·CAGR +5%", "onThesis": true},
+  "01172270": {"product": "[corp 불일치] 자동차부품 도장(rev 88억)", "angle": "corp_code→기업 불일치 · 반도체가스 후성 아닌 비상장 자동차부품 도장업체", "onThesis": false},
+  "00569691": {"product": "반도체 박막 전구체(High-k·ALD/CVD Metal·확산방지막)", "angle": "Mo 전구체 국산화 핵심 후보(ALD/CVD Metal 전구체·솔브레인 자회사) · rev 739억", "onThesis": true},
+  "01371215": {"product": "탕정 일반산업단지 조성·분양", "angle": "키워드 오탐 · 부동산 산단개발업", "onThesis": false},
+  "01223972": {"product": "안마기구·의료기기 제조", "angle": "'제형' 키워드 오탐 · 헬스케어 기기", "onThesis": false},
+  "01364491": {"product": "화장품 제조(아모레퍼시픽 자회사)", "angle": "키워드 오탐 · 화장품", "onThesis": false},
+  "00875042": {"product": "OLED 유리기판 스크라이빙 임가공·2차전지 리드탭", "angle": "'솔브레인' 계열명 오탐 · 디스플레이 임가공/전지부품(본딩 소재 아님)", "onThesis": false},
+  "01489648": {"product": "반도체 CMP 슬러리·세정액·HF·전구체, 디스플레이·2차전지 소재", "angle": "후공정 소재 재편 직접 수혜(CMP 슬러리·세정·전구체 국산화 선두) · rev 8,634억", "onThesis": true},
+  "00247975": {"product": "지주회사(솔브레인 지배)·2차전지 전해액·바이오", "angle": "지주사로 후공정 소재는 자회사(솔브레인) 통한 간접 노출 · 연결 rev 5,154억·CAGR -10%", "onThesis": false},
+  "01261893": {"product": "반도체 CMP·세정 장비 및 CMP 슬러리(Ceria·Silica) 소재", "angle": "후공정 CMP·세정 소재/장비 재편 수혜(슬러리 국산화) · rev 3,854억", "onThesis": true},
+  "01223778": {"product": "반도체용 고순도 인산(식각·세정 습식소재)", "angle": "'솔브레인' 계열명 오탐 · 고순도 인산은 전공정 식각액(하이브리드 본딩 소재 아님)", "onThesis": false}
+}
