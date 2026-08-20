@@ -1,0 +1,29 @@
+{
+  "generated": "2026-08-19",
+  "note": "채널 C — 독립 톱다운 스카우트(IEA·IMF·BIS·S&P·Silver Institute·Clarksons·World Nuclear·정부공시 등 40+ 소스, 내 독서와 무관). harvest.mjs 가 병합. verdict: promote(정식편입 대상) | hold(니치·조건부, 보류) | drop(지금 부적합). blindspot=자산엔 없는데 외부근거 강함.",
+  "candidates": [
+    { "id": "power-semi", "title": "전력반도체 (SiC/GaN)", "verdict": "drop", "supply_elasticity": "mid", "blindspot": false, "evidence": "Yole 2026: 오버캐파 다운턴 2027~28, 상류 가동률 ~50%·디바이스 70%, EV 둔화. 장기수요는 구조적이나 지금 공급 과잉=탄력적 → 조건 불충족. 2027 재검토. (내 독서 빈도 1위였으나 스카우트가 반증 — 확증편향 사례)" },
+    { "id": "space-sat", "title": "우주 · 위성", "verdict": "hold", "supply_elasticity": "mid", "blindspot": false, "evidence": "우주경제 성장은 구조적이나 SpaceX 발사비 하락·NGSO 경쟁으로 공급 탄력화·마진압축. 지상국·부품·방산위성 니치만 선별." },
+    { "id": "stablecoin-fintech", "title": "스테이블코인 · 결제", "verdict": "hold", "supply_elasticity": "na", "blindspot": false, "evidence": "GENIUS Act(2025-07) 제도화로 구조변화 명백(시총 $308B, 결제침투 3%→10%). 단 소프트웨어=비병목형·한국 딜소싱 접점 약함. 결제인프라·수탁 인접만." },
+    { "id": "quantum", "title": "양자 컴퓨팅", "verdict": "drop", "supply_elasticity": "na", "blindspot": false, "evidence": "매출 전세계 ~$1B, 결함허용 2029년+. 병목이 공급이 아니라 기술성숙 → 3~5년 PE 타임라인 미달. 워치리스트 유지." },
+    { "id": "shipbuilding", "title": "조선 · 해양", "verdict": "promote", "supply_elasticity": "very_low", "blindspot": false, "evidence": "오더북 17년 최고(191M CGT=선대 17%), 한국 LNG선 66%, 신조선가 2008 근접, 야드 증설 다년. 공급 비탄력+수요 구조적 동시 충족. 한국 최적 (Clarksons 2025~26)." },
+    { "id": "nuclear-smr", "title": "원자력 · 핵연료주기", "verdict": "promote", "supply_elasticity": "very_low", "blindspot": false, "evidence": "대형원전+농축(SWU): 러 우라늄 46% 장악+수입금지 2028, 서방 농축 2030 대체불가, SWU 현물 $188(+20%, 전전比 3배). APR1400 체코 $18.6B. 순수 SMR은 실행리스크로 hold." },
+    { "id": "advanced-bio", "title": "바이오 CDMO (BIOSECURE+ADC)", "verdict": "promote", "supply_elasticity": "mid", "blindspot": false, "evidence": "BIOSECURE Act 2025-12 법제화로 중국 CDMO 디커플링($10~20B 이동), ADC 링커/컨쥬게이션 제조 병목. 삼바·롯데바이오 반사수혜. 신약자산 자체는 hold, 제조 병목만." },
+    { "id": "metals-deficit", "title": "산업금속 구조적 적자 (구리·은·전략금속)", "emoji": "🥇", "verdict": "promote", "supply_elasticity": "low", "blindspot": true, "evidence": "구리 S&P Global 2026-01 systemic 부족·IEA 2035 30%부족·광산 리드타임 10년+. 은 Silver Institute 6년연속·2026 적자 215Moz 사상최대(70% 부산물이라 증산불가). 안티모니/게르마늄 중국 정제 지배. 한국 고려아연·풍산 접점." },
+    { "id": "cdmo-note-merged", "title": "(advanced-bio 로 통합)", "verdict": "hold", "supply_elasticity": "mid", "blindspot": false, "evidence": "제약 CDMO 리쇼어링은 advanced-bio(바이오 CDMO) 테마에 통합." },
+    { "id": "fluorochem", "title": "불소화학 · 규제소재", "emoji": "🧪", "verdict": "promote", "supply_elasticity": "low", "blindspot": true, "evidence": "PFAS 규제(ECHA, 예외승인 소수 공급자 수혜)+형석 원료 병목(중국 고갈·CRMA)+냉매 F-gas 쿼터 2027 12.3%로 급감이 후성에 3중 수렴. 규제가 신규진입 봉쇄=공급 비탄력." },
+    { "id": "aviation-mro", "title": "상업항공 백로그 · 엔진/MRO", "emoji": "✈️", "verdict": "hold", "supply_elasticity": "very_low", "blindspot": true, "evidence": "Airbus+Boeing 백로그 17,000기(11년+), 엔진(GTF/LEAP) 병목으로 기존기 수명연장→MRO·리스 급등. 공급 매우 비탄력이나 한국 딜핏 중간(한화에어로 엔진부품·MRO 중소). 차기 승격 1순위 후보." },
+    { "id": "helium-gas", "title": "헬륨 · 특수가스 병목", "emoji": "🎈", "verdict": "hold", "supply_elasticity": "low", "blindspot": true, "evidence": "美 연방헬륨비축 판매 종료(공급 소멸)+반도체 헬륨수요 30%(2030). 특수가스는 reshoring 테마와 인접 — 중복 회피 위해 hold." },
+    { "id": "petcare", "title": "반려동물 헬스케어", "emoji": "🐾", "verdict": "hold", "supply_elasticity": "mid", "blindspot": true, "evidence": "반려동물 헬스케어 8~10% CAGR, 의료화·펫보험. 구조적이나 공급탄력성 중간(진입장벽 낮음). 롤업형 — 고령화 테마와 유사 성격, hold." },
+    { "id": "reinsurance-climate", "title": "재보험 · 기후 protection gap", "emoji": "🌀", "verdict": "hold", "supply_elasticity": "mid", "blindspot": true, "evidence": "BIS 구조적 경고, 4년연속 재해손실 $1,000억+. 금융/보험 테마는 funding-pool KSIC 게이트(64/65) 밖이라 외감 딜소싱 접점 약함. hold." },
+    { "id": "water-infra", "title": "노후 상수도 · 납관 교체", "emoji": "🚰", "verdict": "hold", "supply_elasticity": "low", "blindspot": true, "evidence": "美 EPA LCRI 2027 발효, 납관 400만개 10년내 교체(법정강제). 수처리는 env-reg 테마 노드로 흡수 가능 — 별도 승격은 보류." }
+  ],
+  "blindspots": [
+    "구리·은·전략금속 구조적 적자 (tier 1: S&P·IEA·Silver Institute) — metals-deficit 로 편입",
+    "우라늄 농축/핵연료주기 — nuclear 테마 하위 병목층으로 편입",
+    "상업항공 백로그·엔진/MRO — 차기 승격 후보 (aviation-mro)",
+    "제약 CDMO 리쇼어링 BIOSECURE — advanced-bio 로 편입",
+    "불소화학(후성 3중 수렴: PFAS+형석+냉매) — fluorochem 로 편입",
+    "전력 하드웨어 세부층(GOES·HVDC 해저케이블·스위치기어)은 grid-power 테마 노드로 이미 커버"
+  ]
+}

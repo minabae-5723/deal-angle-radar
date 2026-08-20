@@ -223,6 +223,8 @@ const VIEW_FOOT = {
   radar: 'Source: DART OpenAPI (주요사항보고 · 지분공시) + 뉴스 크로스체크 · 스크리닝: /deal-angle 세션 · Reverent Partners 내부용',
   funding: 'Source: 국내기업 Screening Masterfile (KISVALUE 재무패널) + DART OpenAPI 공시이력 · 산출: funding\\build.ps1 · Reverent Partners 내부용',
   thesis: 'Source: 섹터별 전문지 모니터링맵 + 웹리서치 (탑다운 신규 발굴) × funding-pool 외감 배선 (바텀업) · theses.json · Reverent Partners 내부용',
+  narrative: 'Source: 구조적 narrative(자산 하베스트 PPI·insight·news + 승인) × transmission KPI 웹리서치 × 외감 패널/funding-pool · narratives.json → build-narrative.mjs · Reverent Partners 내부용',
+  review: 'Source: thesis 숏리스트별 initial research 합본 — 기업분석(0~2)·사업분석(3~4)·투자분석(5~6) 3-agent 파이프라인 · code\\company-review (동일 오리진 /review) · Reverent Partners 내부용',
 };
 
 function switchView(name) {
@@ -230,10 +232,17 @@ function switchView(name) {
   document.getElementById('view-radar').hidden = (name !== 'radar');
   document.getElementById('view-funding').hidden = (name !== 'funding');
   document.getElementById('view-thesis').hidden = (name !== 'thesis');
+  document.getElementById('view-narrative').hidden = (name !== 'narrative');
+  document.getElementById('view-review').hidden = (name !== 'review');
   const foot = document.getElementById('footNote');
   if (foot) foot.textContent = VIEW_FOOT[name] || VIEW_FOOT.radar;
   if (name === 'funding' && window.initFunding) window.initFunding();
   if (name === 'thesis' && window.initThesis) window.initThesis();
+  if (name === 'narrative' && window.initNarrative) window.initNarrative();
+  if (name === 'review') {                                    // iframe 은 첫 활성화 때만 로드
+    const f = document.getElementById('reviewFrame');
+    if (f && f.src.indexOf('about:blank') === 0) f.src = './review/index.html?embed=1';
+  }
   if (location.hash.slice(1) !== name) history.replaceState(null, '', '#' + name);
   window.scrollTo({ top: 0 });
 }
@@ -246,5 +255,5 @@ document.getElementById('viewTabs').addEventListener('click', e => {
 loadIndex();
 {
   const h = location.hash.slice(1);
-  if (h === 'funding' || h === 'thesis') switchView(h);
+  if (h === 'funding' || h === 'thesis' || h === 'narrative' || h === 'review') switchView(h);
 }

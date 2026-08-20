@@ -26,3 +26,5 @@ data/doccache/
 data/funding-panel.json
 data/corpcode.json
 data/funding-events.json
+# 기업 검토 뷰: code\company-review 로 향하는 디렉터리 정션(다른 세션이 소유)
+/review

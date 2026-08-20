@@ -602,3 +602,128 @@ table.th-cand tr.th-bizrow.fit td { background: #f3fbf6; color: #2f6b4a; }
 .th-cat.off { background: #b0b6bf; }
 .th-lead.off { opacity: 0.6; background: #fbfbfc; border-left-color: #d0d4da; }
 .th-lead.off .th-lead-name { font-weight: 600; color: var(--text-muted); }
+
+/* ── 네러티브 스크리너 ───────────────────────────────── */
+#narrativeRoot { max-width: 1180px; margin: 0 auto; padding: 18px 20px 60px; }
+.nv-intro { margin-bottom: 16px; }
+.nv-intro p { margin: 4px 0; }
+.nv-dim { color: var(--text-muted); font-size: 12px; }
+.nv-cand { border-left: 3px solid #2e7d32; }
+.nv-cand-row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px dashed var(--border); flex-wrap: wrap; }
+.nv-cand-title { font-weight: 700; }
+.nv-prov { color: var(--text-muted); font-size: 12px; }
+table.nv-matrix, table.nv-kpi, table.nv-ll { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.nv-matrix th, table.nv-matrix td, table.nv-ll th, table.nv-ll td { padding: 5px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+table.nv-matrix th, table.nv-ll th { background: var(--navy); color: #fff; font-weight: 600; }
+.nv-mrow:hover { background: #f0f3f7; }
+.nv-elas { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 4px; padding: 1px 7px; white-space: nowrap; }
+.el-vlow { background: #d5322a; color: #fff; }
+.el-low { background: #e8863b; color: #fff; }
+.el-mid { background: #f0d267; color: #5a4a12; }
+.el-high { background: #d5dae0; color: #555; }
+.nv-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 4px; }
+.nv-pill { border: 1px solid var(--border-strong); background: #fff; border-radius: 16px; padding: 5px 12px; font-size: 12.5px; cursor: pointer; }
+.nv-pill.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.nv-sheet { margin-top: 8px; }
+.nv-sheet .card-title .nv-elas { margin-left: 8px; vertical-align: middle; }
+.nv-prov-line { color: var(--text-muted); font-size: 12px; margin: 2px 0 12px; }
+table.nv-kpi th { width: 150px; background: #eef1f5; color: var(--navy-dark); vertical-align: top; font-weight: 700; }
+table.nv-kpi td { vertical-align: top; }
+table.nv-kpi tr:nth-child(4) th { background: #fbe9e6; color: #a3271f; }
+.nv-verdict { background: #fff8ee; border: 1px solid #eadfae; border-left: 3px solid var(--gold); border-radius: 6px; padding: 10px 12px; margin: 12px 0; }
+.nv-nodes { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 8px; }
+.nv-nodechip { background: #eef1f5; border: 1px solid var(--border); border-radius: 5px; padding: 3px 8px; font-size: 12px; }
+.nv-nodechip b { color: var(--navy-light); margin-left: 3px; }
+.nv-ll .nv-pick { background: #fff8e6; }
+.nv-ll .nv-pick td { border-bottom-color: #eadfae; }
+.nv-node { color: var(--text-muted); font-size: 11.5px; }
+.nv-note { color: var(--text-muted); font-size: 11.5px; max-width: 260px; }
+.nv-need { display: inline-block; min-width: 30px; text-align: center; border-radius: 4px; padding: 1px 5px; background: #eef1f5; font-weight: 600; }
+.nv-need-hot { background: #d5322a; color: #fff; }
+.nv-st { font-size: 10.5px; color: var(--text-muted); }
+.nv-reinforce { background: #edf7ee; border: 1px solid #cfe8d2; border-left: 3px solid #2e7d32; border-radius: 6px; padding: 8px 10px; margin: 6px 0 12px; font-size: 12px; color: #2c5e30; }
+
+/* ─── 전략 검토 우선순위(SFIT) — 전략분석 agent 레이어 ─── */
+/* 표 뱃지: 등급 채움색 (nv-g*) — 요약칩(nv-sum*)과 클래스 분리해 색 충돌 방지 */
+.nv-tier { display: inline-flex; align-items: baseline; gap: 3px; min-width: 36px; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff; border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
+.nv-tier em { font-style: normal; font-size: 10px; font-weight: 600; opacity: .9; }
+.nv-gA  { background: #b02a1f; }              /* A 즉시 — 진한 레드 */
+.nv-gB  { background: #c47a2c; }              /* B 우선 — 오렌지 */
+.nv-gBm { background: #dda65e; color: #4a3410; } /* B⁻ 후보 — 옅은 오렌지 */
+.nv-gC  { background: #5a748f; }              /* C 관찰 — 네이비그레이 */
+.nv-gD  { background: #b6bcc4; color: #495260; } /* D 보류 — 연회색 */
+.nv-star { color: var(--gold); font-weight: 700; }
+.nv-angle { font-size: 11.5px; color: var(--navy); font-weight: 600; max-width: 200px; }
+.nv-ll .nv-cowrow { background: #fbf3e0; }
+.nv-ll .nv-cowrow td { border-bottom-color: #ecdcb4; }
+.nv-nodecell { cursor: pointer; }
+.nv-nodecell:hover { color: var(--navy-light); text-decoration: underline; }
+/* 티어 요약 바 — 클릭 가능한 필터 칩 (기본 흰바탕·컬러 테두리, .on = 채움) */
+.nv-tierbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
+.nv-tsum { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700;
+  background: #fff; border: 1.5px solid var(--border-strong); border-radius: 16px; padding: 3px 12px;
+  color: var(--text); cursor: pointer; user-select: none; }
+.nv-tsum b { font-weight: 800; }
+.nv-tsum:hover { filter: brightness(0.97); box-shadow: 0 0 0 2px rgba(0,0,0,.04); }
+.nv-sumA   { border-color: #b02a1f; color: #b02a1f; }
+.nv-sumB   { border-color: #c47a2c; color: #b06a1c; }
+.nv-sumBm  { border-color: #dda65e; color: #a06f1c; }
+.nv-sumC   { border-color: #5a748f; color: #4a627b; }
+.nv-sumD   { border-color: var(--border-strong); color: var(--text-muted); }
+.nv-sumcow { border-color: #d8a94a; background: #fbf3e0; color: #8a6412; }
+.nv-tsum.on { color: #fff; }
+.nv-sumA.on   { background: #b02a1f; }
+.nv-sumB.on   { background: #c47a2c; }
+.nv-sumBm.on  { background: #dda65e; color: #4a3410; }
+.nv-sumC.on   { background: #5a748f; }
+.nv-sumD.on   { background: #8b929b; }
+.nv-sumcow.on { background: #d8a94a; color: #4a3410; }
+/* 전략 앵글 요약바 — 클릭 필터 칩 */
+.nv-anglebar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 2px 0 10px; }
+.nv-abar-lbl { font-size: 11.5px; font-weight: 700; color: var(--text-muted); margin-right: 2px; }
+.nv-asum { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600;
+  background: #fff; border: 1px solid var(--border-strong); border-radius: 14px; padding: 3px 10px;
+  color: var(--navy); cursor: pointer; user-select: none; }
+.nv-asum b { font-weight: 800; color: var(--navy-light); }
+.nv-asum:hover { border-color: var(--navy-light); }
+.nv-asum.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.nv-asum.on b { color: var(--gold); }
+.nv-anglecell { cursor: pointer; }
+.nv-anglecell:hover { text-decoration: underline; }
+/* 활성 필터 배너 */
+.nv-fbanner { background: #eef3f8; border: 1px solid var(--border-strong); border-left: 3px solid var(--navy-light);
+  border-radius: 5px; padding: 6px 11px; margin: 6px 0 8px; font-size: 12px; color: var(--navy-dark); }
+.nv-fclear { border: 1px solid var(--border-strong); background: #fff; border-radius: 4px; padding: 2px 8px;
+  font-size: 11.5px; cursor: pointer; font-family: inherit; color: var(--navy); margin-left: 4px; }
+.nv-fclear:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+/* 노드 칩 클릭 상태 */
+.nv-nodeclick { cursor: pointer; user-select: none; }
+.nv-nodeclick:hover { border-color: var(--navy-light); }
+.nv-nodeclick.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.nv-nodeclick.on b { color: var(--gold); }
+/* 매트릭스 A/B급 셀 */
+.nv-abcell { font-weight: 600; font-size: 12px; }
+.nv-abcell .nv-gA { color: #b02a1f; background: none; }
+.nv-abcell .nv-gB { color: #b06a1c; background: none; }
+/* 방법론 접이식 */
+.nv-method { margin: 2px 0 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); }
+.nv-method > summary { cursor: pointer; padding: 8px 12px; font-size: 12.5px; font-weight: 700; color: var(--navy); }
+.nv-method > summary::before { content: '▸ '; color: var(--gold); }
+.nv-method[open] > summary { border-bottom: 1px solid var(--border); }
+.nv-method-body { padding: 8px 14px 12px; }
+.nv-method-body p { margin: 6px 0; font-size: 12px; line-height: 1.6; }
+table.nv-mtab { width: 100%; border-collapse: collapse; font-size: 12px; margin: 6px 0; }
+table.nv-mtab th, table.nv-mtab td { padding: 5px 8px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+table.nv-mtab th { background: #eef1f5; color: var(--navy); font-weight: 700; }
+table.nv-mtab td:first-child { font-weight: 700; color: var(--navy-light); white-space: nowrap; width: 80px; }
+
+/* ─── 기업 검토 뷰: company-review 앱을 동일 오리진 iframe 으로 임베드 ─── */
+.review-frame {
+  display: block;
+  width: 100%;
+  height: calc(100vh - 128px);
+  min-height: 560px;
+  border: 0;
+  background: transparent;
+}

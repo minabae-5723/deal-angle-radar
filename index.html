@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deal Angle Radar</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%A1%3C/text%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
 
@@ -26,6 +26,8 @@
     <button class="viewtab active" data-view="radar">📡 일별 공시 레이더</button>
     <button class="viewtab" data-view="funding">💰 자금소요 스크리너</button>
     <button class="viewtab" data-view="thesis">🧭 Thesis 보드</button>
+    <button class="viewtab" data-view="narrative">📐 네러티브 스크리너</button>
+    <button class="viewtab" data-view="review">📄 기업 검토</button>
   </nav>
 </header>
 
@@ -63,6 +65,21 @@
     </div>
   </section>
 
+  <!-- ═══════════ view: 기업 검토 (Company Review Board) ═══════════ -->
+  <!-- code\company-review 를 /review 정션으로 동일 오리진 제공 → iframe 으로 비춘다.
+       3-agent(기업분석 0~2 · 사업분석 3~4 · 투자분석 5~6)가 각자 company-review\data\*.json 에
+       계속 쓰고, 이 탭은 그 결과를 그대로 보여준다. 포팅하지 않는 이유 = 상위 세션의 편집이 즉시 반영되어야 함. -->
+  <section id="view-review" class="view" hidden>
+    <iframe id="reviewFrame" class="review-frame" title="Company Review Board" src="about:blank"></iframe>
+  </section>
+
+  <!-- ═══════════ view: 네러티브 스크리너 ═══════════ -->
+  <section id="view-narrative" class="view" hidden>
+    <div id="narrativeRoot">
+      <div class="empty"><div class="empty-ico">📐</div><h3>로딩 중…</h3></div>
+    </div>
+  </section>
+
   <footer class="footer">
     <p id="footNote">Source: DART OpenAPI (주요사항보고 · 지분공시) + 뉴스 크로스체크 · 스크리닝: /deal-angle 세션 · Reverent Partners 내부용</p>
   </footer>
@@ -71,5 +88,6 @@
 <script src="app.js?v=2"></script>
 <script src="funding.js"></script>
 <script src="thesis.js?v=7"></script>
+<script src="narrative.js?v=4"></script>
 </body>
 </html>
