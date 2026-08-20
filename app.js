@@ -253,7 +253,10 @@ document.getElementById('viewTabs').addEventListener('click', e => {
 });
 
 loadIndex();
-{
+// 기본 뷰 = 네러티브 스크리너 (메인 페이지). 해시가 있으면 해시 우선.
+// initNarrative 등은 뒤에 로드되는 스크립트가 정의하므로 DOMContentLoaded 이후 전환.
+window.addEventListener('DOMContentLoaded', () => {
   const h = location.hash.slice(1);
-  if (h === 'funding' || h === 'thesis' || h === 'narrative' || h === 'review') switchView(h);
-}
+  if (h === 'radar' || h === 'funding' || h === 'thesis' || h === 'narrative' || h === 'review') switchView(h);
+  else switchView('narrative');
+});

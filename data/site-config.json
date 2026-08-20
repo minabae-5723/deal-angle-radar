@@ -1,0 +1,13 @@
+{
+  "giscus": {
+    "repo": "minabae-5723/deal-angle-radar",
+    "repoId": "R_kgDOT3D1gw",
+    "category": "Deal Angle",
+    "categoryId": "",
+    "_setup": "categoryId 가 비어 있으면 페이지에 셋업 가이드가 표시됨. ① GitHub repo Settings → Features → Discussions 활성화 ② https://github.com/apps/giscus 앱을 이 repo에 설치 ③ Discussions 에 'Deal Angle' 카테고리(Announcements 타입 권장 — 스레드 생성은 giscus만) 생성 ④ https://giscus.app 에서 repo 입력 → category 선택 → data-category-id 값을 여기 categoryId 에 붙여넣고 커밋"
+  },
+  "chat": {
+    "defaultModel": "claude-opus-5",
+    "models": ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5"]
+  }
+}

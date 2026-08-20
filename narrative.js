@@ -23,7 +23,7 @@
   //   가중치·매핑 사전값 출처: Notion <PE 전략 케이스맵> + <Deal_Angle_Screening PHASE3> +
   //   <조달니즈 type 정의>. 절대치보다 회사 간 상대순위로 읽을 것.
   // ═══════════════════════════════════════════════════════════════════════
-  const SFIT_W = { theme: 0.22, angle: 0.24, source: 0.16, ticket: 0.16, quality: 0.10, catalyst: 0.12 };
+  const SFIT_W = { theme: 0.20, angle: 0.22, source: 0.15, ticket: 0.15, quality: 0.10, catalyst: 0.12, payer: 0.06 };
   const ELAS_SCORE = { very_low: 1.0, low: 0.7, mid: 0.4, high: 0.15 };
   // type → RVP 딜앵글 강점 매핑 (조달니즈 type 정의). GROWTH=FI최적, DISTRESS/REFI=구조조정·리파이 강점.
   const ANGLE_SCORE = { GROWTH: 1.0, DISTRESS: 0.85, REFI: 0.85, TIGHT: 0.55, WC_BURN: 0.45, SELF: 0.15 };
@@ -36,11 +36,20 @@
   }
   const CATALYST_SCORE = { DISTRESS_EVENT: 1.0, IN_MOTION: 0.9, PRE_SIGNAL: 0.8, UNLISTED_BLIND: 0.55, RECENTLY_FUNDED: 0.25 };
 
+  // 지불자 렌즈 (테제 생성 3문 中 ①수요 확실성) — 수가·환급·방위비·의무보험 매출은 경기 무관 채권
+  function payerScore(payer) {
+    const s = payer || "";
+    if (s.includes("국가")) return 1.0;
+    if (s.includes("보험")) return 0.9;
+    if (s.includes("혼합")) return 0.65;
+    return 0.5;
+  }
+
   // 앵글A 캐시카우/승계 후보 (케이스맵 재현스크린: 비상장·고마진·순현금)
   //   listed!==true = 비상장 또는 풀 밖(이벤트 미관측) — 상장사만 제외.
   const isCashCow = r => r.listed !== true && r.opm != null && r.opm >= 0.15 && r.nd != null && r.nd < 0;
 
-  function scoreRow(r, themeElas) {
+  function scoreRow(r, themeElas, themePayer) {
     const fTheme = ELAS_SCORE[themeElas] ?? 0.4;
     const fAngle = r.type ? (ANGLE_SCORE[r.type] ?? 0.35) : 0.35;
     const fSource = r.listed === false ? 1.0 : r.listed === true ? 0.55 : 0.5;
@@ -48,7 +57,7 @@
     const fQuality = 0.7 * opmScore(r.opm) + 0.3 * cagrScore(r.cagr3);
     const fCatalyst = r.status ? (CATALYST_SCORE[r.status] ?? 0.35) : 0.35;
     let s = 100 * (SFIT_W.theme * fTheme + SFIT_W.angle * fAngle + SFIT_W.source * fSource +
-      SFIT_W.ticket * fTicket + SFIT_W.quality * fQuality + SFIT_W.catalyst * fCatalyst);
+      SFIT_W.ticket * fTicket + SFIT_W.quality * fQuality + SFIT_W.catalyst * fCatalyst + SFIT_W.payer * payerScore(themePayer));
     if (isCashCow(r)) s = Math.min(100, s + 6); // 캐시카우/승계 앵글 가점
     return Math.round(s);
   }
@@ -63,6 +72,13 @@
   function angleLabel(r) {
     const note = (r.note || "");
     if (/볼트온|bolt|add-?on/i.test(note)) return "볼트온 (플랫폼 add-on)";
+    // 딜 윈도우 감지 — 노트에 명시된 거래 계기가 재무 유형보다 우선 (테제 생성 3문 中 ③)
+    if (/공개매수|P2P|상폐/i.test(note)) return "P2P 공개매수 각도";
+    if (/구주|세컨더리|다운라운드/.test(note)) return "FI 구주·세컨더리";
+    if (/승계|세대교체|오너 6|오너 7/.test(note)) return "승계 딜 (오너·2세)";
+    if (/카브아웃|carve/i.test(note)) return "카브아웃";
+    if (/공동투자|co-?invest|소수지분/i.test(note)) return "앵커 공동투자·소수지분";
+    if (/워치|모니터링|발굴/.test(note) && r.rev == null) return "워치·발굴 리드";
     if (isCashCow(r)) return "캐시카우 인수 (앵글A·승계)";
     const L = r.listed;
     switch (r.type) {
@@ -108,8 +124,8 @@
 
   function intro() {
     return `<div class="nv-intro">
-      <p><strong>네러티브 → transmission KPI → value chain 노드 → 외감 롱리스트</strong>. 롱리스트를 가르는 축은 성장률이 아니라 <strong>공급탄력성</strong> — 수요가 늘어도 공급이 못 따라올 때만 가격·마진으로 전이된다.</p>
-      <p class="nv-dim">유니버스: 외감법인 41,409개 패널 × funding-pool 니즈 오버레이 · 회계 ${esc(data.meta.accounting_year || "")} · 포착: 자산 하베스트(PPI·insight·news) + 사용자 승인 · 재빌드: <code>node narrative/build-narrative.mjs</code></p>
+      <p><strong>네러티브 → transmission KPI → value chain 노드 → 외감 롱리스트</strong>. 테제는 3문으로 생성·검증한다 — <strong>① 수요의 확실성</strong>(지불자·백로그·규제일정·인구) × <strong>② 공급·경쟁의 봉쇄</strong>(3년 복제 테스트: 퀄·면허·총량·노하우·설치기반) × <strong>③ 딜 윈도우</strong>(왜 지금 거래되는가: 승계·FI만기·밸류리셋·제도화 캘린더·그룹재편·저평가 P2P).</p>
+      <p class="nv-dim">유니버스: 외감법인 41,409개 패널 × funding-pool 니즈 오버레이 · 회계 ${esc(data.meta.accounting_year || "")} · 포착: 자산 하베스트(PPI·insight·news) + 사용자 승인 · 공통 킬 필터: 中 3~5년 복제 가능성 · 재빌드: <code>node narrative/build-narrative.mjs</code>${data.meta.build_mode && data.meta.build_mode.startsWith("patch") ? ` · <b>패치 빌드</b>(외감 전체 반영은 패널 머신에서)` : ""}</p>
     </div>`;
   }
 
@@ -123,18 +139,22 @@
 
   function matrix(themes) {
     const sorted = [...themes].sort((a, b) => (ELAS_ORDER[a.catalog?.supply_elasticity] ?? 9) - (ELAS_ORDER[b.catalog?.supply_elasticity] ?? 9));
-    const abCount = t => { let a = 0, b = 0; (t.longlist || []).forEach(r => { const tr = tierOf(scoreRow(r, t.catalog?.supply_elasticity)); if (tr === "A") a++; else if (tr === "B") b++; }); return { a, b }; };
-    return `<section class="card"><h2 class="card-title">테마 카탈로그 — 공급탄력성 순</h2>
+    const abCount = t => { let a = 0, b = 0; (t.longlist || []).forEach(r => { const tr = tierOf(scoreRow(r, t.catalog?.supply_elasticity, t.catalog?.payer)); if (tr === "A") a++; else if (tr === "B") b++; }); return { a, b }; };
+    return `<section class="card"><h2 class="card-title">테마 카탈로그 — 공급탄력성 순 <span class="nv-dim">(${sorted.length}개 테마)</span></h2>
       <div class="table-wrap"><table class="nv-matrix">
-      <tr><th>테마</th><th>구조/순환</th><th>공급탄력성</th><th>지속성</th><th>롱리스트</th><th>A/B급</th><th>풀(니즈)</th><th>비상장</th></tr>
+      <tr><th>테마</th><th>구조/순환</th><th>공급탄력성</th><th>해자 (3년 복제 테스트)</th><th>딜 윈도우 (왜 지금)</th><th>지불자</th><th>지속성</th><th>롱리스트</th><th>A/B급</th><th>풀(니즈)</th><th>비상장</th><th>💬</th></tr>
       ${sorted.map(t => { const e = ELAS[t.catalog?.supply_elasticity] || {}; const ab = abCount(t); return `<tr class="nv-mrow" data-id="${t.id}">
         <td><b>${esc(t.emoji)} ${esc(t.title)}</b></td>
         <td>${esc(t.catalog?.structural || "")}</td>
         <td><span class="nv-elas ${e.cls || ""}">${esc(e.label || t.catalog?.supply_elasticity || "")}</span></td>
+        <td class="nv-lens">${esc(t.catalog?.moat || "")}</td>
+        <td class="nv-lens">${esc(t.catalog?.deal_window || "")}</td>
+        <td class="nv-payer">${esc(t.catalog?.payer || "")}</td>
         <td>${esc(t.catalog?.persistence || "")}</td>
         <td>${t.stats?.total ?? 0}</td>
         <td><span class="nv-abcell"><b class="nv-gA">${ab.a}</b>/<span class="nv-gB">${ab.b}</span></span></td>
-        <td>${t.stats?.inPool ?? 0}</td><td>${t.stats?.unlisted ?? 0}</td></tr>`; }).join("")}
+        <td>${t.stats?.inPool ?? 0}</td><td>${t.stats?.unlisted ?? 0}</td>
+        <td>${t.community?.count ? `<b class="nv-commct">${t.community.count}</b>` : ""}</td></tr>`; }).join("")}
       </table></div></section>`;
   }
 
@@ -155,9 +175,9 @@
   }
 
   // 롱리스트에 SFIT·티어·앵글을 부착하고 우선순위로 정렬 (pick 은 상단 고정)
-  function scoreLonglist(ll, themeElas) {
+  function scoreLonglist(ll, themeElas, themePayer) {
     const scored = (ll || []).map(r => {
-      const sfit = scoreRow(r, themeElas);
+      const sfit = scoreRow(r, themeElas, themePayer);
       return { ...r, sfit, tier: tierOf(sfit), angleLbl: angleLabel(r), cashcow: isCashCow(r) };
     });
     scored.sort((a, b) => (b.pick - a.pick) || (b.sfit - a.sfit) || ((b.rev || 0) - (a.rev || 0)));
@@ -224,7 +244,7 @@
   function methodBox() {
     return `<details class="nv-method"><summary>전략 검토 우선순위(SFIT) 산식 · 티어 기준 · 딜 앵글 매핑</summary>
       <div class="nv-method-body">
-      <p class="nv-dim"><b>SFIT (0~100)</b> = 테마구조 0.22 · 딜앵글적합 0.24 · 소싱우위 0.16 · 티켓fit 0.16 · 수익품질 0.10 · 촉매 0.12. 재무 순수함수 — 회사 간 <b>상대순위</b>로 읽을 것. 출처: Notion PE 전략 케이스맵 · Deal_Angle PHASE3 · 조달니즈 type 정의.</p>
+      <p class="nv-dim"><b>SFIT (0~100)</b> = 테마구조 0.20 · 딜앵글적합 0.22 · 소싱우위 0.15 · 티켓fit 0.15 · 수익품질 0.10 · 촉매 0.12 · <b>지불자 0.06</b>(국가 1.0 &gt; 보험 0.9 &gt; 혼합 0.65 &gt; 민간 0.5 — 수가·환급·방위비·의무보험 매출은 경기 무관 채권). 재무 순수함수 — 회사 간 <b>상대순위</b>로 읽을 것. 출처: Notion PE 전략 케이스맵 · Deal_Angle PHASE3 · 조달니즈 type 정의 · 딜소싱 대시보드 렌즈(2026.08).</p>
       <table class="nv-mtab">
         <tr><th>티어</th><th>SFIT</th><th>의미</th></tr>
         <tr><td><span class="nv-tier nv-gA">A</span> 즉시</td><td>≥ 68</td><td>즉시 검토 착수 — 기업분석 우선 투입</td></tr>
@@ -258,7 +278,7 @@
     const el = document.getElementById("themeSheet");
     if (!t) { el.innerHTML = ""; return; }
     const e = ELAS[t.catalog?.supply_elasticity] || {};
-    const scored = scoreLonglist(t.longlist, t.catalog?.supply_elasticity);
+    const scored = scoreLonglist(t.longlist, t.catalog?.supply_elasticity, t.catalog?.payer);
     const filtered = applyFilters(scored);
     // 롱리스트에 실제 존재하는 노드별 개수 (표시용)
     const nodeRowCount = {};
@@ -271,9 +291,11 @@
       <h2 class="card-title">${esc(t.emoji)} ${esc(t.title)}
         <span class="nv-elas ${e.cls || ""}">공급탄력성 ${esc(e.label || "")}</span></h2>
       <div class="nv-prov-line">📌 ${esc(t.provenance?.source || "")} · ${esc(t.provenance?.evidence || "")}</div>
+      ${lensChips(t)}
       ${t.harvest_reinforce && t.harvest_reinforce.length ? `<div class="nv-reinforce">🌱 자산 재확증 ${t.harvest_reinforce.length}건 — ${t.harvest_reinforce.map(esc).join(" · ")}</div>` : ""}
       ${kpiGrid(t)}
       ${t.supply_verdict ? `<div class="nv-verdict"><b>공급탄력성 판정</b> — ${esc(t.supply_verdict)}</div>` : ""}
+      ${screenList(t)}
       ${nodeChips}
       <h3 class="h3">롱리스트 <span class="nv-dim">(우선순위 A→D 순 · ★=pick · need=funding-pool 니즈스코어)</span></h3>
       ${tierSummary(scored)}
@@ -284,8 +306,36 @@
       ${t.whitespace ? `<div class="meta"><b>화이트스페이스</b> — ${esc(t.whitespace)}</div>` : ""}
       ${t.bolton ? `<div class="meta"><b>볼트온</b> — ${esc(t.bolton)}</div>` : ""}
       ${t.sources && t.sources.length ? `<p class="nv-dim">출처: ${t.sources.map(esc).join(" · ")}</p>` : ""}
+      ${communityBox(t)}
+      <div id="giscusMount"></div>
     </section>`;
     wireFilters(el);
+    if (window.mountGiscus) window.mountGiscus(el.querySelector("#giscusMount"), t.id, `${t.emoji} ${t.title}`);
+  }
+
+  // 테제 3문 렌즈 칩 — ②해자(3년 복제 테스트) · ③딜 윈도우 · ①지불자
+  function lensChips(t) {
+    const c = t.catalog || {};
+    const chip = (ico, lbl, val, cls) => val ? `<span class="nv-lchip ${cls || ""}"><em>${ico} ${lbl}</em>${esc(val)}</span>` : "";
+    const row = chip("🧱", "해자", c.moat) + chip("🪟", "딜 윈도우", c.deal_window) + chip("💳", "지불자", c.payer, /국가|보험/.test(c.payer || "") ? "nv-lchip-payer" : "");
+    return row ? `<div class="nv-lensrow">${row}</div>` : "";
+  }
+
+  // 테마별 스크리닝 체크리스트 (레지스트리 screen[])
+  function screenList(t) {
+    if (!t.screen || !t.screen.length) return "";
+    return `<div class="nv-screen"><b>스크리닝 체크</b><ul>${t.screen.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>`;
+  }
+
+  // 커뮤니티 시그널 — comments-harvest.mjs 가 수집한 giscus Discussions 요약.
+  // 댓글은 테제 검토 로직의 입력 — /deal-angle 세션이 리뷰 후 KPI·스크린·롱리스트에 반영.
+  function communityBox(t) {
+    const c = t.community;
+    if (!c || !c.count) return "";
+    const recent = (c.recent || []).slice(0, 5).map(m =>
+      `<div class="nv-comm-row"><span class="nv-comm-author">${esc(m.author)}</span><span class="nv-comm-date">${esc((m.date || "").slice(0, 10))}</span><div class="nv-comm-body">${esc(m.body)}</div></div>`).join("");
+    return `<div class="nv-community"><b>💬 커뮤니티 시그널 ${c.count}건</b> <span class="nv-dim">— 검토 큐에 편입됨 (테제 반박·보강·신규 리드 환영)</span>
+      ${recent}${c.url ? `<a class="nv-comm-link" href="${esc(c.url)}" target="_blank" rel="noopener">전체 스레드 →</a>` : ""}</div>`;
   }
 
   // 필터 상호작용 배선 — 노드칩·표 노드셀·티어칩·해제버튼
