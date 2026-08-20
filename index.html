@@ -85,6 +85,20 @@
   </footer>
 </main>
 
+<!-- review-gate: /review 는 code\company-review 로 향하는 로컬 디렉터리 정션이며 .gitignore(/review)로
+     배포에서 제외된다. 따라서 GitHub Pages 에서는 기업 검토 탭이 404 가 되므로 로컬이 아닐 때 탭을 제거한다.
+     PE 내부 검토 문서를 public Pages 에 노출하지 않기 위한 의도적 로컬 전용 뷰. (2026-08-20) -->
+<script>
+  (function () {
+    var host = location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '') return;
+    if (location.hash === '#review') location.replace(location.pathname + location.search);
+    var tab = document.querySelector('.viewtab[data-view="review"]');
+    if (tab) tab.remove();
+    var view = document.getElementById('view-review');
+    if (view) view.remove();
+  })();
+</script>
 <script src="app.js?v=2"></script>
 <script src="funding.js"></script>
 <script src="thesis.js?v=7"></script>
