@@ -7,18 +7,18 @@
 //     · web_search         — Claude 서버 툴 (웹리서치)
 //   키가 없는 외부 참여자는 테마 하단 댓글(giscus)로 질문 → comments-harvest 가 검토 큐로 수집.
 (function () {
-  const LS_KEY = "dar_api_key", LS_MODEL = "dar_chat_model";
+  const LS_KEY = "dar_api_key",LS_MODEL = "dar_chat_model";
   const API = "https://api.anthropic.com/v1/messages";
   const MODELS = ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5"];
   const MAX_LOOPS = 8;
 
-  let pool = null;          // narrative-pool.json (테마+롱리스트)
-  let fundingRows = null;   // funding-pool.json rows (재무·니즈 1,443사) — lazy
-  let messages = [];        // Claude 대화 히스토리 (content 블록 원형 유지 — thinking/server_tool 포함)
+  let pool = null; // narrative-pool.json (테마+롱리스트)
+  let fundingRows = null; // funding-pool.json rows (재무·니즈 1,443사) — lazy
+  let messages = []; // Claude 대화 히스토리 (content 블록 원형 유지 — thinking/server_tool 포함)
   let busy = false;
 
-  const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const $ = sel => document.querySelector(sel);
+  const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const $ = (sel) => document.querySelector(sel);
 
   // ── 데이터 로드 ────────────────────────────────────────────────────────────
   async function loadPool() {
@@ -36,10 +36,10 @@
   }
 
   // ── 시스템 프롬프트 (테마 카탈로그 요약 — 안정 텍스트, 캐시 브레이크포인트) ──
-  function systemPrompt() {
-    const lines = (pool?.themes || []).map(t => {
+  function systemPrompt() {var _pool, _pool$meta$themes, _pool2, _pool3, _pool4;
+    const lines = (((_pool = pool) === null || _pool === void 0 ? void 0 : _pool.themes) || []).map((t) => {var _t$stats$total, _t$stats, _t$stats$inPool, _t$stats2, _t$stats$unlisted, _t$stats3, _t$community;
       const c = t.catalog || {};
-      return `- [${t.id}] ${t.emoji} ${t.title} | 공급탄력성:${c.supply_elasticity || "?"} | 해자:${c.moat || "-"} | 딜윈도우:${c.deal_window || "-"} | 지불자:${c.payer || "-"} | 롱리스트 ${t.stats?.total ?? 0}개(풀 ${t.stats?.inPool ?? 0}·비상장 ${t.stats?.unlisted ?? 0})${t.community?.count ? ` | 댓글 ${t.community.count}` : ""}`;
+      return `- [${t.id}] ${t.emoji} ${t.title} | 공급탄력성:${c.supply_elasticity || "?"} | 해자:${c.moat || "-"} | 딜윈도우:${c.deal_window || "-"} | 지불자:${c.payer || "-"} | 롱리스트 ${(_t$stats$total = (_t$stats = t.stats) === null || _t$stats === void 0 ? void 0 : _t$stats.total) !== null && _t$stats$total !== void 0 ? _t$stats$total : 0}개(풀 ${(_t$stats$inPool = (_t$stats2 = t.stats) === null || _t$stats2 === void 0 ? void 0 : _t$stats2.inPool) !== null && _t$stats$inPool !== void 0 ? _t$stats$inPool : 0}·비상장 ${(_t$stats$unlisted = (_t$stats3 = t.stats) === null || _t$stats3 === void 0 ? void 0 : _t$stats3.unlisted) !== null && _t$stats$unlisted !== void 0 ? _t$stats$unlisted : 0})${(_t$community = t.community) !== null && _t$community !== void 0 && _t$community.count ? ` | 댓글 ${t.community.count}` : ""}`;
     }).join("\n");
     return `당신은 Reverent Partners 의 'Deal Angle Radar' 딜소싱 대시보드에 내장된 리서치 어시스턴트다.
 이 페이지는 한국 PE 딜소싱 도구다: DART 공시 스크리닝 + 외감법인 재무 바텀업 + 네러티브 탑다운 스크리너.
@@ -50,7 +50,7 @@
 ③ 딜 윈도우 — 왜 지금 거래되는가 (승계절벽·FI 만기·밸류 리셋·제도화 캘린더·그룹 재편·저평가 P2P)
 공통 킬 필터: 중국이 3~5년 내 보조금으로 복제 가능한가.
 
-현재 테마 카탈로그 (${pool?.meta?.themes ?? 0}개, 회계 ${pool?.meta?.accounting_year || ""}, 빌드 ${pool?.meta?.built || ""}):
+현재 테마 카탈로그 (${(_pool$meta$themes = (_pool2 = pool) === null || _pool2 === void 0 || (_pool2 = _pool2.meta) === null || _pool2 === void 0 ? void 0 : _pool2.themes) !== null && _pool$meta$themes !== void 0 ? _pool$meta$themes : 0}개, 회계 ${((_pool3 = pool) === null || _pool3 === void 0 || (_pool3 = _pool3.meta) === null || _pool3 === void 0 ? void 0 : _pool3.accounting_year) || ""}, 빌드 ${((_pool4 = pool) === null || _pool4 === void 0 || (_pool4 = _pool4.meta) === null || _pool4 === void 0 ? void 0 : _pool4.built) || ""}):
 ${lines}
 
 도구 사용 원칙:
@@ -63,17 +63,17 @@ ${lines}
 
   // ── 클라이언트 툴 ──────────────────────────────────────────────────────────
   const TOOLS_CLIENT = [
-    {
-      name: "get_theme",
-      description: "네러티브 테마 1개의 상세(KPI, 공급탄력성 판정, 스크리닝 체크, 롱리스트 상위, 화이트스페이스, 볼트온, 커뮤니티 댓글)를 반환. 테마 id 는 시스템 프롬프트의 대괄호 값.",
-      input_schema: { type: "object", properties: { id: { type: "string", description: "테마 id (예: grid-power)" } }, required: ["id"] }
-    },
-    {
-      name: "lookup_company",
-      description: "회사명으로 외감 재무(매출·OPM·CAGR·순차입)·자금니즈(need/type/status)·소속 테마·노트를 조회. 부분 일치 검색.",
-      input_schema: { type: "object", properties: { name: { type: "string", description: "회사명 (부분 일치)" } }, required: ["name"] }
-    }
-  ];
+  {
+    name: "get_theme",
+    description: "네러티브 테마 1개의 상세(KPI, 공급탄력성 판정, 스크리닝 체크, 롱리스트 상위, 화이트스페이스, 볼트온, 커뮤니티 댓글)를 반환. 테마 id 는 시스템 프롬프트의 대괄호 값.",
+    input_schema: { type: "object", properties: { id: { type: "string", description: "테마 id (예: grid-power)" } }, required: ["id"] }
+  },
+  {
+    name: "lookup_company",
+    description: "회사명으로 외감 재무(매출·OPM·CAGR·순차입)·자금니즈(need/type/status)·소속 테마·노트를 조회. 부분 일치 검색.",
+    input_schema: { type: "object", properties: { name: { type: "string", description: "회사명 (부분 일치)" } }, required: ["name"] }
+  }];
+
 
   function webSearchTool(model) {
     // Opus 5·Sonnet 5 는 dynamic filtering 변형, Haiku 4.5 는 기본 변형
@@ -85,14 +85,14 @@ ${lines}
     try {
       if (name === "get_theme") {
         await loadPool();
-        const t = (pool.themes || []).find(x => x.id === (input.id || "").trim());
-        if (!t) return { error: "테마 없음: " + input.id, available: pool.themes.map(x => x.id) };
+        const t = (pool.themes || []).find((x) => x.id === (input.id || "").trim());
+        if (!t) return { error: "테마 없음: " + input.id, available: pool.themes.map((x) => x.id) };
         return {
           id: t.id, title: t.title, status: t.status, catalog: t.catalog, kpi: t.kpi,
           supply_verdict: t.supply_verdict, screen: t.screen || null,
           provenance: t.provenance, whitespace: t.whitespace, bolton: t.bolton, sources: t.sources,
-          nodes: (t.nodeCounts || []).map(n => `${n.node} (${n.n})`),
-          longlist_top: (t.longlist || []).slice(0, 30).map(r => ({
+          nodes: (t.nodeCounts || []).map((n) => `${n.node} (${n.n})`),
+          longlist_top: (t.longlist || []).slice(0, 30).map((r) => ({
             name: r.name, node: r.node, rev억: r.rev, opm: r.opm, cagr3: r.cagr3, nd억: r.nd,
             listed: r.listed, need: r.need, type: r.type, status: r.status, pick: r.pick || undefined, note: r.note || undefined
           })),
@@ -108,32 +108,32 @@ ${lines}
         for (const t of pool.themes || []) {
           for (const r of t.longlist || []) {
             if ((r.name || "").replace(/\(주\)|주식회사|㈜|\s/g, "").toLowerCase().includes(q))
-              hits.push({ theme: `${t.id} ${t.title}`, ...r });
+            hits.push({ theme: `${t.id} ${t.title}`, ...r });
           }
         }
         let funding = null;
         try {
           const rows = await loadFunding();
-          const f = rows.filter(p => (p.name || "").replace(/\(주\)|주식회사|㈜|\s/g, "").toLowerCase().includes(q))
-            .sort((a, b) => (b.rev || 0) - (a.rev || 0)).slice(0, 3);
-          funding = f.map(p => ({
+          const f = rows.filter((p) => (p.name || "").replace(/\(주\)|주식회사|㈜|\s/g, "").toLowerCase().includes(q)).
+          sort((a, b) => (b.rev || 0) - (a.rev || 0)).slice(0, 3);
+          funding = f.map((p) => ({
             name: p.name, listed: p.listed, industry: p.industry, latest_year: p.latest_year,
             rev억: p.rev, cagr3: p.cagr3, ebitda억: p.ebitda, ebitda_m: p.ebitda_m, op억: p.op,
             net_debt억: p.net_debt, nd_ebitda: p.nd_ebitda, debt_ratio: p.debt_ratio, cash억: p.cash,
             need: p.need, type: p.type, status: p.status, angle: p.angle_primary,
             gap_12m억: p.gap_12m, runway_m: p.runway_m, last_funding: p.last_funding, events_24m: p.events_24m
           }));
-        } catch { /* funding-pool 미로드 환경 */ }
+        } catch (_unused) {/* funding-pool 미로드 환경 */}
         if (!hits.length && (!funding || !funding.length)) return { error: "패널·풀에서 찾지 못함: " + input.name + " — 외감 미공시(소규모)이거나 표기가 다를 수 있음. web_search 로 확인 권장." };
         return { theme_rows: hits.slice(0, 10), funding_pool: funding };
       }
       return { error: "unknown tool " + name };
-    } catch (e) { return { error: String(e && e.message || e) }; }
+    } catch (e) {return { error: String(e && e.message || e) };}
   }
 
   // ── Claude API 호출 루프 ───────────────────────────────────────────────────
-  function apiKey() { return (localStorage.getItem(LS_KEY) || "").trim(); }
-  function model() { return localStorage.getItem(LS_MODEL) || "claude-opus-5"; }
+  function apiKey() {return (localStorage.getItem(LS_KEY) || "").trim();}
+  function model() {return localStorage.getItem(LS_MODEL) || "claude-opus-5";}
 
   async function callClaude(msgs) {
     const m = model();
@@ -156,7 +156,7 @@ ${lines}
     const res = await fetch(API, { method: "POST", headers, body: JSON.stringify(body) });
     if (!res.ok) {
       let detail = "";
-      try { detail = (await res.json()).error?.message || ""; } catch { }
+      try {var _await$res$json$error;detail = ((_await$res$json$error = (await res.json()).error) === null || _await$res$json$error === void 0 ? void 0 : _await$res$json$error.message) || "";} catch (_unused2) {}
       const e = new Error(`HTTP ${res.status}${detail ? " — " + detail : ""}`);
       e.status = res.status;
       throw e;
@@ -170,23 +170,23 @@ ${lines}
     while (loops++ < MAX_LOOPS) {
       const resp = await callClaude(messages);
       messages.push({ role: "assistant", content: resp.content });
-      if (resp.stop_reason === "refusal") {
-        return "요청이 안전 분류기에 의해 거절되었습니다" + (resp.stop_details?.explanation ? ` — ${resp.stop_details.explanation}` : ".") + " 질문을 바꿔 다시 시도해 주세요.";
+      if (resp.stop_reason === "refusal") {var _resp$stop_details;
+        return "요청이 안전 분류기에 의해 거절되었습니다" + ((_resp$stop_details = resp.stop_details) !== null && _resp$stop_details !== void 0 && _resp$stop_details.explanation ? ` — ${resp.stop_details.explanation}` : ".") + " 질문을 바꿔 다시 시도해 주세요.";
       }
-      if (resp.stop_reason === "pause_turn") { onStatus("웹리서치 계속 진행 중…"); continue; } // 이어서 재요청 — 서버가 자동 재개
+      if (resp.stop_reason === "pause_turn") {onStatus("웹리서치 계속 진행 중…");continue;} // 이어서 재요청 — 서버가 자동 재개
       if (resp.stop_reason === "tool_use") {
-        const toolUses = resp.content.filter(b => b.type === "tool_use");
+        const toolUses = resp.content.filter((b) => b.type === "tool_use");
         const results = [];
         for (const tu of toolUses) {
           onStatus(`데이터 조회: ${tu.name}(${esc(JSON.stringify(tu.input)).slice(0, 80)})`);
           const out = await runTool(tu.name, tu.input || {});
           results.push({ type: "tool_result", tool_use_id: tu.id, content: JSON.stringify(out), is_error: !!out.error });
         }
-        if (results.length) { messages.push({ role: "user", content: results }); continue; }
+        if (results.length) {messages.push({ role: "user", content: results });continue;}
         continue;
       }
       // end_turn / max_tokens
-      const text = resp.content.filter(b => b.type === "text").map(b => b.text).join("\n").trim();
+      const text = resp.content.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
       return text || "(빈 응답)";
     }
     return "툴 호출이 너무 깊어져 중단했습니다 — 질문을 좁혀 다시 시도해 주세요.";
@@ -221,7 +221,7 @@ ${lines}
       <p><b>Anthropic API 키</b>가 브라우저(localStorage)에만 저장됩니다 — 커밋·전송되지 않습니다 (Claude API 호출에만 사용).</p>
       <input id="dcKey" type="password" placeholder="sk-ant-..." value="${esc(k)}" autocomplete="off">
       <div class="dc-setup-row">
-        <select id="dcModel">${MODELS.map(m => `<option value="${m}"${m === model() ? " selected" : ""}>${m}</option>`).join("")}</select>
+        <select id="dcModel">${MODELS.map((m) => `<option value="${m}"${m === model() ? " selected" : ""}>${m}</option>`).join("")}</select>
         <button id="dcSave">저장</button>
       </div>
       <p class="dc-dim">키가 없다면? 각 테마 하단 댓글로 질문을 남기면 검토 큐로 수집됩니다. 키 발급: console.anthropic.com</p>
@@ -231,12 +231,12 @@ ${lines}
   function ensurePanel() {
     if ($("#dcPanel")) return;
     const fab = document.createElement("button");
-    fab.id = "dcFab"; fab.title = "리서치 챗 — 페이지 데이터 기반 질의 + 웹리서치";
+    fab.id = "dcFab";fab.title = "리서치 챗 — 페이지 데이터 기반 질의 + 웹리서치";
     fab.innerHTML = "💬";
     document.body.appendChild(fab);
 
     const panel = document.createElement("div");
-    panel.id = "dcPanel"; panel.hidden = true;
+    panel.id = "dcPanel";panel.hidden = true;
     panel.innerHTML = `
       <div class="dc-head">
         <b>📡 리서치 챗</b>
@@ -255,13 +255,13 @@ ${lines}
       </form>`;
     document.body.appendChild(panel);
 
-    const refreshLbl = () => { $("#dcModelLbl").textContent = model() + (apiKey() ? "" : " · 키 미설정"); };
+    const refreshLbl = () => {$("#dcModelLbl").textContent = model() + (apiKey() ? "" : " · 키 미설정");};
     refreshLbl();
 
-    fab.addEventListener("click", () => { panel.hidden = !panel.hidden; if (!panel.hidden && !apiKey()) showSetup(); });
+    fab.addEventListener("click", () => {panel.hidden = !panel.hidden;if (!panel.hidden && !apiKey()) showSetup();});
     $("#dcClose").addEventListener("click", () => panel.hidden = true);
     $("#dcGear").addEventListener("click", showSetup);
-    $("#dcClear").addEventListener("click", () => { messages = []; $("#dcMsgs").innerHTML = ""; addMsg("sys", "대화를 초기화했습니다."); });
+    $("#dcClear").addEventListener("click", () => {messages = [];$("#dcMsgs").innerHTML = "";addMsg("sys", "대화를 초기화했습니다.");});
 
     function showSetup() {
       const w = $("#dcSetupWrap");
@@ -270,7 +270,7 @@ ${lines}
         e.preventDefault();
         localStorage.setItem(LS_KEY, $("#dcKey").value.trim());
         localStorage.setItem(LS_MODEL, $("#dcModel").value);
-        w.innerHTML = ""; refreshLbl();
+        w.innerHTML = "";refreshLbl();
         addMsg("sys", "설정 저장됨 — " + esc(model()));
       });
     }
@@ -281,31 +281,31 @@ ${lines}
       const input = $("#dcInput");
       const q = input.value.trim();
       if (!q) return;
-      if (!apiKey()) { showSetup(); return; }
+      if (!apiKey()) {showSetup();return;}
       input.value = "";
-      busy = true; $("#dcSend").disabled = true;
+      busy = true;$("#dcSend").disabled = true;
       addMsg("user", esc(q));
       const status = addMsg("sys", "생각 중…");
       try {
         await loadPool();
-        const ans = await agentTurn(q, s => { status.innerHTML = esc(s); });
+        const ans = await agentTurn(q, (s) => {status.innerHTML = esc(s);});
         status.remove();
         addMsg("bot", mdLite(ans));
       } catch (err) {
         status.remove();
-        const msg = err.status === 401 ? "API 키가 유효하지 않습니다 — ⚙에서 다시 입력해 주세요."
-          : err.status === 429 ? "요청 한도 초과 — 잠시 후 재시도해 주세요."
-          : "오류: " + esc(err.message || String(err));
+        const msg = err.status === 401 ? "API 키가 유효하지 않습니다 — ⚙에서 다시 입력해 주세요." :
+        err.status === 429 ? "요청 한도 초과 — 잠시 후 재시도해 주세요." :
+        "오류: " + esc(err.message || String(err));
         addMsg("sys", msg);
         // 실패한 user 턴 제거 (히스토리 오염 방지)
         while (messages.length && messages[messages.length - 1].role !== "user") messages.pop();
         messages.pop();
       } finally {
-        busy = false; $("#dcSend").disabled = false;
+        busy = false;$("#dcSend").disabled = false;
       }
     });
-    $("#dcInput").addEventListener("keydown", e => {
-      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#dcForm").requestSubmit(); }
+    $("#dcInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {e.preventDefault();$("#dcForm").requestSubmit();}
     });
   }
 

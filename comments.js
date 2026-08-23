@@ -5,7 +5,7 @@
 //   빌드가 테마에 병합 → /deal-angle 세션이 검토 후 테제 로직(KPI·스크린·롱리스트)에 반영.
 //   설정: data/site-config.json .giscus (categoryId 비면 셋업 가이드 표시)
 (function () {
-  let cfg = null, cfgLoaded = false;
+  let cfg = null,cfgLoaded = false;
 
   async function loadCfg() {
     if (cfgLoaded) return cfg;
@@ -13,11 +13,11 @@
     try {
       const res = await fetch("./data/site-config.json", { cache: "no-store" });
       if (res.ok) cfg = (await res.json()).giscus || null;
-    } catch { /* 설정 없음 — 가이드 표시 */ }
+    } catch (_unused) {/* 설정 없음 — 가이드 표시 */}
     return cfg;
   }
 
-  const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   function setupCard() {
     return `<div class="nv-giscus-setup">
@@ -36,7 +36,7 @@
   window.mountGiscus = async function (mountEl, themeId, themeTitle) {
     if (!mountEl) return;
     const c = await loadCfg();
-    if (!c || !c.repoId || !c.categoryId) { mountEl.innerHTML = setupCard(); return; }
+    if (!c || !c.repoId || !c.categoryId) {mountEl.innerHTML = setupCard();return;}
     mountEl.innerHTML = `<div class="nv-giscus-head"><b>💬 이 테마에 의견 남기기</b> <span class="nv-dim">— 반박·보강·신규 리드·질문 모두 환영. 검토 후 테제 로직에 반영됩니다. (${esc(themeTitle)})</span></div><div class="giscus"></div>`;
     const s = document.createElement("script");
     s.src = "https://giscus.app/client.js";

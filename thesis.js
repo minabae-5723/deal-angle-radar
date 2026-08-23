@@ -2,25 +2,25 @@
 // 탑다운 신규 네러티브 테제 → 클릭 시 바텀업(외감 후보) 드릴다운.
 (function () {
   let loaded = false;
-  let THESES = null, CAND = null;
+  let THESES = null,CAND = null;
   let filter = { pillar: 'all', tier: 'all' };
 
   const PILLARS = { '반도체': '#4ea1ff', 'AI SW': '#a978ff', '헬스케어': '#38d39f' };
   const TIER_LABEL = { 1: '즉시 실행 (롤업·승계)', 2: '성장자금·세컨더리', 3: '관찰·구조적' };
-  const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const won = n => n >= 10000 ? (n / 10000).toFixed(1) + '조' : Math.round(n) + '억';
-  const pct = x => x == null ? '—' : (x * 100).toFixed(0) + '%';
+  const esc = (s) => String(s !== null && s !== void 0 ? s : '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const won = (n) => n >= 10000 ? (n / 10000).toFixed(1) + '조' : Math.round(n) + '억';
+  const pct = (x) => x == null ? '—' : (x * 100).toFixed(0) + '%';
 
   window.initThesis = async function () {
     const root = document.getElementById('thesisRoot');
-    if (loaded) { render(); return; }
+    if (loaded) {render();return;}
     root.innerHTML = '<div class="empty"><div class="empty-ico">🧭</div><h3>로딩 중…</h3></div>';
     try {
       const [t, c] = await Promise.all([
-        fetch('./data/theses.json?_=' + Date.now(), { cache: 'no-store' }).then(r => r.json()),
-        fetch('./data/thesis-candidates.json?_=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
-      ]);
-      THESES = t; CAND = c || {}; loaded = true;
+      fetch('./data/theses.json?_=' + Date.now(), { cache: 'no-store' }).then((r) => r.json()),
+      fetch('./data/thesis-candidates.json?_=' + Date.now(), { cache: 'no-store' }).then((r) => r.ok ? r.json() : {}).catch(() => ({}))]
+      );
+      THESES = t;CAND = c || {};loaded = true;
       render();
     } catch (e) {
       root.innerHTML = `<div class="empty"><h3>로딩 실패</h3><p>${esc(e.message)}</p></div>`;
@@ -29,11 +29,11 @@
 
   function render() {
     const root = document.getElementById('thesisRoot');
-    const list = THESES.theses.filter(x =>
-      (filter.pillar === 'all' || x.pillar === filter.pillar) &&
-      (filter.tier === 'all' || String(x.tier) === filter.tier));
-    const pills = p => `<button class="th-pill${filter.pillar === p ? ' on' : ''}" data-f="pillar" data-v="${p}">${p === 'all' ? '전체 pillar' : p}</button>`;
-    const tpills = t => `<button class="th-pill${filter.tier === t ? ' on' : ''}" data-f="tier" data-v="${t}">${t === 'all' ? '전체 tier' : 'Tier ' + t}</button>`;
+    const list = THESES.theses.filter((x) =>
+    (filter.pillar === 'all' || x.pillar === filter.pillar) && (
+    filter.tier === 'all' || String(x.tier) === filter.tier));
+    const pills = (p) => `<button class="th-pill${filter.pillar === p ? ' on' : ''}" data-f="pillar" data-v="${p}">${p === 'all' ? '전체 pillar' : p}</button>`;
+    const tpills = (t) => `<button class="th-pill${filter.tier === t ? ' on' : ''}" data-f="tier" data-v="${t}">${t === 'all' ? '전체 tier' : 'Tier ' + t}</button>`;
 
     let html = `
       <div class="th-intro">
@@ -46,29 +46,29 @@
       </div>`;
 
     for (const tier of [1, 2, 3]) {
-      const group = list.filter(x => x.tier === tier);
+      const group = list.filter((x) => x.tier === tier);
       if (!group.length) continue;
       html += `<div class="th-tier-head"><span class="th-tier-badge t${tier}">Tier ${tier}</span> ${TIER_LABEL[tier]} <span class="th-count">${group.length}</span></div>`;
       html += '<div class="th-grid">' + group.map(card).join('') + '</div>';
     }
     root.innerHTML = html;
 
-    root.querySelectorAll('.th-pill').forEach(b => b.onclick = () => {
-      filter[b.dataset.f] = b.dataset.v; render();
+    root.querySelectorAll('.th-pill').forEach((b) => b.onclick = () => {
+      filter[b.dataset.f] = b.dataset.v;render();
     });
-    root.querySelectorAll('.th-card').forEach(c => c.querySelector('.th-card-top').onclick = () => {
+    root.querySelectorAll('.th-card').forEach((c) => c.querySelector('.th-card-top').onclick = () => {
       c.classList.toggle('open');
     });
   }
 
   function card(t) {
     const col = PILLARS[t.pillar] || '#888';
-    const nodes = (t.nodes || []).map(n => {
-      const L = (n.listed || []).map(x => `<span class="th-co listed">${esc(x)}</span>`).join('');
+    const nodes = (t.nodes || []).map((n) => {
+      const L = (n.listed || []).map((x) => `<span class="th-co listed">${esc(x)}</span>`).join('');
       const U = n.unlisted ? `<span class="th-co unlisted">◆ ${esc(n.unlisted)}</span>` : '';
       return `<div class="th-node"><div class="th-node-name">${esc(n.node)}</div><div class="th-node-cos">${L}${U}</div></div>`;
     }).join('');
-    const sig = (t.signals || []).map(s => `<li>${esc(s)}</li>`).join('');
+    const sig = (t.signals || []).map((s) => `<li>${esc(s)}</li>`).join('');
     const cand = candBlock(t.id);
 
     return `<div class="th-card" style="--pcol:${col}">
@@ -104,17 +104,17 @@
     if (!biz) return '';
     const m = biz.match(/(?:당사|회사|지배기업|연결회사)[는은]?\s*(.+?)\s*등?\s*(?:을|를|의)?\s*(?:제조|생산|판매|개발|공급|제공|영위)/);
     if (!m) return '';
-    let p = m[1].replace(/\(이하[^)]*\)/g, '')
-      .replace(/^(주식회사|국내에서만|다음의|아래|현재|보고기간말\s*현재)\s*/, '')
-      .replace(/^\d{4}년[^가-힣]*?(?:자로|이후|에)?\s*/, '').trim();
+    let p = m[1].replace(/\(이하[^)]*\)/g, '').
+    replace(/^(주식회사|국내에서만|다음의|아래|현재|보고기간말\s*현재)\s*/, '').
+    replace(/^\d{4}년[^가-힣]*?(?:자로|이후|에)?\s*/, '').trim();
     if (!p || p.length < 2 || p.length > 46 || PROD_JUNK.test(p)) return '';
     return p;
   }
   // 딜 앵글 = 우량/고성장(thesis 수혜) + 조달니즈(딜앵글) + 테제적합
   function angleOf(r) {
     const a = [];
-    if (r.quality) a.push(`우량 · 매출CAGR ${r.revCagr != null ? (r.revCagr >= 0 ? '+' : '') + Math.round(r.revCagr * 100) + '%' : '—'} · OPM ${pct(r.opm)}`);
-    else if (r.revCagr != null && r.revCagr >= 0.15) a.push(`고성장 · 매출CAGR +${Math.round(r.revCagr * 100)}%`);
+    if (r.quality) a.push(`우량 · 매출CAGR ${r.revCagr != null ? (r.revCagr >= 0 ? '+' : '') + Math.round(r.revCagr * 100) + '%' : '—'} · OPM ${pct(r.opm)}`);else
+    if (r.revCagr != null && r.revCagr >= 0.15) a.push(`고성장 · 매출CAGR +${Math.round(r.revCagr * 100)}%`);
     const tl = TYPE_KO[r.type];
     if (r.need != null && r.need >= 40 && tl) a.push(`${tl}형 조달니즈 ${r.need}`);
     if (r.bizFit) a.push('테제 적합');
@@ -123,7 +123,7 @@
   function candBlock(id) {
     const c = CAND[id];
     if (!c || !c.rows || !c.rows.length) return `<div class="th-sec-label">타깃·리드 풀</div><div class="th-cand-empty">배선 데이터 없음.</div>`;
-    const leads = c.rows.map(r => {
+    const leads = c.rows.map((r) => {
       const off = r.curated && r.onThesis === false;
       const cat = off ? { k: '오프테제', c: 'off' } : catOf(r);
       const prod = r.curProduct || productOf(r.biz);
@@ -161,20 +161,20 @@
     const need = box.querySelector('[data-k="need"]').checked;
     const unl = box.querySelector('[data-k="unl"]').checked;
     const hideOff = box.querySelector('[data-k="off"]').checked;
-    pool.querySelectorAll('.th-lead').forEach(el => {
-      const ok = (!q || el.dataset.q === '1') && (!need || el.dataset.need === '1')
-        && (!unl || el.dataset.listed === '0') && (!hideOff || el.dataset.off === '0');
+    pool.querySelectorAll('.th-lead').forEach((el) => {
+      const ok = (!q || el.dataset.q === '1') && (!need || el.dataset.need === '1') && (
+      !unl || el.dataset.listed === '0') && (!hideOff || el.dataset.off === '0');
       el.style.display = ok ? '' : 'none';
     });
   }
-  document.addEventListener('change', e => {
-    const flt = e.target.closest('.th-flt'); if (!flt) return;
+  document.addEventListener('change', (e) => {
+    const flt = e.target.closest('.th-flt');if (!flt) return;
     applyFlt(flt.closest('.th-screen'));
   });
   // 카드 펼칠 때 기본 필터(오프테제 숨김) 적용
-  document.addEventListener('click', e => {
-    const top = e.target.closest('.th-card-top'); if (!top) return;
+  document.addEventListener('click', (e) => {
+    const top = e.target.closest('.th-card-top');if (!top) return;
     const card = top.closest('.th-card');
-    setTimeout(() => { const box = card.querySelector('.th-screen'); if (box) applyFlt(box); }, 0);
+    setTimeout(() => {const box = card.querySelector('.th-screen');if (box) applyFlt(box);}, 0);
   });
 })();
