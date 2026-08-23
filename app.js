@@ -236,9 +236,15 @@ function switchView(name) {
   document.getElementById('view-review').hidden = (name !== 'review');
   const foot = document.getElementById('footNote');
   if (foot) foot.textContent = VIEW_FOOT[name] || VIEW_FOOT.radar;
-  if (name === 'funding' && window.initFunding) window.initFunding();
-  if (name === 'thesis' && window.initThesis) window.initThesis();
-  if (name === 'narrative' && window.initNarrative) window.initNarrative();
+  // init 함수가 없으면 스크립트 캐시 불일치(구버전 JS + 신버전 HTML) — 무한 '로딩 중' 대신 안내 표시
+  const initOrWarn = (fn, rootId) => {
+    if (window[fn]) { window[fn](); return; }
+    const r = document.getElementById(rootId);
+    if (r) r.innerHTML = '<div class="empty"><div class="empty-ico">🔄</div><h3>스크립트 버전 불일치</h3><p>브라우저 캐시가 이전 버전을 물고 있습니다 — <b>Ctrl+Shift+R</b> (Mac: Cmd+Shift+R) 강력 새로고침 해주세요.</p></div>';
+  };
+  if (name === 'funding') initOrWarn('initFunding', 'fundingRoot');
+  if (name === 'thesis') initOrWarn('initThesis', 'thesisRoot');
+  if (name === 'narrative') initOrWarn('initNarrative', 'narrativeRoot');
   if (name === 'review') {                                    // iframe 은 첫 활성화 때만 로드
     const f = document.getElementById('reviewFrame');
     if (f && f.src.indexOf('about:blank') === 0) f.src = './review/index.html?embed=1';
