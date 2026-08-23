@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal Angle Radar — 진단</title>
+<style>
+  body { font-family: -apple-system, "Malgun Gothic", sans-serif; margin: 16px; background: #f5f6f8; color: #1a1f2c; }
+  h1 { font-size: 18px; }
+  .row { background: #fff; border: 1px solid #e2e6eb; border-radius: 8px; padding: 10px 12px; margin: 8px 0; font-size: 13px; word-break: break-all; }
+  .ok { border-left: 4px solid #2e7d32; }
+  .bad { border-left: 4px solid #c62828; }
+  .run { border-left: 4px solid #b89968; }
+  code { background: #eef1f5; padding: 1px 4px; border-radius: 4px; font-size: 12px; }
+  #ua { color: #6b7280; font-size: 11.5px; margin-top: 14px; }
+</style>
+</head>
+<body>
+<h1>📡 데이터 로딩 진단</h1>
+<p style="font-size:13px">각 데이터 파일을 순서대로 내려받아 상태·소요시간·크기를 표시합니다. 전부 끝나면 이 화면을 캡처해서 보내주세요.</p>
+<div id="out"></div>
+<div id="ua"></div>
+<script>
+(function () {
+  var FILES = [
+    'data/index.json',
+    'data/theses.json',
+    'data/thesis-candidates.json',
+    'data/narrative-pool.json',
+    'data/funding-pool.json'
+  ];
+  var out = document.getElementById('out');
+  document.getElementById('ua').textContent = 'UA: ' + navigator.userAgent + ' · ' + new Date().toISOString();
+
+  function row(cls, html) {
+    var d = document.createElement('div');
+    d.className = 'row ' + cls;
+    d.innerHTML = html;
+    out.appendChild(d);
+    return d;
+  }
+
+  if (!window.fetch) { row('bad', 'fetch 미지원 브라우저 (매우 구형) — 이게 원인입니다.'); return; }
+
+  function testOne(i) {
+    if (i >= FILES.length) { row('ok', '<b>진단 끝</b> — 이 화면을 캡처해 주세요.'); return; }
+    var f = FILES[i];
+    var t0 = Date.now();
+    var d = row('run', '<b>' + f + '</b> — 요청 중…');
+    var timer = setTimeout(function () {
+      d.innerHTML = '<b>' + f + '</b> — ⏳ 30초 경과에도 응답 없음 (여기서 멈춤 = 네트워크/차단 문제)';
+      d.className = 'row bad';
+    }, 30000);
+    fetch(f + '?_=' + Date.now(), { cache: 'no-store' })
+      .then(function (res) {
+        var ms = Date.now() - t0;
+        if (!res.ok) {
+          clearTimeout(timer);
+          d.innerHTML = '<b>' + f + '</b> — ❌ HTTP ' + res.status + ' (' + ms + 'ms)';
+          d.className = 'row bad';
+          testOne(i + 1);
+          return;
+        }
+        return res.text().then(function (txt) {
+          clearTimeout(timer);
+          var ms2 = Date.now() - t0;
+          var parsed = 'JSON 파싱 실패!';
+          try { JSON.parse(txt); parsed = 'JSON OK'; } catch (e) { }
+          d.innerHTML = '<b>' + f + '</b> — ✅ HTTP ' + res.status + ' · ' + ms2 + 'ms · ' +
+            Math.round(txt.length / 1024) + 'KB · ' + parsed +
+            ' · 시작: <code>' + txt.slice(0, 40).replace(/</g, '&lt;') + '</code>';
+          d.className = 'row ' + (parsed === 'JSON OK' ? 'ok' : 'bad');
+          testOne(i + 1);
+        });
+      })
+      .catch(function (e) {
+        clearTimeout(timer);
+        d.innerHTML = '<b>' + f + '</b> — ❌ 네트워크 오류: ' + String(e && e.message || e) + ' (' + (Date.now() - t0) + 'ms)';
+        d.className = 'row bad';
+        testOne(i + 1);
+      });
+  }
+  testOne(0);
+})();
+</script>
+</body>
+</html>
