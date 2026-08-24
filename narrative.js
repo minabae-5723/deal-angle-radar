@@ -5,6 +5,28 @@
   let inited = false,data = null,curTheme = null;
   let nodeFilter = null,tierFilter = null,angleFilter = null; // 롱리스트 필터 상태 (테마 전환 시 리셋)
 
+  // ── Work·Hold·Drop 칸반 보드 상태 ─────────────────────────────────────────
+  //   공유 기준값: data/board-state.json (repo 커밋 — 전원에게 보임)
+  //   로컬 오버레이: localStorage dar_board_overrides (커밋 전 이 브라우저만)
+  //   GitHub 토큰(dar_gh_token, contents write)이 있으면 이동 즉시 gh-pages 에 커밋 → 전원 공유
+  const STAGES = [
+    { key: "work", label: "Work", ko: "진행", ico: "🔨" },
+    { key: "hold", label: "Hold", ko: "보류", ico: "⏸️" },
+    { key: "drop", label: "Drop", ko: "중단", ico: "🗑️" }
+  ];
+  let boardBase = { stages: {} };     // 커밋된 기준값
+  let boardSha = null;                // contents API 커밋용 sha
+  let boardOverrides = {};            // 로컬 미커밋 변경
+  let boardMsg = "";                  // 저장 상태 표시줄
+  try { boardOverrides = JSON.parse(localStorage.getItem("dar_board_overrides") || "{}"); } catch (e) { boardOverrides = {}; }
+
+  function stageOf(id) {
+    if (boardOverrides[id]) return boardOverrides[id];
+    if (boardBase.stages && boardBase.stages[id]) return boardBase.stages[id];
+    return "work"; // 기본: 진행
+  }
+  function ghToken() { return (localStorage.getItem("dar_gh_token") || "").trim(); }
+
   const ELAS = {
     very_low: { label: "매우 낮음 ★", cls: "el-vlow" },
     low: { label: "낮음", cls: "el-low" },
@@ -96,14 +118,42 @@
     if (inited) return;
     inited = true;
     const root = document.getElementById("narrativeRoot");
+    // 다운로드 진행률 표시 — '무한 로딩중' 대신 어디서 멈추는지 보이게 (수신 KB 실시간 + 45초 타임아웃 + 재시도)
+    const prog = (msg) => { root.innerHTML = `<div class="empty"><div class="empty-ico">📐</div><h3>데이터 로딩</h3><p>${msg}</p></div>`; };
+    const fail = (msg) => { root.innerHTML = `<div class="empty"><div class="empty-ico">📐</div><h3>로딩 실패</h3><p>${esc(msg)}</p><p><button class="nv-retry" onclick="(function(){window.initNarrative.__retry()})()">다시 시도</button></p><p class="nv-dim">반복되면 네트워크(공유기·보안SW·회선)가 대용량 응답을 끊는 것 — <a href="./diag.html">진단 페이지</a>로 확인.</p></div>`; };
+    window.initNarrative.__retry = () => { inited = false; window.initNarrative(); };
     try {
-      const res = await fetch(`./data/narrative-pool.json?_=${Date.now()}`, { cache: "no-store" });
+      prog("narrative-pool.json 요청 중…");
+      const ctrl = ("AbortController" in window) ? new AbortController() : null;
+      const killer = ctrl ? setTimeout(() => ctrl.abort(), 45000) : null;
+      const res = await fetch("./data/narrative-pool.json", { cache: "default", signal: ctrl ? ctrl.signal : undefined });
       if (!res.ok) throw new Error("HTTP " + res.status);
-      data = await res.json();
+      if (res.body && res.body.getReader) {
+        const reader = res.body.getReader();
+        const chunks = []; let got = 0;
+        for (;;) {
+          const r = await reader.read();
+          if (r.done) break;
+          chunks.push(r.value); got += r.value.length;
+          prog("수신 중… " + Math.round(got / 1024) + "KB");
+        }
+        if (killer) clearTimeout(killer);
+        const buf = new Uint8Array(got); let off = 0;
+        for (const c of chunks) { buf.set(c, off); off += c.length; }
+        data = JSON.parse(new TextDecoder("utf-8").decode(buf).replace(/^﻿/, ""));
+      } else {
+        data = await res.json();
+        if (killer) clearTimeout(killer);
+      }
     } catch (e) {
-      root.innerHTML = `<div class="empty"><div class="empty-ico">📐</div><h3>로딩 실패</h3><p>${esc(e.message)}</p><p>먼저 <code>node narrative/build-narrative.mjs</code> 실행 필요.</p></div>`;
+      fail(e && e.name === "AbortError" ? "45초 내 응답이 완료되지 않아 중단 (네트워크 구간 문제)" : (e && e.message || String(e)));
       return;
     }
+    // 보드 상태 (없으면 전부 work 기본 — 실패해도 뷰는 뜬다)
+    try {
+      const bres = await fetch(`./data/board-state.json?_=${Date.now()}`, { cache: "no-store" });
+      if (bres.ok) { boardBase = await bres.json(); if (!boardBase.stages) boardBase.stages = {}; }
+    } catch (e) { /* 기본값 유지 */ }
     curTheme = (data.themes.find((t) => t.status === "approved") || data.themes[0]).id;
     render();
   };
@@ -115,11 +165,129 @@
     root.innerHTML =
     intro() + (
     candidates.length ? candidateBox(candidates) : "") +
-    matrix(approved) +
-    themePills(approved) +
+    boardBox(approved) +
+    `<details class="nv-matrix-details"><summary>📊 상세 카탈로그 — 렌즈 비교 테이블 (공급탄력성·해자·딜윈도우·지불자)</summary>${matrix(approved)}</details>` +
     `<div id="themeSheet"></div>`;
-    root.querySelectorAll(".nv-pill").forEach((b) => b.addEventListener("click", () => {curTheme = b.dataset.id;nodeFilter = null;tierFilter = null;angleFilter = null;renderSheet();root.querySelectorAll(".nv-pill").forEach((x) => x.classList.toggle("active", x.dataset.id === curTheme));document.getElementById("themeSheet").scrollIntoView({ behavior: "smooth", block: "start" });}));
+    wireBoard(root, approved);
     renderSheet();
+  }
+
+  // ── Work·Hold·Drop 보드 렌더 ──────────────────────────────────────────────
+  function boardBox(themes) {
+    const token = ghToken();
+    const pending = Object.keys(boardOverrides).length;
+    const cardHTML = (t) => {
+      const e = ELAS[t.catalog && t.catalog.supply_elasticity] || {};
+      let a = 0; (t.longlist || []).forEach((r) => { if (tierOf(scoreRow(r, t.catalog && t.catalog.supply_elasticity, t.catalog && t.catalog.payer)) === "A") a++; });
+      const comm = t.community && t.community.count ? ` · 💬${t.community.count}` : "";
+      const st = stageOf(t.id);
+      const btns = STAGES.filter((s) => s.key !== st).map((s) =>
+        `<button class="nv-bmove" data-id="${t.id}" data-to="${s.key}" title="${s.label}(${s.ko})로 이동">${s.ico}</button>`).join("");
+      return `<div class="nv-bcard${t.id === curTheme ? " active" : ""}${boardOverrides[t.id] ? " nv-bdirty" : ""}" draggable="true" data-id="${t.id}">
+        <div class="nv-bcard-title">${esc(t.emoji)} ${esc(t.title)}</div>
+        <div class="nv-bcard-meta"><span class="nv-elas ${e.cls || ""}">${esc(e.label || "")}</span> A급 ${a} · 롱리스트 ${t.stats && t.stats.total || 0}${comm}</div>
+        <div class="nv-bcard-btns">${btns}</div>
+      </div>`;
+    };
+    const colHTML = (s) => {
+      const list = themes.filter((t) => stageOf(t.id) === s.key);
+      return `<div class="nv-bcol nv-bcol-${s.key}" data-stage="${s.key}">
+        <div class="nv-bcol-head">${s.ico} ${s.label} <span class="nv-dim">${s.ko}</span> <b>${list.length}</b></div>
+        ${list.map(cardHTML).join("") || `<div class="nv-bempty">비어 있음 — 카드를 끌어다 놓으세요</div>`}
+      </div>`;
+    };
+    return `<section class="card nv-board-card">
+      <h2 class="card-title">테마 보드 — Work · Hold · Drop
+        <span class="nv-board-tools">
+          ${pending ? `<span class="nv-bpend">미커밋 ${pending}건</span>` : ""}
+          <button id="nvBoardShare" title="이동 내역을 repo(data/board-state.json)에 커밋해 전원 공유">${token ? "🔗 공유 저장 ON" : "⚙ 공유 저장 설정"}</button>
+        </span></h2>
+      <p class="nv-dim">카드 = 테마. 드래그 또는 카드의 이동 버튼으로 분류 (진행 중 검토 → 보류 → 중단). 카드 클릭 = 아래에 테마 시트. ${token ? "이동은 자동으로 repo에 커밋되어 전원에게 공유됩니다." : "지금은 이 브라우저에만 저장 — <b>공유 저장 설정</b>에 GitHub 토큰을 넣으면 팀 전체 공유."} 신규 테제 후보는 위 🌱 하베스트 영역이 Ideation 역할.</p>
+      ${boardMsg ? `<div class="nv-bmsg">${esc(boardMsg)}</div>` : ""}
+      <div class="nv-board">${STAGES.map(colHTML).join("")}</div>
+    </section>`;
+  }
+
+  function wireBoard(root, themes) {
+    // 카드 클릭 → 테마 시트
+    root.querySelectorAll(".nv-bcard").forEach((c) => {
+      c.addEventListener("click", (ev) => {
+        if (ev.target.closest(".nv-bmove")) return;
+        curTheme = c.dataset.id; nodeFilter = null; tierFilter = null; angleFilter = null;
+        renderSheet();
+        root.querySelectorAll(".nv-bcard").forEach((x) => x.classList.toggle("active", x.dataset.id === curTheme));
+        document.getElementById("themeSheet").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      c.addEventListener("dragstart", (ev) => { ev.dataTransfer.setData("text/plain", c.dataset.id); ev.dataTransfer.effectAllowed = "move"; c.classList.add("dragging"); });
+      c.addEventListener("dragend", () => c.classList.remove("dragging"));
+    });
+    // 이동 버튼
+    root.querySelectorAll(".nv-bmove").forEach((b) => b.addEventListener("click", () => moveTheme(b.dataset.id, b.dataset.to)));
+    // 컬럼 드롭존
+    root.querySelectorAll(".nv-bcol").forEach((col) => {
+      col.addEventListener("dragover", (ev) => { ev.preventDefault(); ev.dataTransfer.dropEffect = "move"; col.classList.add("dragover"); });
+      col.addEventListener("dragleave", () => col.classList.remove("dragover"));
+      col.addEventListener("drop", (ev) => {
+        ev.preventDefault(); col.classList.remove("dragover");
+        const id = ev.dataTransfer.getData("text/plain");
+        if (id) moveTheme(id, col.dataset.stage);
+      });
+    });
+    // 공유 저장 설정/상태
+    const shareBtn = root.querySelector("#nvBoardShare");
+    if (shareBtn) shareBtn.addEventListener("click", () => {
+      const cur = ghToken();
+      const t = prompt("GitHub Personal Access Token (이 repo Contents: Read/Write 권한)\n입력하면 카드 이동이 data/board-state.json 커밋으로 전원에게 공유됩니다.\n이 브라우저(localStorage)에만 저장 — 비우고 확인하면 해제.", cur);
+      if (t === null) return;
+      localStorage.setItem("dar_gh_token", t.trim());
+      boardMsg = t.trim() ? "공유 저장 ON — 다음 이동부터 자동 커밋" : "공유 저장 해제 (이 브라우저에만 저장)";
+      render();
+      if (t.trim() && Object.keys(boardOverrides).length) commitBoardState();
+    });
+  }
+
+  function moveTheme(id, stage) {
+    if (stageOf(id) === stage) return;
+    if ((boardBase.stages[id] || "work") === stage) delete boardOverrides[id];
+    else boardOverrides[id] = stage;
+    try { localStorage.setItem("dar_board_overrides", JSON.stringify(boardOverrides)); } catch (e) { }
+    boardMsg = "";
+    render();
+    if (ghToken()) commitBoardState();
+  }
+
+  // 이동 내역을 gh-pages 의 data/board-state.json 에 커밋 (GitHub contents API)
+  //   주의: 코드 배포 전 gh-pages 를 pull 해 보드 커밋을 승계할 것.
+  let commitTimer = null;
+  function commitBoardState() {
+    if (commitTimer) clearTimeout(commitTimer);
+    commitTimer = setTimeout(doCommit, 1200); // 연속 이동 디바운스
+  }
+  async function doCommit() {
+    const token = ghToken(); if (!token) return;
+    const API = "https://api.github.com/repos/minabae-5723/deal-angle-radar/contents/data/board-state.json";
+    const H = { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" };
+    try {
+      boardMsg = "커밋 중…"; render();
+      const cur = await fetch(API + "?ref=gh-pages", { headers: H });
+      if (cur.ok) { const j = await cur.json(); boardSha = j.sha; }
+      else if (cur.status !== 404) throw new Error("조회 HTTP " + cur.status);
+      const merged = {}; const bs = boardBase.stages || {};
+      Object.keys(bs).forEach((k) => { merged[k] = bs[k]; });
+      Object.keys(boardOverrides).forEach((k) => { merged[k] = boardOverrides[k]; });
+      const body = { message: "보드: 테마 스테이지 이동 (웹 UI)", branch: "gh-pages",
+        content: btoa(unescape(encodeURIComponent(JSON.stringify({ version: 1, updated: new Date().toISOString().slice(0, 10), stages: merged }, null, 2)))) };
+      if (boardSha) body.sha = boardSha;
+      const put = await fetch(API, { method: "PUT", headers: H, body: JSON.stringify(body) });
+      if (!put.ok) { const t = await put.text(); throw new Error("커밋 HTTP " + put.status + (put.status === 401 || put.status === 403 ? " — 토큰 권한(Contents write) 확인" : "") + " " + t.slice(0, 120)); }
+      const pj = await put.json(); boardSha = pj.content && pj.content.sha;
+      boardBase.stages = merged; boardOverrides = {};
+      try { localStorage.setItem("dar_board_overrides", "{}"); } catch (e) { }
+      boardMsg = "✅ 공유 저장됨 (" + new Date().toLocaleTimeString("ko-KR") + ") — 1~2분 후 전원에게 반영";
+    } catch (e) {
+      boardMsg = "❌ 공유 저장 실패: " + (e && e.message || e) + " — 변경은 이 브라우저에 보관됨";
+    }
+    render();
   }
 
   function intro() {

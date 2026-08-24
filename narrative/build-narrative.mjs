@@ -213,6 +213,7 @@ const out = {
     community_synced: community?.meta?.synced || null },
   themes: outThemes
 };
-fs.writeFileSync(path.join(DATA, "narrative-pool.json"), JSON.stringify(out, null, 2), "utf8");
+// 배포 전송량 절감을 위해 무들여쓰기(minified)로 기록 — 1MB급 파일이라 ~35% 절약
+fs.writeFileSync(path.join(DATA, "narrative-pool.json"), JSON.stringify(out), "utf8");
 console.log(`narrative-pool.json written — ${outThemes.length} themes${PATCH_MODE ? " [PATCH MODE: 외감 패널 없음 — 기존 빌드 보존 + 풀 증분. 전체 반영은 패널 보유 머신에서 재실행]" : ""}`);
 for (const t of outThemes) console.log(`  ${t.emoji} ${(t.title || "").padEnd(24)} longlist ${String(t.stats.total).padStart(3)} (pool ${t.stats.inPool}, 비상장 ${t.stats.unlisted}) [${t.status}]${t.community ? ` 💬${t.community.count}` : ""}`);

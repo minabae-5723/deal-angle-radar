@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "updated": "2026-08-24",
+  "_note": "테마 보드(Work·Hold·Drop) 공유 상태. 웹 UI에서 카드 이동 시 GitHub 토큰 보유자는 이 파일이 gh-pages 에 자동 커밋된다. 미기재 테마는 work 기본.",
+  "stages": {}
+}
