@@ -17,7 +17,8 @@ echo "작업 브랜치: $BRANCH"
 
 if [ "${1-}" != "" ]; then
   git add -A
-  git commit -m "$1"
+  # 이미 커밋된 상태에서 메시지를 넘겨도 배포가 중단되지 않게 (set -e 회피)
+  git diff --cached --quiet || git commit -m "$1"
 fi
 
 echo "gh-pages 최신 상태 확인…"
