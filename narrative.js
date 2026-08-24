@@ -111,7 +111,7 @@
     const fCatalyst = r.status ? (_CATALYST_SCORE$r$sta = CATALYST_SCORE[r.status]) !== null && _CATALYST_SCORE$r$sta !== void 0 ? _CATALYST_SCORE$r$sta : 0.35 : 0.35;
     let s = 100 * (SFIT_W.theme * fTheme + SFIT_W.angle * fAngle + SFIT_W.source * fSource +
     SFIT_W.ticket * fTicket + SFIT_W.quality * fQuality + SFIT_W.catalyst * fCatalyst + SFIT_W.payer * payerScore(themePayer));
-    if (isCashCow(r)) s = Math.min(100, s + 6); // 캐시카우/승계 앵글 가점
+    if (isCashCow(r)) s = Math.min(100, s + 6); // 캐시카우(질) 가점
     return Math.round(s);
   }
   // 5단계 — B밴드(52~67)를 60 기준으로 B(우선)·Bm(후보)로 분할
@@ -132,7 +132,8 @@
     if (/카브아웃|carve/i.test(note)) return "카브아웃";
     if (/공동투자|co-?invest|소수지분/i.test(note)) return "앵커 공동투자·소수지분";
     if (/워치|모니터링|발굴/.test(note) && r.rev == null) return "워치·발굴 리드";
-    if (isCashCow(r)) return "캐시카우 인수 (앵글A·승계)";
+    // 캐시카우(비상장·고마진·순현금)는 회사의 '질' 신호이지 딜 구조가 아니므로 앵글 라벨에서 제외 —
+    //   회사명 옆 💰 배지로 별도 표시. 딜 구조는 아래 자금니즈 type 으로만 판정.
     const L = r.listed;
     switch (r.type) {
       case "GROWTH":return L === false ? "성장자금 FI·신주 소수지분" : "3자배정 성장자금";
@@ -435,7 +436,7 @@
     const chip = (t) => `<span class="nv-tsum nv-sum${t}${tierFilter === t ? " on" : ""}" data-tier="${t}" title="${TIER_LABEL[t]} — 클릭하면 이 등급만 보기">${TIER_LABEL[t]} <b>${c[t]}</b></span>`;
     const cows = scored.filter((r) => r.cashcow).length;
     return `<div class="nv-tierbar">${TIER_ORDER.map(chip).join("")}` + (
-    cows ? `<span class="nv-tsum nv-sumcow${tierFilter === "COW" ? " on" : ""}" data-tier="COW" title="캐시카우/승계 — 클릭 필터">💰 캐시카우/승계 <b>${cows}</b></span>` : "") + `</div>`;
+    cows ? `<span class="nv-tsum nv-sumcow${tierFilter === "COW" ? " on" : ""}" data-tier="COW" title="비상장·고마진·순현금 우량 후보 — 클릭 필터">💰 캐시카우 <b>${cows}</b></span>` : "") + `</div>`;
   }
 
   // 전략 앵글 요약바 — 앵글 라벨별 개수, 클릭 = 해당 앵글만 필터 (토글)
@@ -467,9 +468,9 @@
       <tr><th>우선순위</th><th>회사</th><th>노드</th><th>전략 앵글</th><th>매출</th><th>OPM</th><th>3yCAGR</th><th>상장</th><th>거래 계기</th><th>note</th></tr>
       ${scored.slice(0, 40).map((r) => `<tr class="${r.pick ? "nv-pick" : ""}${r.cashcow ? " nv-cowrow" : ""}">
         <td>${pri(r)}${r.pick ? ' <span class="nv-star" title="pick">★</span>' : ""}</td>
-        <td><b>${esc(r.name)}</b></td>
+        <td><b>${esc(r.name)}</b>${r.cashcow ? ` <span class="nv-cowbadge" title="캐시카우: 비상장·고마진(OPM≥15%)·순현금 — 회사의 질 신호. 승계 여부는 지분구조 확인 필요">💰</span>` : ""}</td>
         <td class="nv-node nv-nodecell" data-node="${esc(r.node || "")}" title="이 노드만 보기">${esc(r.node || "")}</td>
-        <td class="nv-angle nv-anglecell" data-angle="${esc(r.angleLbl)}" title="이 앵글만 보기">${r.cashcow ? "💰 " : ""}${esc(r.angleLbl)}</td>
+        <td class="nv-angle nv-anglecell" data-angle="${esc(r.angleLbl)}" title="이 앵글만 보기">${esc(r.angleLbl)}</td>
         <td>${money(r.rev)}</td>
         <td>${pct(r.opm)}</td>
         <td>${pct(r.cagr3)}</td>
@@ -499,7 +500,7 @@
         <tr><td>비상장 잠복</td><td>비상장이라 아직 시장에 안 드러난 상태</td></tr>
         <tr><td>최근 투자유치</td><td>최근 자금을 받아 당장 니즈는 낮음</td></tr>
       </table>
-      <p class="nv-dim"><b>💰 캐시카우/승계</b> = 비상장·고마진·순현금 회사(오너 승계 딜 후보). <b>전략 앵글</b> = 어떤 딜 구조로 접근할지. 노드·앵글·등급 칩을 클릭하면 그 조건만 필터됩니다.</p>
+      <p class="nv-dim"><b>💰 캐시카우</b> = 비상장·고마진(OPM≥15%)·순현금 — <b>회사의 질</b> 신호(현금 잘 벌고 빚 없는 비상장사). 승계 딜인지는 주주구성·지분율을 따로 확인해야 압니다. <b>전략 앵글</b>은 이 질 신호와 별개로 '어떤 딜 구조로 접근할지'만 표시합니다. 노드·앵글·등급 칩을 클릭하면 그 조건만 필터됩니다.</p>
       </div></details>`;
   }
 
