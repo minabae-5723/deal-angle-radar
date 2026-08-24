@@ -486,13 +486,21 @@
     // 우선순위 = 등급 한국어 라벨만(점수 숨김). 색으로 등급 구분.
     const pri = (r) => `<span class="nv-tier nv-g${r.tier}" title="검토 우선순위">${TIER_LABEL[r.tier]}</span>`;
     const st = (r) => r.status ? `<span class="nv-st">${esc(statusKo(r.status))}</span>` : "";
+    const KIND = {
+      "상장벤치마크": { cls: "k-bench", t: "밸류 기준·협력사 역추적 출발점 (직접 매수 대상 아님)" },
+      "비상장타겟": { cls: "k-target", t: "직접 소싱 대상" },
+      "검증필요": { cls: "k-verify", t: "접촉 전 재무·지분 DART 확인 필요" },
+      "PE보유": { cls: "k-pe", t: "PE 보유 — 선례·경쟁 신호" },
+      "발굴리드": { cls: "k-lead", t: "회사가 아니라 소싱 지시서" }
+    };
+    const kindBadge = (r) => r.kind && KIND[r.kind] ? ` <span class="nv-kind ${KIND[r.kind].cls}" title="${KIND[r.kind].t}">${r.kind}</span>` : "";
     const debt = (r) => r.debt_ratio == null ? "–" : (r.debt_ratio * 100).toFixed(0) + "%";
     const nde = (r) => r.nd_ebitda == null ? "–" : (r.nd_ebitda < 0 ? "순현금" : r.nd_ebitda.toFixed(1) + "x");
     return `<div class="table-wrap"><table class="nv-ll">
       <tr><th>우선순위</th><th>회사</th><th>노드</th><th>전략 앵글</th><th>매출</th><th>OPM</th><th>3yCAGR</th><th>부채비율</th><th>ND/EBITDA</th><th>상장</th><th>거래 계기</th><th>note</th></tr>
       ${scored.slice(0, 40).map((r) => `<tr class="${r.pick ? "nv-pick" : ""}${r.cashcow ? " nv-cowrow" : ""}">
         <td>${pri(r)}${r.pick ? ' <span class="nv-star" title="pick">★</span>' : ""}</td>
-        <td><b>${esc(r.name)}</b>${r.cashcow ? ` <span class="nv-cowbadge" title="캐시카우: 비상장·고마진(OPM≥15%)·순현금 — 회사의 질 신호. 승계 여부는 지분구조 확인 필요">💰</span>` : ""}${r.rev == null ? ` <span class="nv-leadtag" title="재무 미매칭 — 소싱 지시서/발굴 대상 (풀 빌드 시 재무 채워짐)">발굴</span>` : ""}</td>
+        <td><b>${esc(r.name)}</b>${kindBadge(r)}${r.cashcow ? ` <span class="nv-cowbadge" title="캐시카우: 비상장·고마진(OPM≥15%)·순현금 — 회사의 질 신호. 승계 여부는 지분구조 확인 필요">💰</span>` : ""}${r.rev == null && !r.kind ? ` <span class="nv-leadtag" title="재무 미매칭 — 소싱 지시서/발굴 대상 (풀 빌드 시 재무 채워짐)">발굴</span>` : ""}</td>
         <td class="nv-node nv-nodecell" data-node="${esc(r.node || "")}" title="이 노드만 보기">${esc(r.node || "")}</td>
         <td class="nv-angle nv-anglecell" data-angle="${esc(r.angleLbl)}" title="이 앵글만 보기">${esc(r.angleLbl)}</td>
         <td class="nv-rev" title="${r.year ? r.year + "년 재무 기준" : "직전 패널(2024) 기준"}">${money(r.rev)}${r.year ? `<sup class="nv-yr">'${String(r.year).slice(2)}</sup>` : ""}</td>
@@ -609,6 +617,7 @@
       ${kpiGrid(t)}
       ${t.supply_verdict ? `<div class="nv-verdict"><b>공급탄력성 판정</b> — ${esc(t.supply_verdict)}</div>` : ""}
       ${screenList(t)}
+      ${t.reverse_trace && t.reverse_trace.length ? `<div class="nv-rtrace"><b>🔎 벤치마크 역추적 — 유력 후보 발굴 경로</b><ol>${t.reverse_trace.map((s) => `<li>${esc(s)}</li>`).join("")}</ol><span class="nv-dim">상장 벤치마크(직접 매수 대상 아님)에서 출발해 비상장 2·3차 벤더를 특정하는 소싱 절차. 결과는 롱리스트에 '비상장타겟/검증필요'로 편입.</span></div>` : ""}
       ${nodeChips}
       <h3 class="h3">롱리스트 <span class="nv-dim">(우선순위순 · ★=주목 기업)</span></h3>
       ${scored.length && !scored.some((r) => r.rev != null) ? `<div class="nv-leadnote">🔎 이 테제는 아직 <b>재무 매칭된 기업이 없습니다</b> — 항목은 소싱 지시서/발굴 리드입니다. 관련 상장·우량사는 우리 4만개 외감 유니버스엔 있으나, 배포본이 '자금니즈 풀'로 한정돼 재무가 안 붙은 상태(로컬 풀 빌드 시 채워짐).</div>` : ""}

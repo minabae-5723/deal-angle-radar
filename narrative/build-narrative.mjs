@@ -143,6 +143,9 @@ function buildFull(t) {
     else seen.set(c.corp_code, enrich(c, "pick", true, p.note));
   }
   for (const r of seen.values()) overlayPoolFinancials(r);
+  // pick 의 구분(kind: 상장벤치마크/비상장타겟/검증필요/PE보유/발굴리드)을 롱리스트 행에 부착
+  { const pk = new Map((t.picks || []).map(p => [norm(p.name), p.kind]).filter(x => x[1]));
+    for (const r of seen.values()) { const k = pk.get(norm((r.name || "").replace(" (패널밖)", ""))); if (k) r.kind = k; } }
   const longlist = [...seen.values()].sort((a, b) =>
     (b.pick - a.pick) || ((b.need ?? -1) - (a.need ?? -1)) || ((b.rev || 0) - (a.rev || 0)));
   const nodeCounts = (t.nodes || []).map(n => ({ node: n.node, n: matchNode(n).length }));
@@ -183,6 +186,9 @@ function buildPatch(t) {
     }
   }
   for (const r of seen.values()) overlayPoolFinancials(r);
+  // pick 의 구분(kind: 상장벤치마크/비상장타겟/검증필요/PE보유/발굴리드)을 롱리스트 행에 부착
+  { const pk = new Map((t.picks || []).map(p => [norm(p.name), p.kind]).filter(x => x[1]));
+    for (const r of seen.values()) { const k = pk.get(norm((r.name || "").replace(" (패널밖)", ""))); if (k) r.kind = k; } }
   const longlist = [...seen.values()].sort((a, b) =>
     (b.pick - a.pick) || ((b.need ?? -1) - (a.need ?? -1)) || ((b.rev || 0) - (a.rev || 0)));
   // nodeCounts: 이전 빌드 값 유지 + 신규 노드는 풀 매칭 수로 대체
