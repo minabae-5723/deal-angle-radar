@@ -446,12 +446,18 @@
   }
 
   // 롱리스트에 SFIT·티어·앵글을 부착하고 우선순위로 정렬 (pick 은 상단 고정)
+  // 구분(kind) 우선순위 — 직접 소싱 대상(비상장·상장타겟)이 최상단, 밸류 기준용 상장벤치마크는 그 아래,
+  // 소싱 지시서(발굴리드)는 실명 아래. kind 없는 정량 매칭 행은 후순위지만 목록에서 빼지 않는다.
+  const KIND_RANK = { "비상장타겟": 6, "상장타겟": 6, "검증필요": 5, "PE보유": 4, "상장벤치마크": 3, "발굴리드": 2 };
+  const kindRank = (r) => KIND_RANK[r.kind] || (r.pick ? 2 : 0);
+
   function scoreLonglist(ll, themeElas, themePayer) {
     const scored = (ll || []).map((r) => {
       const sfit = scoreRow(r, themeElas, themePayer);
       return { ...r, sfit, tier: tierOf(sfit), angleLbl: angleLabel(r), cashcow: isCashCow(r) };
     });
-    scored.sort((a, b) => b.pick - a.pick || b.sfit - a.sfit || (b.rev || 0) - (a.rev || 0));
+    // 정렬 우선순위: 벤치마크 역추적으로 특정된 소싱 대상 → 그 다음 정량 매칭 잔여(제외 아님, 후순위).
+    scored.sort((a, b) => kindRank(b) - kindRank(a) || b.sfit - a.sfit || (b.rev || 0) - (a.rev || 0));
     return scored;
   }
 
@@ -497,7 +503,8 @@
     const st = (r) => r.status ? `<span class="nv-st">${esc(statusKo(r.status))}</span>` : "";
     const KIND = {
       "상장벤치마크": { cls: "k-bench", t: "밸류 기준·협력사 역추적 출발점 (직접 매수 대상 아님)" },
-      "비상장타겟": { cls: "k-target", t: "직접 소싱 대상" },
+      "비상장타겟": { cls: "k-target", t: "직접 소싱 대상 (비상장)" },
+      "상장타겟": { cls: "k-ltarget", t: "직접 검토 대상이지만 상장 — 공개매수·블록·구주 경로" },
       "검증필요": { cls: "k-verify", t: "접촉 전 재무·지분 DART 확인 필요" },
       "PE보유": { cls: "k-pe", t: "PE 보유 — 선례·경쟁 신호" },
       "발굴리드": { cls: "k-lead", t: "회사가 아니라 소싱 지시서" }
@@ -520,7 +527,7 @@
         <td>${r.listed === true ? "상장" : r.listed === false ? "비상장" : "–"}</td>
         <td>${st(r)}</td>
         <td class="nv-note">${esc(r.note || "")}</td></tr>`).join("")}
-    </table></div>${scored.length > 40 ? `<p class="nv-dim">…상위 40개 표시 (전체 ${scored.length}) · 우선순위순 정렬</p>` : ""}`;
+    </table></div>${scored.length > 40 ? `<p class="nv-dim">…상위 40개 표시 (전체 ${scored.length}) · 구분(소싱 대상 우선) → 우선순위순 정렬</p>` : ""}`;
   }
 
   // 전략 앵글 설명 (접이식) — 각 앵글 라벨이 어떤 딜 구조인지 한 줄. 사용자가 보고 추가/조정 결정.

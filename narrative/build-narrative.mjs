@@ -32,6 +32,16 @@ const lastRev = r => { if (!r) return null; for (let i = r.length - 1; i >= 0; i
 const lastVal = a => { if (!a) return null; for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
 const cagr = r => { const v = (r || []).filter(x => x != null && x > 0); if (v.length < 3) return null; return Math.pow(v[v.length - 1] / v[0], 1 / (v.length - 1)) - 1; };
 const norm = s => (s || "").replace(/\(주\)|주식회사|㈜|\s/g, "");
+// 약칭·영문 표기 별칭 — DART 등록명과 통용명이 다른 경우만 최소한으로 둔다.
+const PICK_ALIAS = {
+  "SNT다이내믹스": "에스엔티다이내믹스", "SNT모티브": "에스엔티모티브",
+  "KGETS": "케이지이티에스", "ISC": "아이에스씨", "KCTC": "케이씨티씨",
+  "HPSP": "에이치피에스피", "LSK글로벌PS": "엘에스케이글로벌파마서비스",
+};
+// pick 매칭은 '정확 일치'만 허용한다. 부분 문자열 매칭은 케이프→케이프라이드,
+// 미소→미소찬 처럼 엉뚱한 회사에 실명 note 를 붙여 롱리스트를 오염시킨다. (2026-08-24)
+const pickKeys = (q) => { const n = norm(q); const a = PICK_ALIAS[n] || PICK_ALIAS[q]; return a ? [n, norm(a)] : [n]; };
+const sameCo = (name, q) => { const n = norm(name); return pickKeys(q).some(k => n === k); };
 
 // ── 풀 모드 (외감 패널) ──────────────────────────────────────────────────────
 const panel = panelFile ? panelFile.rows : [];
@@ -65,7 +75,7 @@ function matchNode(node) {
 }
 
 function resolvePick(q) {
-  const cand = panel.filter(c => c.name && norm(c.name).includes(norm(q)));
+  const cand = panel.filter(c => c.name && sameCo(c.name, q));
   cand.sort((a, b) => (lastRev(b.rev) || 0) - (lastRev(a.rev) || 0));
   return cand[0] || null;
 }
@@ -116,14 +126,19 @@ function matchNodePool(node) {
 }
 
 function resolvePickPatch(q, prevRows) {
-  const nq = norm(q);
-  const fromPrev = (prevRows || []).find(r => r.name && norm(r.name).includes(nq));
+  const fromPrev = (prevRows || []).find(r => r.name && sameCo(r.name.replace(" (패널밖)", ""), q));
   if (fromPrev) return { kind: "prev", row: fromPrev };
-  const cand = pool.filter(p => p.name && norm(p.name).includes(nq));
+  const cand = pool.filter(p => p.name && sameCo(p.name, q));
   cand.sort((a, b) => (b.rev || 0) - (a.rev || 0));
   if (cand[0]) return { kind: "pool", row: cand[0] };
   return null;
 }
+
+// 우선순위 랭크 — 벤치마크 역추적으로 특정된 소싱 대상이 상단, 정량 매칭 잔여는 후순위(제외하지 않음).
+// 비상장타겟(직접 소싱) > 검증필요(재무·지분 확인) > PE보유(선례·경쟁) > 상장벤치마크(밸류 기준, 직접 매수 아님)
+// > 발굴리드(작업 지시서) > 노드 키워드·업종 매칭만 걸린 잔여 행.
+const KIND_RANK = { "비상장타겟": 5, "상장타겟": 5, "검증필요": 4, "PE보유": 3, "상장벤치마크": 2, "발굴리드": 1 };
+const rank = (r) => KIND_RANK[r.kind] || (r.pick ? 1 : 0);
 
 // ── 테마 빌드 ────────────────────────────────────────────────────────────────
 function buildFull(t) {
@@ -145,9 +160,13 @@ function buildFull(t) {
   for (const r of seen.values()) overlayPoolFinancials(r);
   // pick 의 구분(kind: 상장벤치마크/비상장타겟/검증필요/PE보유/발굴리드)을 롱리스트 행에 부착
   { const pk = new Map((t.picks || []).map(p => [norm(p.name), p.kind]).filter(x => x[1]));
-    for (const r of seen.values()) { const k = pk.get(norm((r.name || "").replace(" (패널밖)", ""))); if (k) r.kind = k; } }
+    for (const r of seen.values()) {
+      const k = pk.get(norm((r.name || "").replace(" (패널밖)", ""))); if (k) r.kind = k;
+      // 직접 소싱 대상인데 상장이 확인되면 '상장타겟'으로 자동 교정 — 접근 경로가 다르다(공개매수·블록·구주).
+      if (r.kind === "비상장타겟" && r.listed === true) r.kind = "상장타겟";
+    } }
   const longlist = [...seen.values()].sort((a, b) =>
-    (b.pick - a.pick) || ((b.need ?? -1) - (a.need ?? -1)) || ((b.rev || 0) - (a.rev || 0)));
+    (rank(b) - rank(a)) || ((b.need ?? -1) - (a.need ?? -1)) || ((b.rev || 0) - (a.rev || 0)));
   const nodeCounts = (t.nodes || []).map(n => ({ node: n.node, n: matchNode(n).length }));
   return { longlist, nodeCounts };
 }
@@ -160,7 +179,8 @@ function buildPatch(t) {
     // 레지스트리에서 삭제·개명된 노드의 행은 승계하지 않음 (노드 정리가 곧 롱리스트 정리)
     if (r.node && r.node !== "pick" && !curNodes.has(r.node)) continue;
     const key = r.corp || "MISS:" + r.name;
-    seen.set(key, { ...r });
+    // pick·note·kind 는 매 빌드마다 레지스트리에서 다시 붙인다(과거 오탐 잔류 방지).
+    seen.set(key, { ...r, pick: false, note: null, kind: undefined });
   }
   const pickNames = new Set((t.picks || []).map(p => norm(p.name)));
   // 신규 노드·키워드의 풀 매칭만 증분 (외감 전체는 패널 머신에서)
@@ -188,9 +208,13 @@ function buildPatch(t) {
   for (const r of seen.values()) overlayPoolFinancials(r);
   // pick 의 구분(kind: 상장벤치마크/비상장타겟/검증필요/PE보유/발굴리드)을 롱리스트 행에 부착
   { const pk = new Map((t.picks || []).map(p => [norm(p.name), p.kind]).filter(x => x[1]));
-    for (const r of seen.values()) { const k = pk.get(norm((r.name || "").replace(" (패널밖)", ""))); if (k) r.kind = k; } }
+    for (const r of seen.values()) {
+      const k = pk.get(norm((r.name || "").replace(" (패널밖)", ""))); if (k) r.kind = k;
+      // 직접 소싱 대상인데 상장이 확인되면 '상장타겟'으로 자동 교정 — 접근 경로가 다르다(공개매수·블록·구주).
+      if (r.kind === "비상장타겟" && r.listed === true) r.kind = "상장타겟";
+    } }
   const longlist = [...seen.values()].sort((a, b) =>
-    (b.pick - a.pick) || ((b.need ?? -1) - (a.need ?? -1)) || ((b.rev || 0) - (a.rev || 0)));
+    (rank(b) - rank(a)) || ((b.need ?? -1) - (a.need ?? -1)) || ((b.rev || 0) - (a.rev || 0)));
   // nodeCounts: 이전 빌드 값 유지 + 신규 노드는 풀 매칭 수로 대체
   const prevCounts = new Map((prev?.nodeCounts || []).map(n => [n.node, n.n]));
   const nodeCounts = (t.nodes || []).map(n => ({ node: n.node, n: prevCounts.get(n.node) ?? matchNodePool(n).length }));
