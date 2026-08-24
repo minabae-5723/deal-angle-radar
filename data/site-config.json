@@ -6,8 +6,14 @@
     "categoryId": "",
     "_setup": "categoryId 가 비어 있으면 페이지에 셋업 가이드가 표시됨. ① GitHub repo Settings → Features → Discussions 활성화 ② https://github.com/apps/giscus 앱을 이 repo에 설치 ③ Discussions 에 'Deal Angle' 카테고리(Announcements 타입 권장 — 스레드 생성은 giscus만) 생성 ④ https://giscus.app 에서 repo 입력 → category 선택 → data-category-id 값을 여기 categoryId 에 붙여넣고 커밋"
   },
+  "supabase": {
+    "url": "",
+    "anonKey": "",
+    "_setup": "테마 보드 실시간 공유 store. url·anonKey 가 채워지면 카드 이동이 전원에게 실시간 공유됨(개인 토큰 불필요). 셋업: ① supabase.com 무료 가입 → New project ② SQL Editor 에서 아래 SQL 실행 ③ Project Settings → Data API 에서 Project URL 을 url 에, anon/public 키를 anonKey 에 붙여넣고 커밋. anon 키는 브라우저 공개용(원래 클라이언트에 두는 키)이라 안전하며, 쓰기 권한은 RLS 정책으로 통제됨.",
+    "_sql": "create table if not exists board_state (theme_id text primary key, stage text not null, updated_at timestamptz default now()); alter table board_state enable row level security; create policy \"anon read\" on board_state for select to anon using (true); create policy \"anon insert\" on board_state for insert to anon with check (true); create policy \"anon update\" on board_state for update to anon using (true) with check (true);"
+  },
   "chat": {
     "defaultModel": "claude-opus-5",
-    "models": ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5"]
+    "models": ["claude-opus-5", "claude-opus-4-8", "claude-opus-4-7", "claude-sonnet-5", "claude-haiku-4-5"]
   }
 }

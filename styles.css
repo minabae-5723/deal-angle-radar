@@ -843,3 +843,4 @@ table.nv-mtab td:first-child { font-weight: 700; color: var(--navy-light); white
 /* 챗 설정 — effort 등 라벨 */
 .dc-lbl { display: block; font-size: 11px; color: var(--text-muted); margin-top: 9px; }
 .dc-setup select { width: 100%; padding: 7px 9px; margin-top: 3px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 12.3px; }
+.nv-bshare-on { font-size: 11.5px; color: #1f7a4d; background: #eaf6ef; border: 1px solid #b7e0c6; border-radius: 8px; padding: 4px 10px; }

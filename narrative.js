@@ -14,21 +14,43 @@
     { key: "hold", label: "Hold", ko: "보류", ico: "⏸️" },
     { key: "drop", label: "Drop", ko: "중단", ico: "🗑️" }
   ];
-  let boardBase = { stages: {} };     // 커밋된 기준값
-  let boardSha = null;                // contents API 커밋용 sha
-  let boardOverrides = {};            // 로컬 미커밋 변경
+  let boardBase = { stages: {} };     // 공유 기준값 (Supabase 또는 board-state.json)
+  let boardSha = null;                // (GitHub 폴백) contents API 커밋용 sha
+  let boardOverrides = {};            // 로컬 미확정 변경 (낙관적 업데이트)
   let boardMsg = "";                  // 저장 상태 표시줄
-  try { boardOverrides = JSON.parse(localStorage.getItem("dar_board_overrides") || "{}"); } catch (e) { boardOverrides = {}; }
+  let boardThemes = [];               // 폴링 재렌더용 approved 목록 참조
+  let sb = null;                      // Supabase 설정 {url, anonKey} — 있으면 공유 store
+  let dragging = false, pollTimer = null;
+  // localStorage 는 브라우저 정책(사이트 데이터 차단)에서 접근 자체가 예외를 던질 수 있음 — 항상 가드
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+  try { boardOverrides = JSON.parse(lsGet("dar_board_overrides") || "{}") || {}; } catch (e) { boardOverrides = {}; }
 
   function stageOf(id) {
     if (boardOverrides[id]) return boardOverrides[id];
     if (boardBase.stages && boardBase.stages[id]) return boardBase.stages[id];
     return "work"; // 기본: 진행
   }
-  // localStorage 는 브라우저 정책(사이트 데이터 차단)에서 접근 자체가 예외를 던질 수 있음 — 항상 가드
-  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
   function ghToken() { return (lsGet("dar_gh_token") || "").trim(); }
+
+  // ── Supabase 공유 store (권장 경로) — anon 키로 브라우저에서 직접 read/write ──
+  function sbHeaders() { return { apikey: sb.anonKey, Authorization: "Bearer " + sb.anonKey, "Content-Type": "application/json" }; }
+  async function sbLoad() {
+    const r = await fetch(sb.url + "/rest/v1/board_state?select=theme_id,stage", { headers: sbHeaders(), cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const rows = await r.json();
+    const stages = {};
+    rows.forEach((x) => { if (x.theme_id && x.stage) stages[x.theme_id] = x.stage; });
+    boardBase.stages = stages;
+  }
+  async function sbUpsert(id, stage) {
+    const r = await fetch(sb.url + "/rest/v1/board_state?on_conflict=theme_id", {
+      method: "POST",
+      headers: Object.assign(sbHeaders(), { Prefer: "resolution=merge-duplicates,return=minimal" }),
+      body: JSON.stringify([{ theme_id: id, stage: stage, updated_at: new Date().toISOString() }])
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+  }
 
   const ELAS = {
     very_low: { label: "매우 낮음 ★", cls: "el-vlow" },
@@ -152,18 +174,45 @@
       fail(e && e.name === "AbortError" ? "45초 내 응답이 완료되지 않아 중단 (네트워크 구간 문제)" : (e && e.message || String(e)));
       return;
     }
-    // 보드 상태 (없으면 전부 work 기본 — 실패해도 뷰는 뜬다)
+    // 보드 상태 — Supabase(공유 store) 우선, 없으면 board-state.json (전부 work 기본). 실패해도 뷰는 뜬다.
     try {
       const bres = await fetch(`./data/board-state.json?_=${Date.now()}`, { cache: "no-store" });
-      if (bres.ok) { boardBase = await bres.json(); if (!boardBase.stages) boardBase.stages = {}; }
+      if (bres.ok) { const bj = await bres.json(); boardBase = bj; if (!boardBase.stages) boardBase.stages = {}; }
     } catch (e) { /* 기본값 유지 */ }
+    try {
+      const cres = await fetch(`./data/site-config.json?_=${Date.now()}`, { cache: "no-store" });
+      if (cres.ok) { const cj = await cres.json(); if (cj.supabase && cj.supabase.url && cj.supabase.anonKey) sb = cj.supabase; }
+    } catch (e) { /* site-config 없음 — 파일/토큰 폴백 */ }
+    if (sb) { try { await sbLoad(); } catch (e) { boardMsg = "Supabase 조회 실패: " + (e.message || e) + " — 파일 기준값 사용"; } }
     curTheme = (data.themes.find((t) => t.status === "approved") || data.themes[0]).id;
     render();
+    // Supabase 모드: 보드가 보일 때만 주기적으로 공유 상태를 당겨와 보드 카드만 갱신 (near-realtime)
+    if (sb && !pollTimer) {
+      pollTimer = setInterval(async () => {
+        const view = document.getElementById("view-narrative");
+        if (!view || view.hidden || dragging) return;
+        const before = JSON.stringify(boardBase.stages);
+        try { await sbLoad(); } catch (e) { return; }
+        if (JSON.stringify(boardBase.stages) !== before) refreshBoard();
+      }, 12000);
+    }
   };
+
+  // 보드 카드 영역만 다시 그림 (테마 시트·giscus 는 건드리지 않음 — 폴링 갱신용)
+  function refreshBoard() {
+    const root = document.getElementById("narrativeRoot");
+    const card = root && root.querySelector(".nv-board-card");
+    if (!card) return;
+    const tmp = document.createElement("div");
+    tmp.innerHTML = boardBox(boardThemes);
+    const fresh = tmp.firstElementChild;
+    if (fresh) { card.replaceWith(fresh); wireBoard(root, boardThemes); }
+  }
 
   function render() {
     const root = document.getElementById("narrativeRoot");
     const approved = data.themes.filter((t) => t.status === "approved");
+    boardThemes = approved;
     const candidates = data.themes.filter((t) => t.status === "candidate");
     root.innerHTML =
     intro() + (
@@ -179,6 +228,11 @@
   function boardBox(themes) {
     const token = ghToken();
     const pending = Object.keys(boardOverrides).length;
+    const shareLabel = sb ? "🔗 실시간 공유 ON" : (token ? "🔗 공유 저장 ON" : "⚙ 공유 저장 설정");
+    const shareDesc = sb
+      ? "카드를 옮기면 자동으로 전원에게 공유되고, 다른 사람의 이동도 몇 초 내 반영됩니다."
+      : (token ? "이동은 자동으로 repo에 커밋되어 전원에게 공유됩니다."
+        : "지금은 이 브라우저에만 저장 — <b>공유 저장 설정</b>에 GitHub 토큰을 넣으면 팀 전체 공유.");
     const cardHTML = (t) => {
       const e = ELAS[t.catalog && t.catalog.supply_elasticity] || {};
       let a = 0; (t.longlist || []).forEach((r) => { if (tierOf(scoreRow(r, t.catalog && t.catalog.supply_elasticity, t.catalog && t.catalog.payer)) === "A") a++; });
@@ -202,10 +256,10 @@
     return `<section class="card nv-board-card">
       <h2 class="card-title">테마 보드 — Work · Hold · Drop
         <span class="nv-board-tools">
-          ${pending ? `<span class="nv-bpend">미커밋 ${pending}건</span>` : ""}
-          <button id="nvBoardShare" title="이동 내역을 repo(data/board-state.json)에 커밋해 전원 공유">${token ? "🔗 공유 저장 ON" : "⚙ 공유 저장 설정"}</button>
+          ${pending ? `<span class="nv-bpend">저장 중 ${pending}건</span>` : ""}
+          ${sb ? `<span class="nv-bshare-on">${shareLabel}</span>` : `<button id="nvBoardShare" title="이동 내역을 repo(data/board-state.json)에 커밋해 전원 공유">${shareLabel}</button>`}
         </span></h2>
-      <p class="nv-dim">카드 = 테마. 드래그 또는 카드의 이동 버튼으로 분류 (진행 중 검토 → 보류 → 중단). 카드 클릭 = 아래에 테마 시트. ${token ? "이동은 자동으로 repo에 커밋되어 전원에게 공유됩니다." : "지금은 이 브라우저에만 저장 — <b>공유 저장 설정</b>에 GitHub 토큰을 넣으면 팀 전체 공유."} 신규 테제 후보는 위 🌱 하베스트 영역이 Ideation 역할.</p>
+      <p class="nv-dim">카드 = 테마. 드래그 또는 카드의 이동 버튼으로 분류 (진행 중 검토 → 보류 → 중단). 카드 클릭 = 아래에 테마 시트. ${shareDesc} 신규 테제 후보는 위 🌱 하베스트 영역이 Ideation 역할.</p>
       ${boardMsg ? `<div class="nv-bmsg">${esc(boardMsg)}</div>` : ""}
       <div class="nv-board">${STAGES.map(colHTML).join("")}</div>
     </section>`;
@@ -221,8 +275,8 @@
         root.querySelectorAll(".nv-bcard").forEach((x) => x.classList.toggle("active", x.dataset.id === curTheme));
         document.getElementById("themeSheet").scrollIntoView({ behavior: "smooth", block: "start" });
       });
-      c.addEventListener("dragstart", (ev) => { ev.dataTransfer.setData("text/plain", c.dataset.id); ev.dataTransfer.effectAllowed = "move"; c.classList.add("dragging"); });
-      c.addEventListener("dragend", () => c.classList.remove("dragging"));
+      c.addEventListener("dragstart", (ev) => { dragging = true; ev.dataTransfer.setData("text/plain", c.dataset.id); ev.dataTransfer.effectAllowed = "move"; c.classList.add("dragging"); });
+      c.addEventListener("dragend", () => { dragging = false; c.classList.remove("dragging"); });
     });
     // 이동 버튼
     root.querySelectorAll(".nv-bmove").forEach((b) => b.addEventListener("click", () => moveTheme(b.dataset.id, b.dataset.to)));
@@ -251,6 +305,19 @@
 
   function moveTheme(id, stage) {
     if (stageOf(id) === stage) return;
+    // Supabase 공유 모드 — 낙관적 업데이트 후 upsert, 성공 시 기준값에 반영
+    if (sb) {
+      boardOverrides[id] = stage;   // 확정 전까지 로컬 우선 표시
+      boardMsg = "저장 중…"; render();
+      sbUpsert(id, stage).then(() => {
+        boardBase.stages[id] = stage; delete boardOverrides[id];
+        boardMsg = "✅ 공유됨 (" + new Date().toLocaleTimeString("ko-KR") + ")"; render();
+      }).catch((e) => {
+        boardMsg = "❌ 저장 실패: " + (e && e.message || e) + " — 이 브라우저엔 반영됨"; render();
+      });
+      return;
+    }
+    // 폴백: localStorage + (선택) GitHub 토큰 커밋
     if ((boardBase.stages[id] || "work") === stage) delete boardOverrides[id];
     else boardOverrides[id] = stage;
     lsSet("dar_board_overrides", JSON.stringify(boardOverrides));
