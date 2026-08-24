@@ -4,6 +4,9 @@
 (function () {
   let inited = false,data = null,curTheme = null;
   let nodeFilter = null,tierFilter = null,angleFilter = null; // 롱리스트 필터 상태 (테마 전환 시 리셋)
+  // 재무 필터 (숫자) — 매출≥억 · OPM≥% · CAGR≥% · 부채비율≤% · ND/EBITDA≤배. null=미적용
+  let fMinRev = null,fMinOpm = null,fMinCagr = null,fMaxDebt = null,fMaxNde = null;
+  function resetFinFilters() { fMinRev = fMinOpm = fMinCagr = fMaxDebt = fMaxNde = null; }
 
   // ── Work·Hold·Drop 칸반 보드 상태 ─────────────────────────────────────────
   //   공유 기준값: data/board-state.json (repo 커밋 — 전원에게 보임)
@@ -291,7 +294,7 @@
     root.querySelectorAll(".nv-bcard").forEach((c) => {
       c.addEventListener("click", (ev) => {
         if (ev.target.closest(".nv-bmove")) return;
-        curTheme = c.dataset.id; nodeFilter = null; tierFilter = null; angleFilter = null;
+        curTheme = c.dataset.id; nodeFilter = null; tierFilter = null; angleFilter = null; resetFinFilters();
         renderSheet();
         root.querySelectorAll(".nv-bcard").forEach((x) => x.classList.toggle("active", x.dataset.id === curTheme));
         document.getElementById("themeSheet").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -469,6 +472,11 @@
     if (nodeFilter) parts.push(`노드 <b>${esc(nodeFilter)}</b>`);
     if (tierFilter) parts.push(`등급 <b>${tierFilter === "COW" ? "💰 캐시카우" : TIER_LABEL[tierFilter]}</b>`);
     if (angleFilter) parts.push(`앵글 <b>${esc(angleFilter)}</b>`);
+    if (fMinRev != null) parts.push(`매출 ≥ <b>${fMinRev}억</b>`);
+    if (fMinOpm != null) parts.push(`OPM ≥ <b>${fMinOpm}%</b>`);
+    if (fMinCagr != null) parts.push(`CAGR ≥ <b>${fMinCagr}%</b>`);
+    if (fMaxDebt != null) parts.push(`부채비율 ≤ <b>${fMaxDebt}%</b>`);
+    if (fMaxNde != null) parts.push(`ND/EBITDA ≤ <b>${fMaxNde}x</b>`);
     if (!parts.length) return "";
     return `<div class="nv-fbanner">필터: ${parts.join(" · ")} — <b>${shownN}</b>/${totalN}개 <button class="nv-fclear" id="nvFclear">✕ 전체 보기</button></div>`;
   }
@@ -478,20 +486,52 @@
     // 우선순위 = 등급 한국어 라벨만(점수 숨김). 색으로 등급 구분.
     const pri = (r) => `<span class="nv-tier nv-g${r.tier}" title="검토 우선순위">${TIER_LABEL[r.tier]}</span>`;
     const st = (r) => r.status ? `<span class="nv-st">${esc(statusKo(r.status))}</span>` : "";
+    const debt = (r) => r.debt_ratio == null ? "–" : (r.debt_ratio * 100).toFixed(0) + "%";
+    const nde = (r) => r.nd_ebitda == null ? "–" : (r.nd_ebitda < 0 ? "순현금" : r.nd_ebitda.toFixed(1) + "x");
     return `<div class="table-wrap"><table class="nv-ll">
-      <tr><th>우선순위</th><th>회사</th><th>노드</th><th>전략 앵글</th><th>매출</th><th>OPM</th><th>3yCAGR</th><th>상장</th><th>거래 계기</th><th>note</th></tr>
+      <tr><th>우선순위</th><th>회사</th><th>노드</th><th>전략 앵글</th><th>매출</th><th>OPM</th><th>3yCAGR</th><th>부채비율</th><th>ND/EBITDA</th><th>상장</th><th>거래 계기</th><th>note</th></tr>
       ${scored.slice(0, 40).map((r) => `<tr class="${r.pick ? "nv-pick" : ""}${r.cashcow ? " nv-cowrow" : ""}">
         <td>${pri(r)}${r.pick ? ' <span class="nv-star" title="pick">★</span>' : ""}</td>
-        <td><b>${esc(r.name)}</b>${r.cashcow ? ` <span class="nv-cowbadge" title="캐시카우: 비상장·고마진(OPM≥15%)·순현금 — 회사의 질 신호. 승계 여부는 지분구조 확인 필요">💰</span>` : ""}</td>
+        <td><b>${esc(r.name)}</b>${r.cashcow ? ` <span class="nv-cowbadge" title="캐시카우: 비상장·고마진(OPM≥15%)·순현금 — 회사의 질 신호. 승계 여부는 지분구조 확인 필요">💰</span>` : ""}${r.rev == null ? ` <span class="nv-leadtag" title="재무 미매칭 — 소싱 지시서/발굴 대상 (풀 빌드 시 재무 채워짐)">발굴</span>` : ""}</td>
         <td class="nv-node nv-nodecell" data-node="${esc(r.node || "")}" title="이 노드만 보기">${esc(r.node || "")}</td>
         <td class="nv-angle nv-anglecell" data-angle="${esc(r.angleLbl)}" title="이 앵글만 보기">${esc(r.angleLbl)}</td>
         <td class="nv-rev" title="${r.year ? r.year + "년 재무 기준" : "직전 패널(2024) 기준"}">${money(r.rev)}${r.year ? `<sup class="nv-yr">'${String(r.year).slice(2)}</sup>` : ""}</td>
         <td>${pct(r.opm)}</td>
         <td>${pct(r.cagr3)}</td>
+        <td title="부채비율(총부채/자본)">${debt(r)}</td>
+        <td title="순부채/EBITDA — 낮을수록 안전, 음수=순현금">${nde(r)}</td>
         <td>${r.listed === true ? "상장" : r.listed === false ? "비상장" : "–"}</td>
         <td>${st(r)}</td>
         <td class="nv-note">${esc(r.note || "")}</td></tr>`).join("")}
     </table></div>${scored.length > 40 ? `<p class="nv-dim">…상위 40개 표시 (전체 ${scored.length}) · 우선순위순 정렬</p>` : ""}`;
+  }
+
+  // 전략 앵글 설명 (접이식) — 각 앵글 라벨이 어떤 딜 구조인지 한 줄. 사용자가 보고 추가/조정 결정.
+  function angleGlossary() {
+    const rows = [
+      ["성장자금 FI·신주 소수지분", "성장 중인 비상장사에 신주(제3자배정)로 소수지분 참여 — 돈이 회사로 들어가 성장에 쓰임"],
+      ["3자배정 성장자금", "상장사에 제3자배정 유상증자로 성장자금 투입"],
+      ["FI 구주·세컨더리", "기존 재무적투자자(VC/PE)의 보유 지분을 사오는 것 — 회사가 아닌 기존 주주에게 돈이 감"],
+      ["P2P 공개매수 각도", "저평가 상장 스몰캡을 공개매수로 사서 상장폐지→비상장에서 키워 되팜"],
+      ["승계 딜 (오너·2세)", "창업주 고령·2세 승계 국면의 경영권 인수"],
+      ["카브아웃", "대기업·그룹의 비주력 사업부를 떼어내 인수"],
+      ["볼트온 (플랫폼 add-on)", "이미 보유한 플랫폼 기업에 붙이는 추가 인수(규모·시너지)"],
+      ["앵커 공동투자·소수지분", "너무 커서 단독 인수 불가 — 대형 라운드에 소수지분/공동투자로 참여"],
+      ["구조조정·리파이 크레딧", "부실·유동성 위기 기업에 구조조정·리파이낸싱(대출/메자닌)로 진입"],
+      ["메자닌·리파이", "전환사채·신주인수권 등 메자닌 또는 차입 재조정으로 진입"],
+      ["유동성 브릿지 (소형)", "단기 유동성 급한 소형사에 브릿지 자금"],
+      ["성장자금 (운전자본 소진 주의)", "성장하나 운전자본이 빠르게 소진 — 자금 투입하되 번레이트 주의"],
+      ["니즈 낮음 — 승계·밸류업 확인", "당장 자금니즈는 없음 — 승계·밸류업 각도로만 접근"],
+      ["워치·발굴 리드", "아직 재무 미확보 — 소싱해서 채워야 할 발굴 대상"],
+      ["재무 미확보 — 소싱 확인", "풀에 재무가 없어 실체·재무를 먼저 확인해야 함"]
+    ];
+    return `<details class="nv-method"><summary>전략 앵글이 무슨 뜻인가요? (딜 구조 설명)</summary>
+      <div class="nv-method-body"><table class="nv-mtab">
+      <tr><th>전략 앵글</th><th>어떤 딜 구조인가</th></tr>
+      ${rows.map((r) => `<tr><td style="white-space:nowrap"><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join("")}
+      </table>
+      <p class="nv-dim">앵글은 롱리스트의 <b>자금니즈 유형(type)</b>과 <b>note</b>에서 자동 판정됩니다. 보시고 라벨을 바꾸거나 새 앵글을 넣고 싶으면 말씀해 주세요.</p>
+      </div></details>`;
   }
 
   // 우선순위·용어 안내 (접이식·쉬운 말) — 점수·산식은 숨기고 '무슨 뜻인지'만
@@ -518,12 +558,32 @@
       </div></details>`;
   }
 
-  // 활성 필터 적용
+  // 활성 필터 적용 (노드/등급/앵글 + 재무 숫자)
   function applyFilters(scored) {
     return scored.filter((r) =>
-    (!nodeFilter || (r.node || "") === nodeFilter) && (
-    !tierFilter || (tierFilter === "COW" ? r.cashcow : r.tier === tierFilter)) && (
-    !angleFilter || r.angleLbl === angleFilter));
+    (!nodeFilter || (r.node || "") === nodeFilter) &&
+    (!tierFilter || (tierFilter === "COW" ? r.cashcow : r.tier === tierFilter)) &&
+    (!angleFilter || r.angleLbl === angleFilter) &&
+    (fMinRev == null || (r.rev != null && r.rev >= fMinRev)) &&
+    (fMinOpm == null || (r.opm != null && r.opm * 100 >= fMinOpm)) &&
+    (fMinCagr == null || (r.cagr3 != null && r.cagr3 * 100 >= fMinCagr)) &&
+    (fMaxDebt == null || (r.debt_ratio != null && r.debt_ratio * 100 <= fMaxDebt)) &&
+    (fMaxNde == null || (r.nd_ebitda != null && r.nd_ebitda <= fMaxNde)));
+  }
+
+  // 재무 필터 바 — 숫자 입력. 값 있는 행에만 적용(없는 행은 해당 조건 활성 시 제외).
+  function finFilterBar() {
+    const inp = (id, ph, val) => `<input class="nv-finp" id="${id}" type="number" placeholder="${ph}" value="${val == null ? "" : val}" />`;
+    return `<div class="nv-finbar">
+      <span class="nv-finbar-lbl">재무 필터</span>
+      ${inp("fRev", "매출 ≥ 억", fMinRev)}
+      ${inp("fOpm", "OPM ≥ %", fMinOpm)}
+      ${inp("fCagr", "3yCAGR ≥ %", fMinCagr)}
+      ${inp("fDebt", "부채비율 ≤ %", fMaxDebt)}
+      ${inp("fNde", "ND/EBITDA ≤ x", fMaxNde)}
+      <button class="nv-finclear" id="nvFinClear">✕ 해제</button>
+      <span class="nv-dim nv-finnote">숫자 입력 후 Enter — 값이 있는 기업에만 적용(재무 미매칭 기업은 제외)</span>
+    </div>`;
   }
 
   function renderSheet() {var _t$catalog0, _t$catalog1, _t$catalog10, _t$provenance, _t$provenance2;
@@ -551,11 +611,13 @@
       ${screenList(t)}
       ${nodeChips}
       <h3 class="h3">롱리스트 <span class="nv-dim">(우선순위순 · ★=주목 기업)</span></h3>
+      ${scored.length && !scored.some((r) => r.rev != null) ? `<div class="nv-leadnote">🔎 이 테제는 아직 <b>재무 매칭된 기업이 없습니다</b> — 항목은 소싱 지시서/발굴 리드입니다. 관련 상장·우량사는 우리 4만개 외감 유니버스엔 있으나, 배포본이 '자금니즈 풀'로 한정돼 재무가 안 붙은 상태(로컬 풀 빌드 시 채워짐).</div>` : ""}
       ${tierSummary(scored)}
       ${angleSummary(scored)}
+      ${angleGlossary()}
       ${methodBox()}
-      ${filterBanner(filtered.length, scored.length)}
-      ${longlistTable(filtered)}
+      ${finFilterBar()}
+      <div id="nvLLTable">${filterBanner(filtered.length, scored.length)}${longlistTable(filtered)}</div>
       ${t.whitespace ? `<div class="meta"><b>화이트스페이스</b> — ${esc(t.whitespace)}</div>` : ""}
       ${t.bolton ? `<div class="meta"><b>볼트온</b> — ${esc(t.bolton)}</div>` : ""}
       ${t.sources && t.sources.length ? `<p class="nv-dim">출처: ${t.sources.map(esc).join(" · ")}</p>` : ""}
@@ -591,6 +653,27 @@
       ${recent}${c.url ? `<a class="nv-comm-link" href="${esc(c.url)}" target="_blank" rel="noopener">전체 스레드 →</a>` : ""}</div>`;
   }
 
+  // 재무 필터만 바뀔 때: 표 영역(#nvLLTable)만 다시 그림 — 전체 시트 재렌더(giscus 재마운트) 회피
+  function refreshLLTable() {
+    const t = data.themes.find((x) => x.id === curTheme);
+    const wrap = document.getElementById("nvLLTable");
+    if (!t || !wrap) return;
+    const scored = scoreLonglist(t.longlist, t.catalog && t.catalog.supply_elasticity, t.catalog && t.catalog.payer);
+    const filtered = applyFilters(scored);
+    wrap.innerHTML = filterBanner(filtered.length, scored.length) + longlistTable(filtered);
+    wireTableFilters(wrap);
+  }
+
+  // 표 내부 상호작용(노드셀·앵글셀·전체보기 버튼)만 배선
+  function wireTableFilters(scope) {
+    const toggleNode = (n) => { nodeFilter = nodeFilter === n ? null : n; renderSheet(); };
+    const toggleAngle = (a) => { angleFilter = angleFilter === a ? null : a; renderSheet(); };
+    scope.querySelectorAll(".nv-nodecell").forEach((c) => c.addEventListener("click", () => { if (c.dataset.node) toggleNode(c.dataset.node); }));
+    scope.querySelectorAll(".nv-anglecell").forEach((c) => c.addEventListener("click", () => { if (c.dataset.angle) toggleAngle(c.dataset.angle); }));
+    const clr = scope.querySelector("#nvFclear");
+    if (clr) clr.addEventListener("click", () => { nodeFilter = null; tierFilter = null; angleFilter = null; renderSheet(); });
+  }
+
   // 필터 상호작용 배선 — 노드칩·표 노드셀·티어칩·해제버튼
   function wireFilters(el) {
     const toggleNode = (n) => {nodeFilter = nodeFilter === n ? null : n;renderSheet();};
@@ -603,5 +686,21 @@
     el.querySelectorAll(".nv-anglecell").forEach((c) => c.addEventListener("click", () => {if (c.dataset.angle) toggleAngle(c.dataset.angle);}));
     const clr = el.querySelector("#nvFclear");
     if (clr) clr.addEventListener("click", () => {nodeFilter = null;tierFilter = null;angleFilter = null;renderSheet();});
+    // 재무 필터 입력 — Enter 또는 blur 시 반영 (값 없으면 해제)
+    const numOrNull = (v) => { const n = parseFloat(v); return isNaN(n) ? null : n; };
+    const bind = (id, setter) => {
+      const inp = el.querySelector("#" + id);
+      if (!inp) return;
+      const apply = () => { setter(numOrNull(inp.value)); refreshLLTable(); };
+      inp.addEventListener("keydown", (ev) => { if (ev.key === "Enter") apply(); });
+      inp.addEventListener("change", apply);
+    };
+    bind("fRev", (v) => fMinRev = v);
+    bind("fOpm", (v) => fMinOpm = v);
+    bind("fCagr", (v) => fMinCagr = v);
+    bind("fDebt", (v) => fMaxDebt = v);
+    bind("fNde", (v) => fMaxNde = v);
+    const finClr = el.querySelector("#nvFinClear");
+    if (finClr) finClr.addEventListener("click", () => { resetFinFilters(); renderSheet(); }); // 해제는 finbar 재렌더 필요 → 전체
   }
 })();

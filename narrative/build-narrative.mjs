@@ -93,6 +93,8 @@ function overlayPoolFinancials(row) {
   if (opm != null) row.opm = opm;
   if (p.cagr3 != null) row.cagr3 = p.cagr3;
   if (p.net_debt != null) row.nd = p.net_debt;
+  if (p.debt_ratio != null) row.debt_ratio = p.debt_ratio;   // 부채비율 (배수, ×100=%)
+  if (p.nd_ebitda != null) row.nd_ebitda = p.nd_ebitda;      // 순부채/EBITDA (배수)
   if (p.latest_year != null) row.year = p.latest_year;
   return row;
 }
