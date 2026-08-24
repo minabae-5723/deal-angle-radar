@@ -253,11 +253,25 @@
         <div class="nv-bcard-btns">${btns}</div>
       </div>`;
     };
+    // 상위 축(group) 순서 — meta.groups 정의 순, 그 외는 뒤에
+    const gOrder = (data.meta.groups || []).map((g) => g.id);
+    const gRank = (t) => { const id = t.group && t.group.id; const i = gOrder.indexOf(id); return i < 0 ? 999 : i; };
     const colHTML = (s) => {
       const list = themes.filter((t) => stageOf(t.id) === s.key);
+      // 상위 축별로 묶어 소제목 + 카드
+      const groups = [];
+      const byId = {};
+      list.slice().sort((a, b) => gRank(a) - gRank(b)).forEach((t) => {
+        const gid = (t.group && t.group.id) || "misc";
+        if (!byId[gid]) { byId[gid] = { g: t.group || { title: "기타", emoji: "•" }, items: [] }; groups.push(byId[gid]); }
+        byId[gid].items.push(t);
+      });
+      const body = groups.map((grp) =>
+        `<div class="nv-bgroup"><div class="nv-bgroup-head">${esc(grp.g.emoji || "")} ${esc(grp.g.title || "")} <span class="nv-dim">${grp.items.length}</span></div>${grp.items.map(cardHTML).join("")}</div>`
+      ).join("");
       return `<div class="nv-bcol nv-bcol-${s.key}" data-stage="${s.key}">
         <div class="nv-bcol-head">${s.ico} ${s.label} <span class="nv-dim">${s.ko}</span> <b>${list.length}</b></div>
-        ${list.map(cardHTML).join("") || `<div class="nv-bempty">비어 있음 — 카드를 끌어다 놓으세요</div>`}
+        ${body || `<div class="nv-bempty">비어 있음 — 카드를 끌어다 놓으세요</div>`}
       </div>`;
     };
     return `<section class="card nv-board-card">
@@ -266,7 +280,7 @@
           ${pending ? `<span class="nv-bpend">저장 중 ${pending}건</span>` : ""}
           ${sb ? `<span class="nv-bshare-on">${shareLabel}</span>` : `<button id="nvBoardShare" title="이동 내역을 repo(data/board-state.json)에 커밋해 전원 공유">${shareLabel}</button>`}
         </span></h2>
-      <p class="nv-dim">카드 = 테마. 드래그 또는 카드의 이동 버튼으로 분류 (진행 중 검토 → 보류 → 중단). 카드 클릭 = 아래에 테마 시트. ${shareDesc} 신규 테제 후보는 위 🌱 하베스트 영역이 Ideation 역할.</p>
+      <p class="nv-dim">카드 = <b>하위 테제</b>, 굵은 소제목 = <b>상위 축</b>. 드래그·이동 버튼으로 진행→보류→중단 분류. 카드 클릭 = 아래 테마 시트. ${shareDesc} 세분화 원칙·사고기록은 <code>THESIS-LOG.md</code>.</p>
       ${boardMsg ? `<div class="nv-bmsg">${esc(boardMsg)}</div>` : ""}
       <div class="nv-board">${STAGES.map(colHTML).join("")}</div>
     </section>`;
@@ -527,7 +541,7 @@
         `<span class="nv-nodechip nv-nodeclick${nodeFilter === n.node ? " on" : ""}" data-node="${esc(n.node)}" title="이 노드만 보기">${esc(n.node)} <b>${(_nodeRowCount$n$node = nodeRowCount[n.node]) !== null && _nodeRowCount$n$node !== void 0 ? _nodeRowCount$n$node : n.n}</b></span>`);}).join("")}</div>` :
     "";
     el.innerHTML = `<section class="card nv-sheet">
-      <h2 class="card-title">${esc(t.emoji)} ${esc(t.title)}
+      <h2 class="card-title">${t.group ? `<span class="nv-axis-tag">${esc(t.group.emoji || "")} ${esc(t.group.title || "")}</span> ` : ""}${esc(t.emoji)} ${esc(t.title)}
         <span class="nv-elas ${e.cls || ""}">공급탄력성 ${esc(e.label || "")}</span></h2>
       <div class="nv-prov-line">📌 ${esc(((_t$provenance = t.provenance) === null || _t$provenance === void 0 ? void 0 : _t$provenance.source) || "")} · ${esc(((_t$provenance2 = t.provenance) === null || _t$provenance2 === void 0 ? void 0 : _t$provenance2.evidence) || "")}</div>
       ${lensChips(t)}
