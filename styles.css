@@ -873,3 +873,18 @@ table.nv-mtab td:first-child { font-weight: 700; color: var(--navy-light); white
 .nv-rtrace { margin: 8px 0; padding: 10px 12px; background: #eef3fa; border: 1px solid #c5d6ef; border-radius: 10px; font-size: 12.5px; }
 .nv-rtrace ol { margin: 6px 0 4px; padding-left: 20px; }
 .nv-rtrace li { margin: 2px 0; }
+
+/* 테마 댓글 (Supabase 실시간) */
+.nv-cmt { margin: 12px 0; padding: 12px; background: #faf7f0; border: 1px solid var(--gold); border-radius: 10px; }
+.nv-cmt-list { margin: 6px 0 10px; max-height: 240px; overflow-y: auto; }
+.nv-cmt-item { padding: 7px 0; border-top: 1px dashed var(--border); }
+.nv-cmt-item:first-child { border-top: none; }
+.nv-cmt-name { font-weight: 700; font-size: 12px; margin-right: 8px; }
+.nv-cmt-time { color: var(--text-muted); font-size: 10.5px; }
+.nv-cmt-text { font-size: 12.5px; margin-top: 2px; white-space: pre-wrap; word-break: break-word; }
+.nv-cmt-form { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+.nv-cmt-author { width: 110px; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 7px; font-size: 12px; }
+.nv-cmt-body { flex: 1; min-width: 200px; padding: 6px 9px; border: 1px solid var(--border-strong); border-radius: 7px; font-size: 12.5px; font-family: inherit; resize: vertical; }
+.nv-cmt-send { border: none; background: var(--navy); color: #fff; border-radius: 7px; padding: 0 16px; cursor: pointer; font-size: 13px; align-self: stretch; }
+.nv-frange { display: inline-flex; align-items: center; gap: 3px; font-size: 11.5px; color: var(--text-muted); }
+.nv-frange .nv-finp { width: 62px; }

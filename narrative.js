@@ -4,9 +4,10 @@
 (function () {
   let inited = false,data = null,curTheme = null;
   let nodeFilter = null,tierFilter = null,angleFilter = null; // 롱리스트 필터 상태 (테마 전환 시 리셋)
-  // 재무 필터 (숫자) — 매출≥억 · OPM≥% · CAGR≥% · 부채비율≤% · ND/EBITDA≤배. null=미적용
-  let fMinRev = null,fMinOpm = null,fMinCagr = null,fMaxDebt = null,fMaxNde = null;
-  function resetFinFilters() { fMinRev = fMinOpm = fMinCagr = fMaxDebt = fMaxNde = null; }
+  // 재무 필터 (숫자) — 매출≥억 · OPM≥% · CAGR≥% · 부채비율 범위(%) · ND/EBITDA 범위(배). null=미적용
+  let fMinRev = null,fMinOpm = null,fMinCagr = null;
+  let fDebtMin = null,fDebtMax = null,fNdeMin = null,fNdeMax = null;
+  function resetFinFilters() { fMinRev = fMinOpm = fMinCagr = fDebtMin = fDebtMax = fNdeMin = fNdeMax = null; }
 
   // ── Work·Hold·Drop 칸반 보드 상태 ─────────────────────────────────────────
   //   공유 기준값: data/board-state.json (repo 커밋 — 전원에게 보임)
@@ -51,6 +52,19 @@
       method: "POST",
       headers: Object.assign(sbHeaders(), { Prefer: "resolution=merge-duplicates,return=minimal" }),
       body: JSON.stringify([{ theme_id: id, stage: stage, updated_at: new Date().toISOString() }])
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+  }
+  // ── 테마별 댓글 (Supabase, 실시간 자동 반영) ──────────────────────────────
+  async function sbComments(themeId) {
+    const r = await fetch(sb.url + "/rest/v1/comments?theme_id=eq." + encodeURIComponent(themeId) + "&select=author,body,created_at&order=created_at.asc", { headers: sbHeaders(), cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }
+  async function sbPostComment(themeId, author, body) {
+    const r = await fetch(sb.url + "/rest/v1/comments", {
+      method: "POST", headers: Object.assign(sbHeaders(), { Prefer: "return=minimal" }),
+      body: JSON.stringify([{ theme_id: themeId, author: author, body: body }])
     });
     if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
   }
@@ -125,27 +139,21 @@
   const TIER_RANGE = { A: "≥68", B: "60~67", Bm: "52~59", C: "38~51", D: "&lt;38" };
 
   // 1줄 전략 앵글 태그 — 어떤 딜 구조로 접근할지 (케이스맵 유형 매핑)
+  //   단순화(2026-08-24): 재무지표·사업구조로 확실히 판정되는 앵글만. P2P(상폐)·승계·카브아웃은
+  //   지분·사업구조를 상세히 뜯어봐야 알 수 있어 자동 앵글에서 제외(정보는 note 컬럼에 그대로 남음).
+  //   허용 앵글: 볼트온 / 구주·세컨더리 / 성장자금 / 메자닌·리파이 / 유동성 브릿지.
   function angleLabel(r) {
     const note = r.note || "";
-    if (/볼트온|bolt|add-?on/i.test(note)) return "볼트온 (플랫폼 add-on)";
-    // 딜 윈도우 감지 — 노트에 명시된 거래 계기가 재무 유형보다 우선 (테제 생성 3문 中 ③)
-    if (/공개매수|P2P|상폐/i.test(note)) return "P2P 공개매수 각도";
-    if (/구주|세컨더리|다운라운드/.test(note)) return "FI 구주·세컨더리";
-    if (/승계|세대교체|오너 6|오너 7/.test(note)) return "승계 딜 (오너·2세)";
-    if (/카브아웃|carve/i.test(note)) return "카브아웃";
-    if (/공동투자|co-?invest|소수지분/i.test(note)) return "앵커 공동투자·소수지분";
-    if (/워치|모니터링|발굴/.test(note) && r.rev == null) return "워치·발굴 리드";
-    // 캐시카우(비상장·고마진·순현금)는 회사의 '질' 신호이지 딜 구조가 아니므로 앵글 라벨에서 제외 —
-    //   회사명 옆 💰 배지로 별도 표시. 딜 구조는 아래 자금니즈 type 으로만 판정.
-    const L = r.listed;
+    if (/볼트온|bolt|add-?on/i.test(note)) return "볼트온";
+    if (/구주|세컨더리/.test(note)) return "구주·세컨더리";       // FI 지분 인수 — note 명시된 경우만
     switch (r.type) {
-      case "GROWTH":return L === false ? "성장자금 FI·신주 소수지분" : "3자배정 성장자금";
-      case "DISTRESS":return L === false ? "구조조정·리파이 크레딧" : "메자닌·리파이";
-      case "REFI":return L === false ? "롤오버 리파이·밸류업" : "메자닌·리파이";
-      case "WC_BURN":return "성장자금 (운전자본 소진 주의)";
-      case "TIGHT":return "유동성 브릿지 (소형)";
-      case "SELF":return "니즈 낮음 — 승계·밸류업 확인";
-      default:return r.inPool ? "니즈 미분류" : "재무 미확보 — 소싱 확인";
+      case "GROWTH": return "성장자금";
+      case "WC_BURN": return "성장자금";
+      case "DISTRESS": return "메자닌·리파이";
+      case "REFI": return "메자닌·리파이";
+      case "TIGHT": return "유동성 브릿지";
+      case "SELF": return "니즈 낮음";
+      default: return r.inPool ? "니즈 미분류" : "재무 미확보";
     }
   }
 
@@ -204,6 +212,7 @@
         const before = JSON.stringify(boardBase.stages);
         try { await sbLoad(); } catch (e) { return; }
         if (JSON.stringify(boardBase.stages) !== before) refreshBoard();
+        if (curTheme) hydrateComments(curTheme);   // 현재 테제 댓글도 실시간 갱신
       }, 12000);
     }
   };
@@ -475,8 +484,8 @@
     if (fMinRev != null) parts.push(`매출 ≥ <b>${fMinRev}억</b>`);
     if (fMinOpm != null) parts.push(`OPM ≥ <b>${fMinOpm}%</b>`);
     if (fMinCagr != null) parts.push(`CAGR ≥ <b>${fMinCagr}%</b>`);
-    if (fMaxDebt != null) parts.push(`부채비율 ≤ <b>${fMaxDebt}%</b>`);
-    if (fMaxNde != null) parts.push(`ND/EBITDA ≤ <b>${fMaxNde}x</b>`);
+    if (fDebtMin != null || fDebtMax != null) parts.push(`부채비율 <b>${fDebtMin != null ? fDebtMin : ""}~${fDebtMax != null ? fDebtMax : ""}%</b>`);
+    if (fNdeMin != null || fNdeMax != null) parts.push(`ND/EBITDA <b>${fNdeMin != null ? fNdeMin : ""}~${fNdeMax != null ? fNdeMax : ""}x</b>`);
     if (!parts.length) return "";
     return `<div class="nv-fbanner">필터: ${parts.join(" · ")} — <b>${shownN}</b>/${totalN}개 <button class="nv-fclear" id="nvFclear">✕ 전체 보기</button></div>`;
   }
@@ -517,28 +526,19 @@
   // 전략 앵글 설명 (접이식) — 각 앵글 라벨이 어떤 딜 구조인지 한 줄. 사용자가 보고 추가/조정 결정.
   function angleGlossary() {
     const rows = [
-      ["성장자금 FI·신주 소수지분", "성장 중인 비상장사에 신주(제3자배정)로 소수지분 참여 — 돈이 회사로 들어가 성장에 쓰임"],
-      ["3자배정 성장자금", "상장사에 제3자배정 유상증자로 성장자금 투입"],
-      ["FI 구주·세컨더리", "기존 재무적투자자(VC/PE)의 보유 지분을 사오는 것 — 회사가 아닌 기존 주주에게 돈이 감"],
-      ["P2P 공개매수 각도", "저평가 상장 스몰캡을 공개매수로 사서 상장폐지→비상장에서 키워 되팜"],
-      ["승계 딜 (오너·2세)", "창업주 고령·2세 승계 국면의 경영권 인수"],
-      ["카브아웃", "대기업·그룹의 비주력 사업부를 떼어내 인수"],
-      ["볼트온 (플랫폼 add-on)", "이미 보유한 플랫폼 기업에 붙이는 추가 인수(규모·시너지)"],
-      ["앵커 공동투자·소수지분", "너무 커서 단독 인수 불가 — 대형 라운드에 소수지분/공동투자로 참여"],
-      ["구조조정·리파이 크레딧", "부실·유동성 위기 기업에 구조조정·리파이낸싱(대출/메자닌)로 진입"],
-      ["메자닌·리파이", "전환사채·신주인수권 등 메자닌 또는 차입 재조정으로 진입"],
-      ["유동성 브릿지 (소형)", "단기 유동성 급한 소형사에 브릿지 자금"],
-      ["성장자금 (운전자본 소진 주의)", "성장하나 운전자본이 빠르게 소진 — 자금 투입하되 번레이트 주의"],
-      ["니즈 낮음 — 승계·밸류업 확인", "당장 자금니즈는 없음 — 승계·밸류업 각도로만 접근"],
-      ["워치·발굴 리드", "아직 재무 미확보 — 소싱해서 채워야 할 발굴 대상"],
-      ["재무 미확보 — 소싱 확인", "풀에 재무가 없어 실체·재무를 먼저 확인해야 함"]
+      ["성장자금", "성장 중인 회사에 신주(유상증자)로 자금 투입 — 돈이 회사로 들어가 성장에 쓰임 (GROWTH·WC_BURN)"],
+      ["구주·세컨더리", "기존 재무적투자자(VC/PE) 보유 지분을 사오는 것 — 회사가 아닌 기존 주주에게 돈이 감 (note에 구주·세컨더리 명시된 경우)"],
+      ["메자닌·리파이", "전환사채·신주인수권 등 메자닌 또는 차입 재조정 — 레버리지 부담·리파이 니즈 (DISTRESS·REFI)"],
+      ["볼트온", "이미 보유한 플랫폼에 붙이는 추가 인수 (규모·시너지)"],
+      ["유동성 브릿지", "단기 유동성 급한 소형사에 브릿지 자금 (TIGHT)"],
+      ["니즈 낮음 / 재무 미확보", "당장 자금니즈 없음, 또는 풀에 재무가 없어 실체 확인 먼저"]
     ];
     return `<details class="nv-method"><summary>전략 앵글이 무슨 뜻인가요? (딜 구조 설명)</summary>
       <div class="nv-method-body"><table class="nv-mtab">
       <tr><th>전략 앵글</th><th>어떤 딜 구조인가</th></tr>
       ${rows.map((r) => `<tr><td style="white-space:nowrap"><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join("")}
       </table>
-      <p class="nv-dim">앵글은 롱리스트의 <b>자금니즈 유형(type)</b>과 <b>note</b>에서 자동 판정됩니다. 보시고 라벨을 바꾸거나 새 앵글을 넣고 싶으면 말씀해 주세요.</p>
+      <p class="nv-dim">재무지표·자금니즈로 <b>확실히 판정되는 앵글만</b> 표시합니다. P2P(상장폐지)·승계·카브아웃 등은 지분·사업구조를 상세히 봐야 알 수 있어 앵글에서 빼고 note에만 남겼습니다.</p>
       </div></details>`;
   }
 
@@ -575,8 +575,10 @@
     (fMinRev == null || (r.rev != null && r.rev >= fMinRev)) &&
     (fMinOpm == null || (r.opm != null && r.opm * 100 >= fMinOpm)) &&
     (fMinCagr == null || (r.cagr3 != null && r.cagr3 * 100 >= fMinCagr)) &&
-    (fMaxDebt == null || (r.debt_ratio != null && r.debt_ratio * 100 <= fMaxDebt)) &&
-    (fMaxNde == null || (r.nd_ebitda != null && r.nd_ebitda <= fMaxNde)));
+    (fDebtMin == null || (r.debt_ratio != null && r.debt_ratio * 100 >= fDebtMin)) &&
+    (fDebtMax == null || (r.debt_ratio != null && r.debt_ratio * 100 <= fDebtMax)) &&
+    (fNdeMin == null || (r.nd_ebitda != null && r.nd_ebitda >= fNdeMin)) &&
+    (fNdeMax == null || (r.nd_ebitda != null && r.nd_ebitda <= fNdeMax)));
   }
 
   // 재무 필터 바 — 숫자 입력. 값 있는 행에만 적용(없는 행은 해당 조건 활성 시 제외).
@@ -587,10 +589,10 @@
       ${inp("fRev", "매출 ≥ 억", fMinRev)}
       ${inp("fOpm", "OPM ≥ %", fMinOpm)}
       ${inp("fCagr", "3yCAGR ≥ %", fMinCagr)}
-      ${inp("fDebt", "부채비율 ≤ %", fMaxDebt)}
-      ${inp("fNde", "ND/EBITDA ≤ x", fMaxNde)}
+      <span class="nv-frange">부채비율 ${inp("fDebtMin", "min %", fDebtMin)}~${inp("fDebtMax", "max %", fDebtMax)}</span>
+      <span class="nv-frange">ND/EBITDA ${inp("fNdeMin", "min x", fNdeMin)}~${inp("fNdeMax", "max x", fNdeMax)}</span>
       <button class="nv-finclear" id="nvFinClear">✕ 해제</button>
-      <span class="nv-dim nv-finnote">숫자 입력 후 Enter — 값이 있는 기업에만 적용(재무 미매칭 기업은 제외)</span>
+      <span class="nv-dim nv-finnote">숫자 입력 후 Enter — 값이 있는 기업에만 적용(재무 미매칭 기업은 제외). 부채비율·ND/EBITDA는 min~max 범위.</span>
     </div>`;
   }
 
@@ -617,7 +619,7 @@
       ${kpiGrid(t)}
       ${t.supply_verdict ? `<div class="nv-verdict"><b>공급탄력성 판정</b> — ${esc(t.supply_verdict)}</div>` : ""}
       ${screenList(t)}
-      ${t.reverse_trace && t.reverse_trace.length ? `<div class="nv-rtrace"><b>🔎 벤치마크 역추적 — 유력 후보 발굴 경로</b><ol>${t.reverse_trace.map((s) => `<li>${esc(s)}</li>`).join("")}</ol><span class="nv-dim">상장 벤치마크(직접 매수 대상 아님)에서 출발해 비상장 2·3차 벤더를 특정하는 소싱 절차. 결과는 롱리스트에 '비상장타겟/검증필요'로 편입.</span></div>` : ""}
+      ${commentsSection(t.id)}
       ${nodeChips}
       <h3 class="h3">롱리스트 <span class="nv-dim">(우선순위순 · ★=주목 기업)</span></h3>
       ${scored.length && !scored.some((r) => r.rev != null) ? `<div class="nv-leadnote">🔎 이 테제는 아직 <b>재무 매칭된 기업이 없습니다</b> — 항목은 소싱 지시서/발굴 리드입니다. 관련 상장·우량사는 우리 4만개 외감 유니버스엔 있으나, 배포본이 '자금니즈 풀'로 한정돼 재무가 안 붙은 상태(로컬 풀 빌드 시 채워짐).</div>` : ""}
@@ -630,11 +632,10 @@
       ${t.whitespace ? `<div class="meta"><b>화이트스페이스</b> — ${esc(t.whitespace)}</div>` : ""}
       ${t.bolton ? `<div class="meta"><b>볼트온</b> — ${esc(t.bolton)}</div>` : ""}
       ${t.sources && t.sources.length ? `<p class="nv-dim">출처: ${t.sources.map(esc).join(" · ")}</p>` : ""}
-      ${communityBox(t)}
-      <div id="giscusMount"></div>
     </section>`;
     wireFilters(el);
-    if (window.mountGiscus) window.mountGiscus(el.querySelector("#giscusMount"), t.id, `${t.emoji} ${t.title}`);
+    wireComments(el, t.id);
+    hydrateComments(t.id);
   }
 
   // 테제 3문 렌즈 칩 — ②해자(3년 복제 테스트) · ③딜 윈도우 · ①지불자
@@ -683,6 +684,51 @@
     if (clr) clr.addEventListener("click", () => { nodeFilter = null; tierFilter = null; angleFilter = null; renderSheet(); });
   }
 
+  // ── 테마 댓글 UI (밸류체인 노드 위, 실시간) ──────────────────────────────
+  function commentsSection(themeId) {
+    if (!sb) return `<div class="nv-cmt"><h3 class="h3">💬 이 테제 토론</h3><p class="nv-dim">실시간 댓글은 Supabase 설정 시 활성화됩니다.</p></div>`;
+    const author = (lsGet("dar_comment_author") || "");
+    return `<div class="nv-cmt" data-theme="${esc(themeId)}">
+      <h3 class="h3">💬 이 테제 토론 <span class="nv-dim">실시간 · 로그인 불필요</span></h3>
+      <div id="nvCmtList" class="nv-cmt-list nv-dim">불러오는 중…</div>
+      <form id="nvCmtForm" class="nv-cmt-form">
+        <input id="nvCmtAuthor" class="nv-cmt-author" placeholder="이름" value="${esc(author)}" maxlength="40" />
+        <textarea id="nvCmtBody" class="nv-cmt-body" rows="2" placeholder="이 테제에 대한 의견·반박·리드 제보… (Enter 등록, Shift+Enter 줄바꿈)"></textarea>
+        <button type="submit" class="nv-cmt-send">등록</button>
+      </form>
+    </div>`;
+  }
+  function renderCmtList(el, rows) {
+    if (!rows || !rows.length) { el.className = "nv-cmt-list nv-dim"; el.innerHTML = "아직 댓글이 없습니다 — 첫 의견을 남겨보세요."; return; }
+    el.className = "nv-cmt-list";
+    el.innerHTML = rows.map((m) =>
+      `<div class="nv-cmt-item"><span class="nv-cmt-name">${esc(m.author || "익명")}</span><span class="nv-cmt-time">${esc((m.created_at || "").slice(0, 16).replace("T", " "))}</span><div class="nv-cmt-text">${esc(m.body || "")}</div></div>`).join("");
+  }
+  async function hydrateComments(themeId) {
+    if (!sb) return;
+    const list = document.getElementById("nvCmtList");
+    if (!list) return;
+    try { renderCmtList(list, await sbComments(themeId)); }
+    catch (e) { list.className = "nv-cmt-list nv-dim"; list.innerHTML = "댓글 로드 실패: " + esc(e.message || e); }
+  }
+  function wireComments(el, themeId) {
+    if (!sb) return;
+    const form = el.querySelector("#nvCmtForm");
+    if (!form) return;
+    const body = el.querySelector("#nvCmtBody"), auth = el.querySelector("#nvCmtAuthor");
+    const submit = async () => {
+      const b = (body.value || "").trim(); if (!b) return;
+      const a = (auth.value || "").trim() || "익명";
+      lsSet("dar_comment_author", a);
+      body.value = ""; body.disabled = true;
+      try { await sbPostComment(themeId, a, b); await hydrateComments(themeId); }
+      catch (e) { alert("등록 실패: " + (e.message || e)); }
+      body.disabled = false; body.focus();
+    };
+    form.addEventListener("submit", (ev) => { ev.preventDefault(); submit(); });
+    body.addEventListener("keydown", (ev) => { if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); submit(); } });
+  }
+
   // 필터 상호작용 배선 — 노드칩·표 노드셀·티어칩·해제버튼
   function wireFilters(el) {
     const toggleNode = (n) => {nodeFilter = nodeFilter === n ? null : n;renderSheet();};
@@ -707,8 +753,10 @@
     bind("fRev", (v) => fMinRev = v);
     bind("fOpm", (v) => fMinOpm = v);
     bind("fCagr", (v) => fMinCagr = v);
-    bind("fDebt", (v) => fMaxDebt = v);
-    bind("fNde", (v) => fMaxNde = v);
+    bind("fDebtMin", (v) => fDebtMin = v);
+    bind("fDebtMax", (v) => fDebtMax = v);
+    bind("fNdeMin", (v) => fNdeMin = v);
+    bind("fNdeMax", (v) => fNdeMax = v);
     const finClr = el.querySelector("#nvFinClear");
     if (finClr) finClr.addEventListener("click", () => { resetFinFilters(); renderSheet(); }); // 해제는 finbar 재렌더 필요 → 전체
   }
