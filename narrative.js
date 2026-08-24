@@ -82,6 +82,12 @@
     return rev <= 2500 ? 1.0 : rev <= 6000 ? 0.6 : 0.3;
   }
   const CATALYST_SCORE = { DISTRESS_EVENT: 1.0, IN_MOTION: 0.9, PRE_SIGNAL: 0.8, UNLISTED_BLIND: 0.55, RECENTLY_FUNDED: 0.25 };
+  // status(촉매) 를 한국어로 — "지금 이 회사가 거래될 계기가 있는가"
+  const STATUS_KO = {
+    DISTRESS_EVENT: "위기·급매", IN_MOTION: "거래 진행중", PRE_SIGNAL: "사전 신호",
+    UNLISTED_BLIND: "비상장 잠복", RECENTLY_FUNDED: "최근 투자유치"
+  };
+  const statusKo = (s) => s ? (STATUS_KO[s] || s) : "";
 
   // 지불자 렌즈 (테제 생성 3문 中 ①수요 확실성) — 수가·환급·방위비·의무보험 매출은 경기 무관 채권
   function payerScore(payer) {
@@ -426,7 +432,7 @@
   function tierSummary(scored) {
     const c = { A: 0, B: 0, Bm: 0, C: 0, D: 0 };
     scored.forEach((r) => c[r.tier]++);
-    const chip = (t) => `<span class="nv-tsum nv-sum${t}${tierFilter === t ? " on" : ""}" data-tier="${t}" title="${TIER_DISP[t]} ${TIER_LABEL[t]} (SFIT ${TIER_RANGE[t]}) — 클릭 필터">${TIER_DISP[t]} ${TIER_LABEL[t]} <b>${c[t]}</b></span>`;
+    const chip = (t) => `<span class="nv-tsum nv-sum${t}${tierFilter === t ? " on" : ""}" data-tier="${t}" title="${TIER_LABEL[t]} — 클릭하면 이 등급만 보기">${TIER_LABEL[t]} <b>${c[t]}</b></span>`;
     const cows = scored.filter((r) => r.cashcow).length;
     return `<div class="nv-tierbar">${TIER_ORDER.map(chip).join("")}` + (
     cows ? `<span class="nv-tsum nv-sumcow${tierFilter === "COW" ? " on" : ""}" data-tier="COW" title="캐시카우/승계 — 클릭 필터">💰 캐시카우/승계 <b>${cows}</b></span>` : "") + `</div>`;
@@ -446,7 +452,7 @@
   function filterBanner(shownN, totalN) {
     const parts = [];
     if (nodeFilter) parts.push(`노드 <b>${esc(nodeFilter)}</b>`);
-    if (tierFilter) parts.push(`티어 <b>${tierFilter === "COW" ? "💰 캐시카우" : TIER_DISP[tierFilter]}</b>`);
+    if (tierFilter) parts.push(`등급 <b>${tierFilter === "COW" ? "💰 캐시카우" : TIER_LABEL[tierFilter]}</b>`);
     if (angleFilter) parts.push(`앵글 <b>${esc(angleFilter)}</b>`);
     if (!parts.length) return "";
     return `<div class="nv-fbanner">필터: ${parts.join(" · ")} — <b>${shownN}</b>/${totalN}개 <button class="nv-fclear" id="nvFclear">✕ 전체 보기</button></div>`;
@@ -454,15 +460,11 @@
 
   function longlistTable(scored) {
     if (!scored || !scored.length) return `<p class="nv-dim">해당 조건의 기업 없음.</p>`;
-    const badge = (r) => {
-      if (r.need == null) return "";
-      const hot = r.need >= 70 ? " nv-need-hot" : "";
-      return `<span class="nv-need${hot}">${r.need}</span>`;
-    };
-    const st = (r) => r.status ? `<span class="nv-st">${esc(r.status)}</span>` : "";
-    const pri = (r) => `<span class="nv-tier nv-g${r.tier}" title="전략 검토 우선순위 ${r.sfit}/100">${TIER_DISP[r.tier]}<em>${r.sfit}</em></span>`;
+    // 우선순위 = 등급 한국어 라벨만(점수 숨김). 색으로 등급 구분.
+    const pri = (r) => `<span class="nv-tier nv-g${r.tier}" title="검토 우선순위">${TIER_LABEL[r.tier]}</span>`;
+    const st = (r) => r.status ? `<span class="nv-st">${esc(statusKo(r.status))}</span>` : "";
     return `<div class="table-wrap"><table class="nv-ll">
-      <tr><th>우선순위</th><th>회사</th><th>노드</th><th>전략 앵글</th><th>매출</th><th>OPM</th><th>3yCAGR</th><th>상장</th><th>need</th><th>status</th><th>note</th></tr>
+      <tr><th>우선순위</th><th>회사</th><th>노드</th><th>전략 앵글</th><th>매출</th><th>OPM</th><th>3yCAGR</th><th>상장</th><th>거래 계기</th><th>note</th></tr>
       ${scored.slice(0, 40).map((r) => `<tr class="${r.pick ? "nv-pick" : ""}${r.cashcow ? " nv-cowrow" : ""}">
         <td>${pri(r)}${r.pick ? ' <span class="nv-star" title="pick">★</span>' : ""}</td>
         <td><b>${esc(r.name)}</b></td>
@@ -472,34 +474,32 @@
         <td>${pct(r.opm)}</td>
         <td>${pct(r.cagr3)}</td>
         <td>${r.listed === true ? "상장" : r.listed === false ? "비상장" : "–"}</td>
-        <td>${badge(r)}</td>
         <td>${st(r)}</td>
         <td class="nv-note">${esc(r.note || "")}</td></tr>`).join("")}
-    </table></div>${scored.length > 40 ? `<p class="nv-dim">…상위 40개 표시 (전체 ${scored.length}) · 우선순위 A→D 순 정렬</p>` : ""}`;
+    </table></div>${scored.length > 40 ? `<p class="nv-dim">…상위 40개 표시 (전체 ${scored.length}) · 우선순위순 정렬</p>` : ""}`;
   }
 
-  // 전략 스코어 방법론 (접이식) — 딜 유형·자금니즈 유형 매핑을 point-of-use 에 정리
+  // 우선순위·용어 안내 (접이식·쉬운 말) — 점수·산식은 숨기고 '무슨 뜻인지'만
   function methodBox() {
-    return `<details class="nv-method"><summary>전략 검토 우선순위(SFIT) 산식 · 티어 기준 · 딜 앵글 매핑</summary>
+    return `<details class="nv-method"><summary>우선순위·용어가 무슨 뜻인가요?</summary>
       <div class="nv-method-body">
-      <p class="nv-dim"><b>SFIT (0~100)</b> = 테마구조 0.20 · 딜앵글적합 0.22 · 소싱우위 0.15 · 티켓fit 0.15 · 수익품질 0.10 · 촉매 0.12 · <b>지불자 0.06</b>(국가 1.0 &gt; 보험 0.9 &gt; 혼합 0.65 &gt; 민간 0.5 — 수가·환급·방위비·의무보험 매출은 경기 무관 채권). 재무 순수함수 — 회사 간 <b>상대순위</b>로 읽을 것. 출처: Notion PE 전략 케이스맵 · Deal_Angle PHASE3 · 조달니즈 type 정의 · 딜소싱 대시보드 렌즈(2026.08).</p>
+      <p class="nv-dim"><b>우선순위</b> — "어느 회사부터 붙을지"를 재무·딜 적합도로 자동 정렬한 등급입니다. 절대 점수가 아니라 <b>회사 간 상대 순위</b>로 보세요.</p>
       <table class="nv-mtab">
-        <tr><th>티어</th><th>SFIT</th><th>의미</th></tr>
-        <tr><td><span class="nv-tier nv-gA">A</span> 즉시</td><td>≥ 68</td><td>즉시 검토 착수 — 기업분석 우선 투입</td></tr>
-        <tr><td><span class="nv-tier nv-gB">B</span> 우선</td><td>60 ~ 67</td><td>우선 후보 — 다음 배치로 검토</td></tr>
-        <tr><td><span class="nv-tier nv-gBm">B⁻</span> 후보</td><td>52 ~ 59</td><td>후보군 — 촉매/앵글 확인 후 승격</td></tr>
-        <tr><td><span class="nv-tier nv-gC">C</span> 관찰</td><td>38 ~ 51</td><td>관찰 — 조건 변화 시 재평가</td></tr>
-        <tr><td><span class="nv-tier nv-gD">D</span> 보류</td><td>&lt; 38</td><td>보류 — 현 시점 딜핏 낮음</td></tr>
+        <tr><td><span class="nv-tier nv-gA">즉시</span></td><td>바로 검토 착수 — 기업분석 우선 투입</td></tr>
+        <tr><td><span class="nv-tier nv-gB">우선</span></td><td>우선 후보 — 다음 배치로 검토</td></tr>
+        <tr><td><span class="nv-tier nv-gBm">후보</span></td><td>후보군 — 계기·앵글 확인 후 승격</td></tr>
+        <tr><td><span class="nv-tier nv-gC">관찰</span></td><td>관찰 — 조건 변하면 재평가</td></tr>
+        <tr><td><span class="nv-tier nv-gD">보류</span></td><td>현 시점 딜 적합도 낮음</td></tr>
       </table>
       <table class="nv-mtab">
-        <tr><th>축</th><th>가르는 기준 (사전값)</th></tr>
-        <tr><td>테마구조</td><td>공급탄력성 very_low ★ → 가격·마진 전이 지속 (수요↑ + 공급 비탄력)</td></tr>
-        <tr><td>딜앵글적합</td><td>GROWTH(FI최적) > DISTRESS·REFI(구조조정·리파이 강점) > TIGHT·WC_BURN(주의) > SELF</td></tr>
-        <tr><td>소싱우위</td><td>비상장 오너딜 = 정보비대칭·경쟁 얇음·밸류업 여지 (케이스맵 Part2) → 상장 대비 우선</td></tr>
-        <tr><td>티켓fit</td><td>매출≤2,500억 = 자체 소수지분(100~300억)·컨소 슬롯(1,000~2,000억) 사정권 · 대형은 감점</td></tr>
-        <tr><td>촉매</td><td>DISTRESS_EVENT·IN_MOTION·PRE_SIGNAL = 거래 계기 有 / RECENTLY_FUNDED = 촉매 소진</td></tr>
+        <tr><th>거래 계기 (지금 왜 거래되나)</th><th>뜻</th></tr>
+        <tr><td>위기·급매</td><td>재무 스트레스로 급하게 나온 매물</td></tr>
+        <tr><td>거래 진행중</td><td>매각·투자 절차가 이미 진행 중</td></tr>
+        <tr><td>사전 신호</td><td>거래로 이어질 초기 신호 포착</td></tr>
+        <tr><td>비상장 잠복</td><td>비상장이라 아직 시장에 안 드러난 상태</td></tr>
+        <tr><td>최근 투자유치</td><td>최근 자금을 받아 당장 니즈는 낮음</td></tr>
       </table>
-      <p class="nv-dim"><b>💰 캐시카우/승계</b> = 비상장·OPM≥15%·순현금 (케이스맵 앵글A 재현스크린, +6 가점). <b>노드 칩·표의 노드 셀·티어 칩</b>을 클릭하면 롱리스트가 해당 조건으로 필터됩니다.</p>
+      <p class="nv-dim"><b>💰 캐시카우/승계</b> = 비상장·고마진·순현금 회사(오너 승계 딜 후보). <b>전략 앵글</b> = 어떤 딜 구조로 접근할지. 노드·앵글·등급 칩을 클릭하면 그 조건만 필터됩니다.</p>
       </div></details>`;
   }
 
@@ -535,7 +535,7 @@
       ${t.supply_verdict ? `<div class="nv-verdict"><b>공급탄력성 판정</b> — ${esc(t.supply_verdict)}</div>` : ""}
       ${screenList(t)}
       ${nodeChips}
-      <h3 class="h3">롱리스트 <span class="nv-dim">(우선순위 A→D 순 · ★=pick · need=funding-pool 니즈스코어)</span></h3>
+      <h3 class="h3">롱리스트 <span class="nv-dim">(우선순위순 · ★=주목 기업)</span></h3>
       ${tierSummary(scored)}
       ${angleSummary(scored)}
       ${methodBox()}
