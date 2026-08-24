@@ -229,11 +229,12 @@ const VIEW_FOOT = {
 
 function switchView(name) {
   document.querySelectorAll('.viewtab').forEach(b => b.classList.toggle('active', b.dataset.view === name));
-  document.getElementById('view-radar').hidden = (name !== 'radar');
-  document.getElementById('view-funding').hidden = (name !== 'funding');
-  document.getElementById('view-thesis').hidden = (name !== 'thesis');
-  document.getElementById('view-narrative').hidden = (name !== 'narrative');
-  document.getElementById('view-review').hidden = (name !== 'review');
+  // 뷰 섹션은 없을 수 있다 — review-gate 가 배포본에서 #view-review 를 DOM 에서 제거한다.
+  // 직접 .hidden 을 대입하면 그 시점에 함수가 죽어 뒤따르는 init 이 전혀 호출되지 않는다.
+  ['radar', 'funding', 'thesis', 'narrative', 'review'].forEach(v => {
+    const el = document.getElementById('view-' + v);
+    if (el) el.hidden = (name !== v);
+  });
   const foot = document.getElementById('footNote');
   if (foot) foot.textContent = VIEW_FOOT[name] || VIEW_FOOT.radar;
   // init 함수가 없으면 스크립트 캐시 불일치(구버전 JS + 신버전 HTML) — 무한 '로딩 중' 대신 안내 표시
