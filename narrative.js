@@ -370,7 +370,7 @@
   function intro() {
     return `<div class="nv-intro">
       <p><strong>네러티브 → transmission KPI → value chain 노드 → 외감 롱리스트</strong>. 테제는 3문으로 생성·검증한다 — <strong>① 수요의 확실성</strong>(지불자·백로그·규제일정·인구) × <strong>② 공급·경쟁의 봉쇄</strong>(3년 복제 테스트: 퀄·면허·총량·노하우·설치기반) × <strong>③ 딜 윈도우</strong>(왜 지금 거래되는가: 승계·FI만기·밸류리셋·제도화 캘린더·그룹재편·저평가 P2P).</p>
-      <p class="nv-dim">유니버스: 외감법인 41,409개 패널 × funding-pool 니즈 오버레이 · 회계 ${esc(data.meta.accounting_year || "")} · 포착: 자산 하베스트(PPI·insight·news) + 사용자 승인 · 공통 킬 필터: 中 3~5년 복제 가능성 · 재빌드: <code>node narrative/build-narrative.mjs</code>${data.meta.build_mode && data.meta.build_mode.startsWith("patch") ? ` · <b>패치 빌드</b>(외감 전체 반영은 패널 머신에서)` : ""}</p>
+      <p class="nv-dim">유니버스: 외감법인 41,409개 패널 × funding-pool 니즈 오버레이 · 재무: funding-pool 수록사는 <b>최신 DART 감사보고서(2025 다수)</b> 반영(매출 옆 '25/'24 = 기준연도), 그 외 패널사는 직전 빌드(2024) · 포착: 자산 하베스트 + 사용자 승인 · 공통 킬 필터: 中 3~5년 복제 가능성 · 재빌드: <code>node narrative/build-narrative.mjs</code>${data.meta.build_mode && data.meta.build_mode.startsWith("patch") ? ` · <b>패치 빌드</b>(패널 전체 2025 갱신은 패널 머신에서)` : ""}</p>
     </div>`;
   }
 
@@ -471,7 +471,7 @@
         <td><b>${esc(r.name)}</b>${r.cashcow ? ` <span class="nv-cowbadge" title="캐시카우: 비상장·고마진(OPM≥15%)·순현금 — 회사의 질 신호. 승계 여부는 지분구조 확인 필요">💰</span>` : ""}</td>
         <td class="nv-node nv-nodecell" data-node="${esc(r.node || "")}" title="이 노드만 보기">${esc(r.node || "")}</td>
         <td class="nv-angle nv-anglecell" data-angle="${esc(r.angleLbl)}" title="이 앵글만 보기">${esc(r.angleLbl)}</td>
-        <td>${money(r.rev)}</td>
+        <td title="${r.year ? r.year + "년 재무 기준" : "직전 패널(2024) 기준"}">${money(r.rev)}${r.year ? `<sup class="nv-yr">'${String(r.year).slice(2)}</sup>` : ""}</td>
         <td>${pct(r.opm)}</td>
         <td>${pct(r.cagr3)}</td>
         <td>${r.listed === true ? "상장" : r.listed === false ? "비상장" : "–"}</td>

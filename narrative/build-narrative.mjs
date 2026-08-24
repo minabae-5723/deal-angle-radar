@@ -76,11 +76,25 @@ function enrichFromPool(p, node, isPick, pickNote) {
   return {
     name: p.name, corp: p.corp_code, ksic: p.div || null, node,
     rev: Math.round(p.rev || 0), opm: (p.op != null && p.rev) ? p.op / p.rev : (p.ebitda_m ?? null),
-    cagr3: p.cagr3 ?? null, nd: p.net_debt ?? null,
+    cagr3: p.cagr3 ?? null, nd: p.net_debt ?? null, year: p.latest_year ?? null,
     listed: p.listed, need: p.need, pri: p.priority,
     status: p.status, type: p.type, angle: p.angle_primary,
     inPool: true, pick: isPick, note: pickNote || null
   };
+}
+
+// funding-pool 은 가장 최신 재무(2025 감사보고서 다수 포함). 롱리스트 행에 corp_code 로
+// 매칭되는 pool 재무를 덮어써 2025 를 반영한다 (패널 2024 시계열보다 우선).
+function overlayPoolFinancials(row) {
+  const p = row.corp && poolByCode.get(row.corp);
+  if (!p) return row;
+  if (p.rev != null) row.rev = Math.round(p.rev);
+  const opm = (p.op != null && p.rev) ? p.op / p.rev : (p.ebitda_m ?? null);
+  if (opm != null) row.opm = opm;
+  if (p.cagr3 != null) row.cagr3 = p.cagr3;
+  if (p.net_debt != null) row.nd = p.net_debt;
+  if (p.latest_year != null) row.year = p.latest_year;
+  return row;
 }
 
 function matchNodePool(node) {
@@ -126,6 +140,7 @@ function buildFull(t) {
     if (cur) { cur.pick = true; cur.note = p.note || cur.note; }
     else seen.set(c.corp_code, enrich(c, "pick", true, p.note));
   }
+  for (const r of seen.values()) overlayPoolFinancials(r);
   const longlist = [...seen.values()].sort((a, b) =>
     (b.pick - a.pick) || ((b.need ?? -1) - (a.need ?? -1)) || ((b.rev || 0) - (a.rev || 0)));
   const nodeCounts = (t.nodes || []).map(n => ({ node: n.node, n: matchNode(n).length }));
@@ -165,6 +180,7 @@ function buildPatch(t) {
       else seen.set(hit.row.corp_code, enrichFromPool(hit.row, "pick", true, pk.note));
     }
   }
+  for (const r of seen.values()) overlayPoolFinancials(r);
   const longlist = [...seen.values()].sort((a, b) =>
     (b.pick - a.pick) || ((b.need ?? -1) - (a.need ?? -1)) || ((b.rev || 0) - (a.rev || 0)));
   // nodeCounts: 이전 빌드 값 유지 + 신규 노드는 풀 매칭 수로 대체
