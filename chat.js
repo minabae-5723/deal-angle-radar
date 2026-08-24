@@ -7,9 +7,25 @@
 //     · web_search         — Claude 서버 툴 (웹리서치)
 //   키가 없는 외부 참여자는 테마 하단 댓글(giscus)로 질문 → comments-harvest 가 검토 큐로 수집.
 (function () {
-  const LS_KEY = "dar_api_key",LS_MODEL = "dar_chat_model";
+  const LS_KEY = "dar_api_key",LS_MODEL = "dar_chat_model",LS_EFFORT = "dar_chat_effort";
   const API = "https://api.anthropic.com/v1/messages";
-  const MODELS = ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5"];
+  // 모델 목록 — 라벨에 성격 표기. Opus 는 버전별로 제공(신형일수록 강력·동일 가격대).
+  const MODELS = [
+    { id: "claude-opus-5", label: "Opus 5 — 최신·최강 (권장)" },
+    { id: "claude-opus-4-8", label: "Opus 4.8 — 안정판" },
+    { id: "claude-opus-4-7", label: "Opus 4.7" },
+    { id: "claude-sonnet-5", label: "Sonnet 5 — 빠르고 저렴" },
+    { id: "claude-haiku-4-5", label: "Haiku 4.5 — 가장 빠름·최저가" }
+  ];
+  // effort = 사고 깊이/비용 단계. 같은 모델도 이 값으로 품질·속도·비용이 갈린다.
+  const EFFORTS = [
+    { id: "low", label: "낮음 — 빠른 조회" },
+    { id: "medium", label: "보통" },
+    { id: "high", label: "높음 — 기본" },
+    { id: "xhigh", label: "매우 높음 — 심층 리서치" },
+    { id: "max", label: "최대 — 정확성 최우선(느림·고비용)" }
+  ];
+  const EFFORT_OK = { "claude-opus-5": 1, "claude-opus-4-8": 1, "claude-opus-4-7": 1, "claude-sonnet-5": 1 }; // effort 지원 모델(그 외는 무시)
   const MAX_LOOPS = 8;
 
   let pool = null; // narrative-pool.json (테마+롱리스트)
@@ -78,9 +94,9 @@ ${lines}
   }];
 
 
-  function webSearchTool(model) {
-    // Opus 5·Sonnet 5 는 dynamic filtering 변형, Haiku 4.5 는 기본 변형
-    const type = model.startsWith("claude-haiku") ? "web_search_20250305" : "web_search_20260209";
+  function webSearchTool(model, basic) {
+    // Opus/Sonnet 신형은 dynamic filtering 변형, Haiku·구형·미지원 시 기본 변형
+    const type = (basic || model.startsWith("claude-haiku")) ? "web_search_20250305" : "web_search_20260209";
     return { type, name: "web_search", max_uses: 5 };
   }
 
@@ -137,15 +153,19 @@ ${lines}
   // ── Claude API 호출 루프 ───────────────────────────────────────────────────
   function apiKey() {return (lsGet(LS_KEY) || "").trim();}
   function model() {return lsGet(LS_MODEL) || "claude-opus-5";}
+  function effort() {return lsGet(LS_EFFORT) || "high";}
 
-  async function callClaude(msgs) {
-    const m = model();
+  async function callClaude(msgs, basicSearch) {
+    const m = model(), eff = effort();
+    // effort 미지원 모델(Haiku 등)이거나 xhigh/max 면 출력 여유가 필요 → max_tokens 상향
+    const hi = (eff === "xhigh" || eff === "max");
     const body = {
-      model: m, max_tokens: 8192,
+      model: m, max_tokens: hi ? 64000 : 16000,
       system: [{ type: "text", text: systemPrompt(), cache_control: { type: "ephemeral" } }],
-      tools: [webSearchTool(m), ...TOOLS_CLIENT],
+      tools: [webSearchTool(m, basicSearch), ...TOOLS_CLIENT],
       messages: msgs
     };
+    if (EFFORT_OK[m]) body.output_config = { effort: eff };
     const headers = {
       "content-type": "application/json",
       "x-api-key": apiKey(),
@@ -158,8 +178,12 @@ ${lines}
     }
     const res = await fetch(API, { method: "POST", headers, body: JSON.stringify(body) });
     if (!res.ok) {
-      let detail = "";
-      try {var _await$res$json$error;detail = ((_await$res$json$error = (await res.json()).error) === null || _await$res$json$error === void 0 ? void 0 : _await$res$json$error.message) || "";} catch (_unused2) {}
+      let detail = "", errType = "";
+      try { const j = await res.json(); detail = (j.error && j.error.message) || ""; errType = (j.error && j.error.type) || ""; } catch (_unused2) {}
+      // web_search 변형 미지원(일부 모델/플랫폼) → 기본 변형으로 1회 재시도
+      if (!basicSearch && res.status === 400 && /web_search|tool.*type|_20260209/i.test(detail + errType)) {
+        return callClaude(msgs, true);
+      }
       const e = new Error(`HTTP ${res.status}${detail ? " — " + detail : ""}`);
       e.status = res.status;
       throw e;
@@ -219,14 +243,15 @@ ${lines}
   }
 
   function keyPanelHTML() {
-    const k = apiKey();
+    const k = apiKey(), curM = model(), curE = effort();
     return `<div class="dc-setup">
       <p><b>Anthropic API 키</b>가 브라우저(localStorage)에만 저장됩니다 — 커밋·전송되지 않습니다 (Claude API 호출에만 사용).</p>
       <input id="dcKey" type="password" placeholder="sk-ant-..." value="${esc(k)}" autocomplete="off">
-      <div class="dc-setup-row">
-        <select id="dcModel">${MODELS.map((m) => `<option value="${m}"${m === model() ? " selected" : ""}>${m}</option>`).join("")}</select>
-        <button id="dcSave">저장</button>
-      </div>
+      <label class="dc-lbl">모델</label>
+      <select id="dcModel">${MODELS.map((m) => `<option value="${m.id}"${m.id === curM ? " selected" : ""}>${esc(m.label)}</option>`).join("")}</select>
+      <label class="dc-lbl">사고 깊이 (effort) <span class="dc-dim">— 같은 모델도 이 단계로 품질·속도·비용이 갈립니다. Opus·Sonnet만 적용</span></label>
+      <select id="dcEffort">${EFFORTS.map((x) => `<option value="${x.id}"${x.id === curE ? " selected" : ""}>${esc(x.label)}</option>`).join("")}</select>
+      <div class="dc-setup-row"><button id="dcSave">저장</button></div>
       <p class="dc-dim">키가 없다면? 각 테마 하단 댓글로 질문을 남기면 검토 큐로 수집됩니다. 키 발급: console.anthropic.com</p>
     </div>`;
   }
@@ -258,7 +283,8 @@ ${lines}
       </form>`;
     document.body.appendChild(panel);
 
-    const refreshLbl = () => {$("#dcModelLbl").textContent = model() + (apiKey() ? "" : " · 키 미설정");};
+    const modelLabel = () => { const m = MODELS.find((x) => x.id === model()); return m ? m.label.split(" —")[0] : model(); };
+    const refreshLbl = () => {$("#dcModelLbl").textContent = modelLabel() + (EFFORT_OK[model()] ? " · " + effort() : "") + (apiKey() ? "" : " · 키 미설정");};
     refreshLbl();
 
     fab.addEventListener("click", () => {panel.hidden = !panel.hidden;if (!panel.hidden && !apiKey()) showSetup();});
@@ -273,8 +299,9 @@ ${lines}
         e.preventDefault();
         lsSet(LS_KEY, $("#dcKey").value.trim());
         lsSet(LS_MODEL, $("#dcModel").value);
+        lsSet(LS_EFFORT, $("#dcEffort").value);
         w.innerHTML = "";refreshLbl();
-        addMsg("sys", "설정 저장됨 — " + esc(model()));
+        addMsg("sys", "설정 저장됨 — " + esc(modelLabel()) + (EFFORT_OK[model()] ? " · effort " + effort() : ""));
       });
     }
 
