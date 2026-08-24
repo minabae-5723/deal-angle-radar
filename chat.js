@@ -17,6 +17,9 @@
   let messages = []; // Claude 대화 히스토리 (content 블록 원형 유지 — thinking/server_tool 포함)
   let busy = false;
 
+  // localStorage 접근은 브라우저 정책(사이트 데이터 차단)에서 예외 가능 — 항상 가드
+  function lsGet(k) {try {return localStorage.getItem(k);} catch (e) {return null;}}
+  function lsSet(k, v) {try {localStorage.setItem(k, v);} catch (e) {}}
   const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const $ = (sel) => document.querySelector(sel);
 
@@ -132,8 +135,8 @@ ${lines}
   }
 
   // ── Claude API 호출 루프 ───────────────────────────────────────────────────
-  function apiKey() {return (localStorage.getItem(LS_KEY) || "").trim();}
-  function model() {return localStorage.getItem(LS_MODEL) || "claude-opus-5";}
+  function apiKey() {return (lsGet(LS_KEY) || "").trim();}
+  function model() {return lsGet(LS_MODEL) || "claude-opus-5";}
 
   async function callClaude(msgs) {
     const m = model();
@@ -268,8 +271,8 @@ ${lines}
       w.innerHTML = keyPanelHTML();
       $("#dcSave").addEventListener("click", (e) => {
         e.preventDefault();
-        localStorage.setItem(LS_KEY, $("#dcKey").value.trim());
-        localStorage.setItem(LS_MODEL, $("#dcModel").value);
+        lsSet(LS_KEY, $("#dcKey").value.trim());
+        lsSet(LS_MODEL, $("#dcModel").value);
         w.innerHTML = "";refreshLbl();
         addMsg("sys", "설정 저장됨 — " + esc(model()));
       });

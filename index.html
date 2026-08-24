@@ -99,11 +99,36 @@
     if (view) view.remove();
   })();
 </script>
+<!-- 오류 자가보고 배너: 스크립트 예외·비동기 거부를 화면 상단에 그대로 표시 (원격 디버깅용, ES5) -->
+<script>
+(function () {
+  var box = null, n = 0;
+  function show(msg) {
+    if (n >= 6) return; n++;
+    if (!box) {
+      box = document.createElement('div');
+      box.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#c62828;color:#fff;font:12px/1.5 sans-serif;padding:8px 12px;white-space:pre-wrap;word-break:break-all;';
+      document.body ? document.body.appendChild(box) : document.addEventListener('DOMContentLoaded', function () { document.body.appendChild(box); });
+    }
+    var d = document.createElement('div');
+    d.textContent = '⚠ ' + msg;
+    box.appendChild(d);
+  }
+  window.addEventListener('error', function (e) {
+    var f = (e.filename || '').split('/').pop();
+    show('JS 오류: ' + (e.message || e.type) + (f ? ' @ ' + f + ':' + e.lineno : ''));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason;
+    show('비동기 오류: ' + (r && (r.stack || r.message) || String(r)));
+  });
+})();
+</script>
 <script src="app.js?v=4"></script>
 <script src="funding.js?v=2"></script>
 <script src="thesis.js?v=8"></script>
 <script src="comments.js?v=2"></script>
-<script src="narrative.js?v=7"></script>
-<script src="chat.js?v=2"></script>
+<script src="narrative.js?v=8"></script>
+<script src="chat.js?v=3"></script>
 </body>
 </html>

@@ -25,7 +25,10 @@
     if (boardBase.stages && boardBase.stages[id]) return boardBase.stages[id];
     return "work"; // 기본: 진행
   }
-  function ghToken() { return (localStorage.getItem("dar_gh_token") || "").trim(); }
+  // localStorage 는 브라우저 정책(사이트 데이터 차단)에서 접근 자체가 예외를 던질 수 있음 — 항상 가드
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+  function ghToken() { return (lsGet("dar_gh_token") || "").trim(); }
 
   const ELAS = {
     very_low: { label: "매우 낮음 ★", cls: "el-vlow" },
@@ -239,7 +242,7 @@
       const cur = ghToken();
       const t = prompt("GitHub Personal Access Token (이 repo Contents: Read/Write 권한)\n입력하면 카드 이동이 data/board-state.json 커밋으로 전원에게 공유됩니다.\n이 브라우저(localStorage)에만 저장 — 비우고 확인하면 해제.", cur);
       if (t === null) return;
-      localStorage.setItem("dar_gh_token", t.trim());
+      lsSet("dar_gh_token", t.trim());
       boardMsg = t.trim() ? "공유 저장 ON — 다음 이동부터 자동 커밋" : "공유 저장 해제 (이 브라우저에만 저장)";
       render();
       if (t.trim() && Object.keys(boardOverrides).length) commitBoardState();
@@ -250,7 +253,7 @@
     if (stageOf(id) === stage) return;
     if ((boardBase.stages[id] || "work") === stage) delete boardOverrides[id];
     else boardOverrides[id] = stage;
-    try { localStorage.setItem("dar_board_overrides", JSON.stringify(boardOverrides)); } catch (e) { }
+    lsSet("dar_board_overrides", JSON.stringify(boardOverrides));
     boardMsg = "";
     render();
     if (ghToken()) commitBoardState();
@@ -282,7 +285,7 @@
       if (!put.ok) { const t = await put.text(); throw new Error("커밋 HTTP " + put.status + (put.status === 401 || put.status === 403 ? " — 토큰 권한(Contents write) 확인" : "") + " " + t.slice(0, 120)); }
       const pj = await put.json(); boardSha = pj.content && pj.content.sha;
       boardBase.stages = merged; boardOverrides = {};
-      try { localStorage.setItem("dar_board_overrides", "{}"); } catch (e) { }
+      lsSet("dar_board_overrides", "{}");
       boardMsg = "✅ 공유 저장됨 (" + new Date().toLocaleTimeString("ko-KR") + ") — 1~2분 후 전원에게 반영";
     } catch (e) {
       boardMsg = "❌ 공유 저장 실패: " + (e && e.message || e) + " — 변경은 이 브라우저에 보관됨";
