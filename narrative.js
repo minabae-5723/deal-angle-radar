@@ -316,6 +316,12 @@
     wireBoard(root, approved);
     wireIdea(root);
     renderSheet();
+    // 승인 대기(관찰) Thesis 도 클릭하면 시트를 볼 수 있게 — 근거·롱리스트를 보고 승격 판단
+    root.querySelectorAll(".nv-candclick").forEach((c) => c.addEventListener("click", () => {
+      curTheme = c.dataset.id; nodeFilter = null; tierFilter = null; angleFilter = null; resetFinFilters();
+      renderSheet(); openPane("sheet");
+      document.getElementById("themeSheet").scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
     root.querySelectorAll(".nv-jump [data-pane]").forEach((b) => b.addEventListener("click", () => {
       const k = b.dataset.pane;
       panes[k] = !panes[k]; savePanes(); applyPanes();
@@ -671,7 +677,7 @@
   function candidateBox(cands) {
     return `<section class="card nv-cand"><h2 class="card-title">🌱 하베스트 후보 (승인 대기 ${cands.length})</h2>
       <p class="nv-dim">PPI 가속·insight·news 에서 포착된 신규 narrative 후보. 승인 시 정식 테마로 편입.</p>
-      ${cands.map((c) => {var _c$provenance, _c$provenance2;return `<div class="nv-cand-row"><span class="nv-cand-title">${esc(c.emoji)} ${esc(c.title)}</span>
+      ${cands.map((c) => {var _c$provenance, _c$provenance2;return `<div class="nv-cand-row nv-candclick" data-id="${esc(c.id)}" title="클릭 = 이 Thesis 시트 열기"><span class="nv-cand-title">${esc(c.emoji)} ${esc(c.title)}</span>
         <span class="nv-prov">${esc(((_c$provenance = c.provenance) === null || _c$provenance === void 0 ? void 0 : _c$provenance.source) || "")} · ${esc(((_c$provenance2 = c.provenance) === null || _c$provenance2 === void 0 ? void 0 : _c$provenance2.evidence) || "")}</span></div>`;}).join("")}
     </section>`;
   }

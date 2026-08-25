@@ -949,3 +949,5 @@ ul.nv-psrcs li { margin: 3px 0; }
 /* 댓글 삭제 버튼 — 내 댓글에만 노출 */
 .nv-cmt-del { float: right; border: none; background: none; cursor: pointer; font-size: 12px; opacity: .45; padding: 0 2px; }
 .nv-cmt-del:hover { opacity: 1; }
+.nv-candclick { cursor: pointer; }
+.nv-candclick:hover { background: #f3f6fb; }

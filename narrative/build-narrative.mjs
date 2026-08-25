@@ -238,6 +238,14 @@ function buildPatch(t) {
     // 아래 pick 루프가 다시 만든다. 승계하면 ① 재무를 찾아도 중복으로 남고
     // ② 레지스트리에서 빠진 실명이 영구히 잔류한다. (2026-08-25)
     if ((r.name || "").includes("(패널밖)")) continue;
+    // 키워드 정리(exclude 보강·오탐 제거)가 승계 행에도 반영되도록 — 노드 exclude 와
+    // 테마별 exclude_names 를 승계 시점에 다시 적용한다. 키워드를 지워도 이미 매칭된 행은
+    // 그대로 남기 때문에, 정리가 배포본에 전파되지 않는 문제가 있었다. (2026-08-25)
+    { const nm = (r.name || "").toLowerCase();
+      const exc = (t.nodes || []).flatMap(n => (n.exclude || []).map(e => e.toLowerCase()));
+      if (exc.some(e => nm.includes(e))) continue;
+      const dropN = (t.exclude_names || []).map(norm);
+      if (dropN.includes(norm(r.name))) continue; }
     const key = r.corp || "MISS:" + r.name;
     // pick·note·kind 는 매 빌드마다 레지스트리에서 다시 붙인다(과거 오탐 잔류 방지).
     seen.set(key, { ...r, pick: false, note: null, kind: undefined });
