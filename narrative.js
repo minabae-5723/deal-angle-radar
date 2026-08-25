@@ -398,6 +398,14 @@
     return { system: rules, user: ask };
   }
 
+  // 테이블 미생성은 흔한 초기 상태 — 원인을 바로 알 수 있게 안내한다.
+  function ideaErr(err) {
+    const m = String((err && err.message) || err);
+    if (/404|42P01|does not exist|thesis_ideas/i.test(m))
+      return "thesis_ideas 테이블이 아직 없습니다 — Supabase SQL Editor에서 site-config.json 의 _sql_ideas 를 한 번 실행해 주세요.";
+    return "실패: " + m;
+  }
+
   function wireIdea(root) {
     const form = root.querySelector("#nvIdeaForm");
     if (!form) return;
@@ -422,7 +430,7 @@
       e.preventDefault();
       msg("등록 중…");
       try { if (await save(null)) msg("등록됐습니다."); }
-      catch (err) { msg("등록 실패: " + (err.message || err)); }
+      catch (err) { msg(ideaErr(err)); }
     });
     root.querySelector("#nvIdeaDraft").addEventListener("click", async () => {
       const chat = window.darChat;
@@ -435,7 +443,7 @@
         const pr = draftPrompt(v.title, v.body, v.sector);
         const out = await chat.callOnce(pr.system, pr.user);
         if (await save(out)) msg("초안과 함께 등록됐습니다.");
-      } catch (err) { msg("초안 생성 실패: " + (err.message || err)); }
+      } catch (err) { msg(ideaErr(err)); }
     });
   }
 
