@@ -940,8 +940,12 @@ ul.nv-psrcs li { margin: 3px 0; }
 .nv-falsify b { color: #a3271f; }
 /* 화면이 길어져서 섹션 점프 링크 — '전문지 스크리닝 어디?'를 없애기 위한 것 */
 .nv-jump { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 6px; }
-.nv-jump a { font-size: 12px; text-decoration: none; color: var(--navy-dark); background: #eef1f5; border: 1px solid #dde3ec; border-radius: 999px; padding: 4px 11px; }
-.nv-jump a:hover { background: #e2e8f2; }
+.nv-jump button { font: inherit; font-size: 12px; cursor: pointer; color: var(--navy-dark); background: #eef1f5; border: 1px solid #dde3ec; border-radius: 999px; padding: 4px 12px; }
+.nv-jump button:hover { background: #e2e8f2; }
+.nv-jump button.on { background: var(--navy-dark); color: #fff; border-color: var(--navy-dark); }
+.nv-jump-hint { align-self: center; font-size: 11.5px; }
+/* 접힌 패널은 확실히 숨긴다 (섹션 기본 display 가 hidden 속성을 덮지 않도록) */
+#nvIdea[hidden], #nvPress[hidden], #themeSheet[hidden] { display: none !important; }
 /* 댓글 삭제 버튼 — 내 댓글에만 노출 */
 .nv-cmt-del { float: right; border: none; background: none; cursor: pointer; font-size: 12px; opacity: .45; padding: 0 2px; }
 .nv-cmt-del:hover { opacity: 1; }

@@ -25,6 +25,21 @@
   let boardThemes = [];               // 폴링 재렌더용 approved 목록 참조
   let press = null;                   // data/press-screen.json — 전문지 맵 + 스크리닝 프로토콜
   let ideas = [];                     // 외부 제안 목록 (Supabase thesis_ideas)
+  // 화면이 길어져서 보드만 고정으로 두고 나머지는 클릭해서 펴는 방식.
+  // 어떤 걸 펴 뒀는지는 브라우저에 남긴다 — 새로고침마다 다시 여는 건 번거롭다.
+  let panes = { idea: false, press: false, sheet: false };
+  try { panes = Object.assign(panes, JSON.parse(lsGet("dar_nv_panes") || "{}")); } catch (e) { }
+  const PANE_LABEL = { idea: "💡 테제 제안", press: "📰 전문지 스크리닝", sheet: "📄 테마 시트" };
+  function savePanes() { lsSet("dar_nv_panes", JSON.stringify(panes)); }
+  function applyPanes() {
+    Object.keys(PANE_LABEL).forEach((k) => {
+      const box = document.getElementById(k === "sheet" ? "themeSheet" : k === "idea" ? "nvIdea" : "nvPress");
+      if (box) box.hidden = !panes[k];
+      const btn = document.querySelector('.nv-jump [data-pane="' + k + '"]');
+      if (btn) { btn.classList.toggle("on", !!panes[k]); btn.textContent = (panes[k] ? "▾ " : "▸ ") + PANE_LABEL[k]; }
+    });
+  }
+  function openPane(k) { if (!panes[k]) { panes[k] = true; savePanes(); applyPanes(); } }
   let sb = null;                      // Supabase 설정 {url, anonKey} — 있으면 공유 store
   let dragging = false, pollTimer = null;
   // localStorage 는 브라우저 정책(사이트 데이터 차단)에서 접근 자체가 예외를 던질 수 있음 — 항상 가드
@@ -292,10 +307,19 @@
     ideaBox() +
     pressBox() +
     `<details class="nv-matrix-details"><summary>📊 상세 카탈로그 — 렌즈 비교 테이블 (공급탄력성·해자·딜윈도우·지불자)</summary>${matrix(approved)}</details>` +
-    `<div id="nvSheet"></div><div id="themeSheet"></div>`;
+    `<div id="themeSheet" hidden></div>`;
     wireBoard(root, approved);
     wireIdea(root);
     renderSheet();
+    root.querySelectorAll(".nv-jump [data-pane]").forEach((b) => b.addEventListener("click", () => {
+      const k = b.dataset.pane;
+      panes[k] = !panes[k]; savePanes(); applyPanes();
+      if (panes[k]) {
+        const box = document.getElementById(k === "sheet" ? "themeSheet" : k === "idea" ? "nvIdea" : "nvPress");
+        if (box) box.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }));
+    applyPanes();
   }
 
   // ── 📰 전문지 기반 스크리닝 모듈 ───────────────────────────────────────────
@@ -315,7 +339,7 @@
       </div>`;
     const layerHTML = (L) => `<details class="nv-player"><summary>${esc(L.title)} <span class="nv-dim">${L.groups.reduce((n, g) => n + g.sources.length, 0)}개 소스</span></summary>
         ${L.groups.map(grpHTML).join("")}</details>`;
-    return `<section class="card nv-press" id="nvPress">
+    return `<section class="card nv-press" id="nvPress" hidden>
       <h2 class="card-title">📰 전문지 기반 테제 스크리닝</h2>
       <p class="nv-dim">${esc(p.meta.purpose)}</p>
       <div class="nv-pgrid">
@@ -354,7 +378,7 @@
   //   초안(인과사슬·공급탄력성·왜 지금·후보군·반증)까지 생성해 함께 올린다 — 토큰은 제안자 부담.
   function ideaBox() {
     const on = !!sb;
-    return `<section class="card nv-idea" id="nvIdea">
+    return `<section class="card nv-idea" id="nvIdea" hidden>
       <h2 class="card-title">💡 테제 제안 <span class="nv-dim">— 누구나</span></h2>
       <p class="nv-dim">${on ?
         "로그인 없이 바로 등록됩니다. 등록된 제안은 전원에게 실시간으로 보이고, 검토 후 테마 보드의 테제로 승격됩니다." :
@@ -537,6 +561,7 @@
         if (ev.target.closest(".nv-bmove")) return;
         curTheme = c.dataset.id; nodeFilter = null; tierFilter = null; angleFilter = null; resetFinFilters();
         renderSheet();
+        openPane("sheet");   // 카드를 눌렀다면 시트를 보려는 것 — 접혀 있으면 펴 준다
         root.querySelectorAll(".nv-bcard").forEach((x) => x.classList.toggle("active", x.dataset.id === curTheme));
         document.getElementById("themeSheet").scrollIntoView({ behavior: "smooth", block: "start" });
       });
@@ -629,10 +654,10 @@
     return `<div class="nv-intro">
       <p><strong>네러티브 → transmission KPI → value chain 노드 → 외감 롱리스트</strong>. 테제는 3문으로 생성·검증한다 — <strong>① 수요의 확실성</strong>(지불자·백로그·규제일정·인구) × <strong>② 공급·경쟁의 봉쇄</strong>(3년 복제 테스트: 퀄·면허·총량·노하우·설치기반) × <strong>③ 딜 윈도우</strong>(왜 지금 거래되는가: 승계·FI만기·밸류리셋·제도화 캘린더·그룹재편·저평가 P2P).</p>
       <div class="nv-jump">
-        <a href="#nvBoard">🗂 테마 보드</a>
-        <a href="#nvIdea">💡 테제 제안</a>
-        <a href="#nvPress">📰 전문지 스크리닝</a>
-        <a href="#nvSheet">📄 테마 시트</a>
+        <button type="button" data-pane="idea">▸ 💡 테제 제안</button>
+        <button type="button" data-pane="press">▸ 📰 전문지 스크리닝</button>
+        <button type="button" data-pane="sheet">▸ 📄 테마 시트</button>
+        <span class="nv-dim nv-jump-hint">클릭해서 펼치기 · 테마 보드는 항상 표시</span>
       </div>
       <p class="nv-dim">유니버스: 외감법인 41,409개 패널 × funding-pool 니즈 오버레이 · 재무: funding-pool 수록사는 <b>최신 DART 감사보고서(2025 다수)</b> 반영(매출 옆 '25/'24 = 기준연도), 그 외 패널사는 직전 빌드(2024) · 포착: 자산 하베스트 + 사용자 승인 · 공통 킬 필터: 中 3~5년 복제 가능성 · 재빌드: <code>node narrative/build-narrative.mjs</code>${data.meta.build_mode && data.meta.build_mode.startsWith("patch") ? ` · <b>패치 빌드</b>(패널 전체 2025 갱신은 패널 머신에서)` : ""}</p>
     </div>`;
@@ -954,14 +979,14 @@
   function renderCmtList(el, rows) {
     if (!rows || !rows.length) { el.className = "nv-cmt-list nv-dim"; el.innerHTML = "아직 댓글이 없습니다 — 첫 의견을 남겨보세요."; return; }
     el.className = "nv-cmt-list";
-    const me = clientId();
+    // 삭제는 누구나(사내 공유 도구 — 잘못 올린 글·중복을 본 사람이 바로 정리할 수 있게).
     el.innerHTML = rows.map((m) =>
       `<div class="nv-cmt-item"><span class="nv-cmt-name">${esc(m.author || "익명")}</span><span class="nv-cmt-time">${esc((m.created_at || "").slice(0, 16).replace("T", " "))}</span>` +
-      (m.client_id && m.client_id === me ? `<button class="nv-cmt-del" data-id="${esc(m.id)}" title="내 댓글 삭제">🗑</button>` : "") +
+      (m.id != null ? `<button class="nv-cmt-del" data-id="${esc(m.id)}" title="이 댓글 삭제">🗑</button>` : "") +
       `<div class="nv-cmt-text">${esc(m.body || "")}</div></div>`).join("");
     // 삭제 버튼은 목록을 다시 그릴 때마다 새로 붙는다 (폴링 갱신 포함)
     el.querySelectorAll(".nv-cmt-del").forEach((b) => b.addEventListener("click", async () => {
-      if (!confirm("이 댓글을 삭제할까요?")) return;
+      if (!confirm("이 댓글을 삭제할까요? (누구나 삭제할 수 있습니다)")) return;
       b.disabled = true;
       try { await sbDeleteComment(b.dataset.id); await hydrateComments(curTheme); }
       catch (e) {
