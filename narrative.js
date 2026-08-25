@@ -27,13 +27,14 @@
   let ideas = [];                     // 외부 제안 목록 (Supabase thesis_ideas)
   // 화면이 길어져서 보드만 고정으로 두고 나머지는 클릭해서 펴는 방식.
   // 어떤 걸 펴 뒀는지는 브라우저에 남긴다 — 새로고침마다 다시 여는 건 번거롭다.
-  let panes = { idea: false, press: false, sheet: false };
+  let panes = { cand: false, idea: false, press: false, sheet: false };
   try { panes = Object.assign(panes, JSON.parse(lsGet("dar_nv_panes") || "{}")); } catch (e) { }
-  const PANE_LABEL = { idea: "💡 Thesis 제안", press: "📰 전문지 스크리닝", sheet: "📄 테마 시트" };
+  const PANE_LABEL = { cand: "🌱 승인 대기 보드", idea: "💡 Thesis 제안", press: "📰 전문지 스크리닝", sheet: "📄 테마 시트" };
+  const PANE_BOX = { cand: "nvCand", idea: "nvIdea", press: "nvPress", sheet: "themeSheet" };
   function savePanes() { lsSet("dar_nv_panes", JSON.stringify(panes)); }
   function applyPanes() {
     Object.keys(PANE_LABEL).forEach((k) => {
-      const box = document.getElementById(k === "sheet" ? "themeSheet" : k === "idea" ? "nvIdea" : "nvPress");
+      const box = document.getElementById(PANE_BOX[k]);
       if (box) box.hidden = !panes[k];
       const btn = document.querySelector('.nv-jump [data-pane="' + k + '"]');
       if (btn) { btn.classList.toggle("on", !!panes[k]); btn.textContent = (panes[k] ? "▾ " : "▸ ") + PANE_LABEL[k]; }
@@ -306,9 +307,9 @@
     boardThemes = approved;
     const candidates = data.themes.filter((t) => t.status === "candidate");
     root.innerHTML =
-    intro() + (
-    candidates.length ? candidateBox(candidates) : "") +
+    intro() +
     boardBox(approved) +
+    candidateBox(candidates) +
     ideaBox() +
     pressBox() +
     `<details class="nv-matrix-details"><summary>📊 상세 카탈로그 — 렌즈 비교 테이블 (공급탄력성·해자·딜윈도우·지불자)</summary>${matrix(approved)}</details>` +
@@ -326,7 +327,7 @@
       const k = b.dataset.pane;
       panes[k] = !panes[k]; savePanes(); applyPanes();
       if (panes[k]) {
-        const box = document.getElementById(k === "sheet" ? "themeSheet" : k === "idea" ? "nvIdea" : "nvPress");
+        const box = document.getElementById(PANE_BOX[k]);
         if (box) box.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }));
@@ -407,17 +408,19 @@
           <span id="nvIdeaMsg" class="nv-dim"></span>
         </div>
       </form>
-      <div id="nvIdeaList" class="nv-idealist"></div>` : ""}
+      <p class="nv-dim nv-idea-note">등록하면 위 <b>🌱 승인 대기 보드</b>의 '구성원 제안'에 실시간으로 올라갑니다. 검토를 거쳐 Thesis 보드로 승격됩니다.</p>` : ""}
     </section>`;
   }
 
   function renderIdeaList() {
     const el = document.getElementById("nvIdeaList");
+    const n = document.getElementById("nvCandIdeaN");
+    if (n) n.textContent = String(ideas.length);
     if (!el) return;
-    if (!ideas.length) { el.className = "nv-idealist nv-dim"; el.innerHTML = "아직 제안이 없습니다 — 첫 Thesis를 넣어보세요."; return; }
+    if (!ideas.length) { el.className = "nv-idealist nv-dim"; el.innerHTML = "아직 제안이 없습니다 — 아래 'Thesis 제안'에서 첫 제안을 넣어보세요."; return; }
     el.className = "nv-idealist";
     el.innerHTML = ideas.map((i) => `<div class="nv-ideacard">
-      <div class="nv-ideahead"><b>${esc(i.title || "(제목 없음)")}</b>
+      <div class="nv-ideahead"><b>${esc(i.title || "(제목 없음)")}</b> <span class="nv-vd nv-vd-hold">승인 대기</span>
         <span class="nv-dim">${esc(i.author || "익명")}${i.sector ? " · " + esc(i.sector) : ""} · ${esc((i.created_at || "").slice(0, 10))}</span></div>
       ${i.body ? `<div class="nv-ideabody">${esc(i.body)}</div>` : ""}
       ${i.draft ? `<details class="nv-ideadraft"><summary>🤖 Thesis 초안 보기</summary><div>${esc(i.draft)}</div></details>` : ""}
@@ -492,7 +495,7 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       msg("등록 중…");
-      try { if (await save(null)) msg("등록됐습니다."); }
+      try { if (await save(null)) { msg("승인 대기 보드에 등록됐습니다."); openPane("cand"); } }
       catch (err) { msg(ideaErr(err)); }
     });
     root.querySelector("#nvIdeaDraft").addEventListener("click", async () => {
@@ -505,7 +508,7 @@
       try {
         const pr = draftPrompt(v.title, v.body, v.sector);
         const out = await chat.callOnce(pr.system, pr.user);
-        if (await save(out)) msg("초안과 함께 등록됐습니다.");
+        if (await save(out)) { msg("초안과 함께 승인 대기 보드에 등록됐습니다."); openPane("cand"); }
       } catch (err) { msg(ideaErr(err)); }
     });
   }
@@ -665,6 +668,7 @@
     return `<div class="nv-intro">
       <p><strong>네러티브 → transmission KPI → value chain 노드 → 외감 롱리스트</strong>. Thesis는 3문으로 생성·검증한다 — <strong>① 수요의 확실성</strong>(지불자·백로그·규제일정·인구) × <strong>② 공급·경쟁의 봉쇄</strong>(3년 복제 테스트: 퀄·면허·총량·노하우·설치기반) × <strong>③ 딜 윈도우</strong>(왜 지금 거래되는가: 승계·FI만기·밸류리셋·제도화 캘린더·그룹재편·저평가 P2P).</p>
       <div class="nv-jump">
+        <button type="button" data-pane="cand">▸ 🌱 승인 대기 보드</button>
         <button type="button" data-pane="idea">▸ 💡 Thesis 제안</button>
         <button type="button" data-pane="press">▸ 📰 전문지 스크리닝</button>
         <button type="button" data-pane="sheet">▸ 📄 테마 시트</button>
@@ -684,24 +688,41 @@
   function candidateBox(cands) {
     const order = { promote: 0, hold: 1, drop: 2 };
     const sorted = [...cands].sort((a, b) => (order[a.harvest_verdict] || 1) - (order[b.harvest_verdict] || 1));
-    return `<section class="card nv-cand" id="nvCand"><h2 class="card-title">🌱 승인 대기 Thesis <span class="nv-dim">${sorted.length}건</span></h2>
-      <p class="nv-dim">하베스트·스카우트·전문지 스캔이 잡았지만 아직 승격하지 않은 것들. 클릭하면 근거·롱리스트·승격 조건이 담긴 시트가 열린다. 승격 판단은 사람이 한다.</p>
-      ${sorted.map((c) => {
-        const v = VERDICT[c.harvest_verdict] || null;
-        const e = ELAS[c.catalog && c.catalog.supply_elasticity] || {};
-        const why = (c.provenance && c.provenance.evidence) || "";
-        return `<div class="nv-cand-row nv-candclick" data-id="${esc(c.id)}" title="클릭 = 이 Thesis 시트 열기">
-          <div class="nv-cand-head">
-            <span class="nv-cand-title">${esc(c.emoji || "")} ${esc(c.title)}</span>
-            ${v ? `<span class="nv-vd ${v.cls}">${v.ko}</span>` : ""}
-            ${e.label ? `<span class="nv-elas ${e.cls || ""}">공급 ${esc(e.label)}</span>` : ""}
-            ${c.group ? `<span class="nv-axis-tag">${esc(c.group.emoji || "")} ${esc(c.group.title || "")}</span>` : ""}
-          </div>
-          ${why ? `<div class="nv-cand-why">${esc(why)}</div>` : ""}
-          ${(c.screen && c.screen.length) ? `<div class="nv-cand-gate"><b>승격 조건</b> ${esc(c.screen[0])}</div>` : ""}
-        </div>`;
-      }).join("")}
+    return `<section class="card nv-cand" id="nvCand" hidden>
+      <h2 class="card-title">🌱 승인 대기 보드 <span class="nv-dim">등록 ${sorted.length}건 · 제안 <span id="nvCandIdeaN">0</span>건</span></h2>
+      <div class="nv-flow">
+        <span class="nv-flow-step">제안·포착</span><span class="nv-flow-arrow">→</span>
+        <span class="nv-flow-step on">승인 대기 <span class="nv-dim">근거·반증·승격 조건 정리</span></span><span class="nv-flow-arrow">→</span>
+        <span class="nv-flow-step nv-flow-todo">검토 단계 <span class="nv-dim">설계 예정</span></span><span class="nv-flow-arrow">→</span>
+        <span class="nv-flow-step">Thesis 보드</span>
+      </div>
+      <h3 class="nv-candh">포착된 후보 <span class="nv-dim">— 하베스트·스카우트·전문지 스캔. 클릭하면 근거·롱리스트 시트가 열린다</span></h3>
+      ${sorted.length ? sorted.map(candRow).join("") : `<p class="nv-dim">등록된 후보가 없습니다.</p>`}
+      <h3 class="nv-candh">구성원 제안 <span class="nv-dim">— 실시간. 아래 '💡 Thesis 제안'에서 등록하면 여기로 들어온다</span></h3>
+      <div id="nvIdeaList" class="nv-idealist"></div>
     </section>`;
+  }
+
+  // 포착 후보 한 줄 — 판정·공급탄력성·축·보류 근거·승격 조건을 함께 보여준다.
+  function candRow(c) {
+    const VERDICT = {
+      promote: { ko: "승격 추천", cls: "nv-vd-go" },
+      hold: { ko: "보류 — 조건 확인 필요", cls: "nv-vd-hold" },
+      drop: { ko: "현 시점 제외 — 재검토 트리거 있음", cls: "nv-vd-drop" }
+    };
+    const v = VERDICT[c.harvest_verdict] || null;
+    const e = ELAS[c.catalog && c.catalog.supply_elasticity] || {};
+    const why = (c.provenance && c.provenance.evidence) || "";
+    return `<div class="nv-cand-row nv-candclick" data-id="${esc(c.id)}" title="클릭 = 이 Thesis 시트 열기">
+      <div class="nv-cand-head">
+        <span class="nv-cand-title">${esc(c.emoji || "")} ${esc(c.title)}</span>
+        ${v ? `<span class="nv-vd ${v.cls}">${v.ko}</span>` : ""}
+        ${e.label ? `<span class="nv-elas ${e.cls || ""}">공급 ${esc(e.label)}</span>` : ""}
+        ${c.group ? `<span class="nv-axis-tag">${esc(c.group.emoji || "")} ${esc(c.group.title || "")}</span>` : ""}
+      </div>
+      ${why ? `<div class="nv-cand-why">${esc(why)}</div>` : ""}
+      ${(c.screen && c.screen.length) ? `<div class="nv-cand-gate"><b>승격 조건</b> ${esc(c.screen[0])}</div>` : ""}
+    </div>`;
   }
 
   function matrix(themes) {
