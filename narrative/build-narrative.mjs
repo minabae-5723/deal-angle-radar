@@ -23,6 +23,20 @@ const poolRaw = load("funding-pool.json");
 const pool = poolRaw.rows || poolRaw;
 const poolByCode = new Map(pool.map(p => [p.corp_code, p]));
 
+// fs2025.json — DART 2025 감사보고서 파싱 결과(2,227사, funding-pool 1,443사의 상위집합).
+// 매출·영업이익뿐 아니라 부채비율·순차입금·EBITDA 까지 있어 롱리스트 재무 공백을 크게 줄인다.
+// funding-pool 은 '자금니즈 진단'(need/status/type)이 붙어 있고 fs2025 는 '재무 원본'이므로,
+// 니즈는 pool 에서, 재무 수치는 fs2025 에서 가져오는 2단 오버레이로 쓴다.
+const fs2025 = tryLoad("fs2025.json");
+const fsByCode = new Map();
+const fsByName = new Map();
+for (const [code, v] of Object.entries((fs2025 && fs2025.byCorp) || {})) {
+  if (!v || v.status === "NOT_FOUND" || v.rev == null) continue;
+  fsByCode.set(code, v);
+  const k = (v.name || "").replace(/\(주\)|주식회사|㈜|\s/g, "");
+  if (k && !fsByName.has(k)) fsByName.set(k, { ...v, corp_code: code });
+}
+
 const PATCH_MODE = !panelFile;
 const prevPool = PATCH_MODE ? tryLoad("narrative-pool.json") : null;
 const prevThemes = new Map((prevPool?.themes || []).map(t => [t.id, t]));
@@ -109,6 +123,39 @@ function overlayPoolFinancials(row) {
   return row;
 }
 
+// 2025 감사보고서 재무를 덮어쓴다. pool 오버레이 다음에 호출 — pool 은 니즈 진단 값(need/status)이
+// 붙어 있지만 재무는 fs2025 가 더 넓고(2,227사) 부채비율·순차입금·EBITDA 까지 포함한다.
+function overlayFs2025(row) {
+  const f = row.corp && fsByCode.get(row.corp);
+  if (!f) return row;
+  if (f.rev != null) row.rev = Math.round(f.rev);
+  if (f.op != null && f.rev) row.opm = f.op / f.rev;
+  else if (f.ebitda_m != null) row.opm = f.ebitda_m;
+  if (f.net_debt != null) row.nd = f.net_debt;
+  if (f.debt_ratio != null) row.debt_ratio = f.debt_ratio;
+  if (f.net_debt != null && f.ebitda) row.nd_ebitda = f.net_debt / f.ebitda;
+  if (f.listed != null && row.listed == null) row.listed = f.listed;
+  if (f.year != null) row.year = f.year;
+  // 전년 매출이 있으면 1년 성장률이라도 채운다(3y CAGR 없는 행의 공백 방지).
+  if (row.cagr3 == null && f.prev && f.prev.rev > 0 && f.rev > 0) row.cagr3 = f.rev / f.prev.rev - 1;
+  return row;
+}
+
+// fs2025 에만 있는 실명 pick → 재무가 붙은 행으로 생성 (기존에는 '(패널밖)' 무재무 행이었다)
+function rowFromFs(f, node, note) {
+  const row = {
+    name: f.name, corp: f.corp_code, ksic: null, node,
+    rev: Math.round(f.rev || 0), opm: (f.op != null && f.rev) ? f.op / f.rev : (f.ebitda_m ?? null),
+    cagr3: (f.prev && f.prev.rev > 0 && f.rev > 0) ? (f.rev / f.prev.rev - 1) : null,
+    nd: f.net_debt ?? null, year: f.year ?? null, listed: f.listed ?? null,
+    need: null, pri: null, status: null, type: null, angle: null,
+    inPool: false, pick: true, note: note || null
+  };
+  if (f.debt_ratio != null) row.debt_ratio = f.debt_ratio;
+  if (f.net_debt != null && f.ebitda) row.nd_ebitda = f.net_debt / f.ebitda;
+  return row;
+}
+
 function matchNodePool(node) {
   const kw = (node.keywords || []).map(s => s.toLowerCase());
   const exc = (node.exclude || []).map(s => s.toLowerCase());
@@ -126,12 +173,17 @@ function matchNodePool(node) {
 }
 
 function resolvePickPatch(q, prevRows) {
+  // 재무가 붙은 기존 행이 있으면 그것이 최우선. 재무 없는 '(패널밖)' 자리표시자는
+  // pool·fs2025 에서 실제 재무를 찾아 대체한다(자리표시자는 호출부가 제거).
   const fromPrev = (prevRows || []).find(r => r.name && sameCo(r.name.replace(" (패널밖)", ""), q));
-  if (fromPrev) return { kind: "prev", row: fromPrev };
+  if (fromPrev && fromPrev.rev != null) return { kind: "prev", row: fromPrev };
+  const stale = fromPrev || null;
   const cand = pool.filter(p => p.name && sameCo(p.name, q));
   cand.sort((a, b) => (b.rev || 0) - (a.rev || 0));
-  if (cand[0]) return { kind: "pool", row: cand[0] };
-  return null;
+  if (cand[0]) return { kind: "pool", row: cand[0], stale };
+  // funding-pool(니즈 진단 1,443사)에 없어도 2025 감사보고서(2,227사)에는 있을 수 있다.
+  for (const k of pickKeys(q)) { const f = fsByName.get(k); if (f) return { kind: "fs", row: f, stale }; }
+  return fromPrev ? { kind: "prev", row: fromPrev } : null;
 }
 
 // 우선순위 랭크 — 벤치마크 역추적으로 특정된 소싱 대상이 상단, 정량 매칭 잔여는 후순위(제외하지 않음).
@@ -152,12 +204,16 @@ function buildFull(t) {
   }
   for (const p of (t.picks || [])) {
     const c = resolvePick(p.name);
-    if (!c) { seen.set("MISS:" + p.name, { name: p.name + " (패널밖)", node: "pick", pick: true, note: p.note || null, rev: null, inPool: false }); continue; }
+    if (!c) {
+      let f = null; for (const k of pickKeys(p.name)) { f = fsByName.get(k); if (f) break; }
+      if (f) { seen.set(f.corp_code, rowFromFs(f, "pick", p.note)); continue; }
+      seen.set("MISS:" + p.name, { name: p.name + " (패널밖)", node: "pick", pick: true, note: p.note || null, rev: null, inPool: false }); continue;
+    }
     const cur = seen.get(c.corp_code);
     if (cur) { cur.pick = true; cur.note = p.note || cur.note; }
     else seen.set(c.corp_code, enrich(c, "pick", true, p.note));
   }
-  for (const r of seen.values()) overlayPoolFinancials(r);
+  for (const r of seen.values()) { overlayPoolFinancials(r); overlayFs2025(r); }
   // pick 의 구분(kind: 상장벤치마크/비상장타겟/검증필요/PE보유/발굴리드)을 롱리스트 행에 부착
   { const pk = new Map((t.picks || []).map(p => [norm(p.name), p.kind]).filter(x => x[1]));
     for (const r of seen.values()) {
@@ -178,6 +234,10 @@ function buildPatch(t) {
   for (const r of (prev?.longlist || [])) {
     // 레지스트리에서 삭제·개명된 노드의 행은 승계하지 않음 (노드 정리가 곧 롱리스트 정리)
     if (r.node && r.node !== "pick" && !curNodes.has(r.node)) continue;
+    // '(패널밖)' 자리표시자는 승계하지 않는다 — 재무가 없는 빈 행이고, 여전히 미해결이면
+    // 아래 pick 루프가 다시 만든다. 승계하면 ① 재무를 찾아도 중복으로 남고
+    // ② 레지스트리에서 빠진 실명이 영구히 잔류한다. (2026-08-25)
+    if ((r.name || "").includes("(패널밖)")) continue;
     const key = r.corp || "MISS:" + r.name;
     // pick·note·kind 는 매 빌드마다 레지스트리에서 다시 붙인다(과거 오탐 잔류 방지).
     seen.set(key, { ...r, pick: false, note: null, kind: undefined });
@@ -198,14 +258,21 @@ function buildPatch(t) {
       if (!seen.has(key)) seen.set(key, { name: pk.name + " (패널밖)", node: "pick", pick: true, note: pk.note || null, rev: null, inPool: false });
       continue;
     }
+    // 재무 없는 자리표시자를 실제 재무 행으로 교체하는 경우 원래 행 제거
+    if (hit.stale) seen.delete(hit.stale.corp || "MISS:" + hit.stale.name);
     if (hit.kind === "prev") { hit.row.pick = true; hit.row.note = pk.note || hit.row.note; }
+    else if (hit.kind === "fs") {
+      const cur = seen.get(hit.row.corp_code);
+      if (cur) { cur.pick = true; cur.note = pk.note || cur.note; }
+      else seen.set(hit.row.corp_code, rowFromFs(hit.row, "pick", pk.note));
+    }
     else {
       const cur = seen.get(hit.row.corp_code);
       if (cur) { cur.pick = true; cur.note = pk.note || cur.note; }
       else seen.set(hit.row.corp_code, enrichFromPool(hit.row, "pick", true, pk.note));
     }
   }
-  for (const r of seen.values()) overlayPoolFinancials(r);
+  for (const r of seen.values()) { overlayPoolFinancials(r); overlayFs2025(r); }
   // pick 의 구분(kind: 상장벤치마크/비상장타겟/검증필요/PE보유/발굴리드)을 롱리스트 행에 부착
   { const pk = new Map((t.picks || []).map(p => [norm(p.name), p.kind]).filter(x => x[1]));
     for (const r of seen.values()) {

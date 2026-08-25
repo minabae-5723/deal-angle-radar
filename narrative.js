@@ -434,15 +434,22 @@
     `<button class="nv-pill${t.id === curTheme ? " active" : ""}" data-id="${t.id}">${esc(t.emoji)} ${esc(t.title)}</button>`).join("") + `</div>`;
   }
 
+  // KPI 값은 문자열 또는 불렛 배열. 배열이면 한 줄에 하나씩 — 길게 이어진 문장은 눈으로 훑기 어렵다.
+  function textBlock(v) {
+    if (v == null) return "";
+    if (Array.isArray(v)) return `<ul class="nv-bl">` + v.map((x) => `<li>${esc(x)}</li>`).join("") + `</ul>`;
+    return esc(v);
+  }
   function kpiGrid(t) {
     const K = t.kpi || {};
+    // 라벨을 한국어로 — 영문 지표명이 한 번 더 번역을 요구했다.
     const rows = [
-    ["Catalyst", K.catalyst], ["Structural/Cyclical", K.structural], ["Demand KPI", K.demand],
-    ["Supply KPI ★", K.supply], ["Pricing", K.pricing], ["CAPEX", K.capex], ["Persistence", K.persistence]].
+    ["왜 지금인가", K.catalyst], ["구조인가 사이클인가", K.structural], ["수요 근거", K.demand],
+    ["공급 병목 ★", K.supply], ["가격·마진", K.pricing], ["설비투자", K.capex], ["얼마나 갈까", K.persistence]].
     filter((r) => r[1]);
-    if (!rows.length) return `<div class="meta">KPI 미작성 — 리서치 대기 중.</div>`;
+    if (!rows.length) return `<div class="meta">아직 정리 전 — 리서치 대기 중.</div>`;
     return `<div class="table-wrap"><table class="nv-kpi">` +
-    rows.map((r) => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("") + `</table></div>`;
+    rows.map((r) => `<tr><th>${esc(r[0])}</th><td>${textBlock(r[1])}</td></tr>`).join("") + `</table></div>`;
   }
 
   // 롱리스트에 SFIT·티어·앵글을 부착하고 우선순위로 정렬 (pick 은 상단 고정)
@@ -622,9 +629,9 @@
         <span class="nv-elas ${e.cls || ""}">공급탄력성 ${esc(e.label || "")}</span></h2>
       <div class="nv-prov-line">📌 ${esc(((_t$provenance = t.provenance) === null || _t$provenance === void 0 ? void 0 : _t$provenance.source) || "")} · ${esc(((_t$provenance2 = t.provenance) === null || _t$provenance2 === void 0 ? void 0 : _t$provenance2.evidence) || "")}</div>
       ${lensChips(t)}
-      ${t.harvest_reinforce && t.harvest_reinforce.length ? `<div class="nv-reinforce">🌱 자산 재확증 ${t.harvest_reinforce.length}건 — ${t.harvest_reinforce.map(esc).join(" · ")}</div>` : ""}
+      ${t.harvest_reinforce && t.harvest_reinforce.length ? `<details class="nv-reinforce"><summary>🌱 우리 리서치 자산에서 이 테제가 다시 확인된 근거 ${t.harvest_reinforce.length}건</summary><ul class="nv-bl">${t.harvest_reinforce.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
       ${kpiGrid(t)}
-      ${t.supply_verdict ? `<div class="nv-verdict"><b>공급탄력성 판정</b> — ${esc(t.supply_verdict)}</div>` : ""}
+      ${t.supply_verdict ? `<div class="nv-verdict"><b>공급이 얼마나 못 늘어나나</b>${Array.isArray(t.supply_verdict) ? "" : " — "}${textBlock(t.supply_verdict)}</div>` : ""}
       ${screenList(t)}
       ${commentsSection(t.id)}
       ${nodeChips}
