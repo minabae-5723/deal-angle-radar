@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deal Angle Radar</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%A1%3C/text%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=26" />
+  <link rel="stylesheet" href="styles.css?v=27" />
 </head>
 <body>
 
@@ -85,18 +85,24 @@
   </footer>
 </main>
 
-<!-- review-gate: /review 는 code\company-review 로 향하는 로컬 디렉터리 정션이며 .gitignore(/review)로
-     배포에서 제외된다. 따라서 GitHub Pages 에서는 기업 검토 탭이 404 가 되므로 로컬이 아닐 때 탭을 제거한다.
-     PE 내부 검토 문서를 public Pages 에 노출하지 않기 위한 의도적 로컬 전용 뷰. (2026-08-20) -->
+<!-- 로컬 전용 뷰 게이트 — 배포본(GitHub Pages)에서 탭과 섹션을 DOM 에서 제거한다.
+       · review  : /review 는 code\company-review 로 향하는 로컬 정션이고 .gitignore 로 배포에서 빠진다.
+                   PE 내부 검토 문서를 public Pages 에 올리지 않기 위한 의도적 로컬 전용. (2026-08-20)
+       · funding  : 자금소요 스크리너 — 외감 재무·자금니즈 진단 원자료 성격이라 외부 공유에서 제외. (2026-08-25)
+       · thesis   : Thesis 보드(구버전) — 네러티브 스크리너로 통합되어 배포본에서는 감춘다. (2026-08-25)
+     app.js 의 switchView 는 없는 섹션을 건너뛰도록 null 가드가 있으므로 제거해도 안전하다. -->
 <script>
   (function () {
     var host = location.hostname;
     if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '') return;
-    if (location.hash === '#review') location.replace(location.pathname + location.search);
-    var tab = document.querySelector('.viewtab[data-view="review"]');
-    if (tab) tab.remove();
-    var view = document.getElementById('view-review');
-    if (view) view.remove();
+    var LOCAL_ONLY = ['review', 'funding', 'thesis'];
+    if (LOCAL_ONLY.indexOf(location.hash.replace('#', '')) >= 0) location.replace(location.pathname + location.search);
+    LOCAL_ONLY.forEach(function (v) {
+      var tab = document.querySelector('.viewtab[data-view="' + v + '"]');
+      if (tab) tab.remove();
+      var view = document.getElementById('view-' + v);
+      if (view) view.remove();
+    });
   })();
 </script>
 <!-- 오류 자가보고 배너: 스크립트 예외·비동기 거부를 화면 상단에 그대로 표시 (원격 디버깅용, ES5) -->
@@ -124,11 +130,11 @@
   });
 })();
 </script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 <script src="funding.js?v=2"></script>
-<script src="thesis.js?v=8"></script>
+<script src="thesis.js?v=9"></script>
 <script src="comments.js?v=2"></script>
-<script src="narrative.js?v=28"></script>
-<script src="chat.js?v=5"></script>
+<script src="narrative.js?v=29"></script>
+<script src="chat.js?v=6"></script>
 </body>
 </html>

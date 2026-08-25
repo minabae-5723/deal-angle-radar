@@ -29,7 +29,7 @@
   // 어떤 걸 펴 뒀는지는 브라우저에 남긴다 — 새로고침마다 다시 여는 건 번거롭다.
   let panes = { idea: false, press: false, sheet: false };
   try { panes = Object.assign(panes, JSON.parse(lsGet("dar_nv_panes") || "{}")); } catch (e) { }
-  const PANE_LABEL = { idea: "💡 테제 제안", press: "📰 전문지 스크리닝", sheet: "📄 테마 시트" };
+  const PANE_LABEL = { idea: "💡 Thesis 제안", press: "📰 전문지 스크리닝", sheet: "📄 테마 시트" };
   function savePanes() { lsSet("dar_nv_panes", JSON.stringify(panes)); }
   function applyPanes() {
     Object.keys(PANE_LABEL).forEach((k) => {
@@ -82,7 +82,7 @@
     });
     if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
   }
-  // ── 테제 제안 (Supabase, 로그인 불필요 — 외부 참여자의 집단지성 투입구) ──
+  // ── Thesis 제안 (Supabase, 로그인 불필요 — 외부 참여자의 집단지성 투입구) ──
   //   thesis_ideas: 누구나 아이디어를 넣고, 본인 API 키가 있으면 전문지 프로토콜로 초안까지 만든다.
   //   초안 생성 토큰은 제안자 본인 키로 결제된다(운영자 키를 공유하지 않는 것이 설계 의도).
   async function sbIdeas() {
@@ -123,11 +123,16 @@
     }
   }
   // 삭제는 본인 것만 — UI 가 내 client_id 인 댓글에만 버튼을 띄운다.
+  // 삭제 — 삭제 정책(RLS)이 없으면 PostgREST 는 오류가 아니라 '0행 삭제'로 조용히 성공한다.
+  // 그래서 지운 행을 되돌려받아(return=representation) 실제로 지워졌는지 확인한다.
   async function sbDeleteComment(id) {
-    const r = await fetch(sb.url + "/rest/v1/comments?id=eq." + encodeURIComponent(id), {
-      method: "DELETE", headers: Object.assign(sbHeaders(), { Prefer: "return=minimal" })
+    const r = await fetch(sb.url + "/rest/v1/comments?id=eq." + encodeURIComponent(id) + "&select=id", {
+      method: "DELETE", headers: Object.assign(sbHeaders(), { Prefer: "return=representation" })
     });
     if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+    let gone = [];
+    try { gone = await r.json(); } catch (e) { gone = []; }
+    if (!gone.length) { const e2 = new Error("NO_DELETE_POLICY"); e2.noPolicy = true; throw e2; }
   }
 
   const ELAS = {
@@ -167,7 +172,7 @@
   };
   const statusKo = (s) => s ? (STATUS_KO[s] || s) : "";
 
-  // 지불자 렌즈 (테제 생성 3문 中 ①수요 확실성) — 수가·환급·방위비·의무보험 매출은 경기 무관 채권
+  // 지불자 렌즈 (Thesis 생성 3문 中 ①수요 확실성) — 수가·환급·방위비·의무보험 매출은 경기 무관 채권
   function payerScore(payer) {
     const s = payer || "";
     if (s.includes("국가")) return 1.0;
@@ -278,7 +283,7 @@
         const before = JSON.stringify(boardBase.stages);
         try { await sbLoad(); } catch (e) { return; }
         if (JSON.stringify(boardBase.stages) !== before) refreshBoard();
-        if (curTheme) hydrateComments(curTheme);   // 현재 테제 댓글도 실시간 갱신
+        if (curTheme) hydrateComments(curTheme);   // 현재 Thesis 댓글도 실시간 갱신
         try { const fresh = await sbIdeas(); if (JSON.stringify(fresh) !== JSON.stringify(ideas)) { ideas = fresh; renderIdeaList(); } } catch (e) { }
       }, 12000);
     }
@@ -324,7 +329,7 @@
 
   // ── 📰 전문지 기반 스크리닝 모듈 ───────────────────────────────────────────
   //   개별 기업이 아니라 전문지에서 반복되는 구조 변화를 먼저 잡는다는 원칙을 화면에 고정한다.
-  //   여기 있는 승격 기준·배제 규칙·증거 등급이 테제를 올릴지 말지의 기준이고,
+  //   여기 있는 승격 기준·배제 규칙·증거 등급이 Thesis를 올릴지 말지의 기준이고,
   //   전문지 맵은 그 근거를 어디서 가져오는지의 목록이다. (data/press-screen.json)
   function pressBox() {
     if (!press) return "";
@@ -340,11 +345,11 @@
     const layerHTML = (L) => `<details class="nv-player"><summary>${esc(L.title)} <span class="nv-dim">${L.groups.reduce((n, g) => n + g.sources.length, 0)}개 소스</span></summary>
         ${L.groups.map(grpHTML).join("")}</details>`;
     return `<section class="card nv-press" id="nvPress" hidden>
-      <h2 class="card-title">📰 전문지 기반 테제 스크리닝</h2>
+      <h2 class="card-title">📰 전문지 기반 Thesis 스크리닝</h2>
       <p class="nv-dim">${esc(p.meta.purpose)}</p>
       <div class="nv-pgrid">
         <div class="nv-pcol">
-          <h3>테제로 올리는 기준</h3>
+          <h3>Thesis로 올리는 기준</h3>
           <ol class="nv-pcrit">${p.promotion.map((c) => `<li><b>${esc(c.title)}</b> <span class="nv-ptag${c.base === "신규" ? " nv-ptag-new" : ""}">${esc(c.base)}</span><div>${esc(c.body)}</div></li>`).join("")}</ol>
           <h3>올리지 않는 것</h3>
           <ul class="nv-bl">${p.exclusion.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
@@ -373,15 +378,15 @@
     </section>`;
   }
 
-  // ── 💡 테제 제안 (집단지성 투입구) ─────────────────────────────────────────
+  // ── 💡 Thesis 제안 (집단지성 투입구) ─────────────────────────────────────────
   //   외부 참여자가 로그인 없이 아이디어를 넣는다. 본인 API 키가 있으면 위 전문지 프로토콜로
   //   초안(인과사슬·공급탄력성·왜 지금·후보군·반증)까지 생성해 함께 올린다 — 토큰은 제안자 부담.
   function ideaBox() {
     const on = !!sb;
     return `<section class="card nv-idea" id="nvIdea" hidden>
-      <h2 class="card-title">💡 테제 제안 <span class="nv-dim">— 누구나</span></h2>
+      <h2 class="card-title">💡 Thesis 제안 <span class="nv-dim">— 누구나</span></h2>
       <p class="nv-dim">${on ?
-        "로그인 없이 바로 등록됩니다. 등록된 제안은 전원에게 실시간으로 보이고, 검토 후 테마 보드의 테제로 승격됩니다." :
+        "로그인 없이 바로 등록됩니다. 등록된 제안은 전원에게 실시간으로 보이고, 검토 후 테마 보드의 Thesis로 승격됩니다." :
         "Supabase 설정 후 활성화됩니다 (data/site-config.json)."}</p>
       ${on ? `<form id="nvIdeaForm" class="nv-ideaform">
         <div class="nv-idea-row">
@@ -392,7 +397,7 @@
         <textarea id="nvIdeaBody" rows="3" placeholder="근거를 적어주세요. 어떤 전문지·공시·기관 자료에서 봤는지, 어떤 회사가 떠오르는지."></textarea>
         <div class="nv-idea-btns">
           <button id="nvIdeaSubmit" type="submit">제안 등록</button>
-          <button id="nvIdeaDraft" type="button" title="본인 API 키로 전문지 프로토콜을 돌려 테제 초안을 만듭니다 (토큰 비용은 본인 키에 부과)">🤖 내 키로 초안까지 만들기</button>
+          <button id="nvIdeaDraft" type="button" title="본인 API 키로 전문지 프로토콜을 돌려 Thesis 초안을 만듭니다 (토큰 비용은 본인 키에 부과)">🤖 내 키로 초안까지 만들기</button>
           <span id="nvIdeaMsg" class="nv-dim"></span>
         </div>
       </form>
@@ -403,13 +408,13 @@
   function renderIdeaList() {
     const el = document.getElementById("nvIdeaList");
     if (!el) return;
-    if (!ideas.length) { el.className = "nv-idealist nv-dim"; el.innerHTML = "아직 제안이 없습니다 — 첫 테제를 넣어보세요."; return; }
+    if (!ideas.length) { el.className = "nv-idealist nv-dim"; el.innerHTML = "아직 제안이 없습니다 — 첫 Thesis를 넣어보세요."; return; }
     el.className = "nv-idealist";
     el.innerHTML = ideas.map((i) => `<div class="nv-ideacard">
       <div class="nv-ideahead"><b>${esc(i.title || "(제목 없음)")}</b>
         <span class="nv-dim">${esc(i.author || "익명")}${i.sector ? " · " + esc(i.sector) : ""} · ${esc((i.created_at || "").slice(0, 10))}</span></div>
       ${i.body ? `<div class="nv-ideabody">${esc(i.body)}</div>` : ""}
-      ${i.draft ? `<details class="nv-ideadraft"><summary>🤖 테제 초안 보기</summary><div>${esc(i.draft)}</div></details>` : ""}
+      ${i.draft ? `<details class="nv-ideadraft"><summary>🤖 Thesis 초안 보기</summary><div>${esc(i.draft)}</div></details>` : ""}
     </div>`).join("");
   }
 
@@ -418,9 +423,9 @@
     const p = press || {};
     const rules = [
       "당신은 국내 소형 PE(운용 2,000억원 수준)의 딜소싱 리서치 파트너다.",
-      "개별 기업을 먼저 고르지 말고, 산업 전문지·공식기관·규제 자료에서 반복되는 구조 변화로 테제를 세운다.",
+      "개별 기업을 먼저 고르지 말고, 산업 전문지·공식기관·규제 자료에서 반복되는 구조 변화로 Thesis를 세운다.",
       "선호 대상은 소형 상장사와 비상장 외감법인이다. 대형 상장사·대형 PE 보유자산은 밸류 기준점으로만 쓴다.",
-      "", "[테제로 올리는 기준]",
+      "", "[Thesis로 올리는 기준]",
       ...(p.promotion || []).map((c) => `${c.n}. ${c.title} — ${c.body}`),
       "", "[올리지 않는 것]", ...(p.exclusion || []).map((x) => "- " + x),
       "", "[근거 등급]", ...(p.evidence_tiers || []).map((t) => `${t.tier}: ${t.what} (${t.use})`),
@@ -430,7 +435,7 @@
       "모든 외부 사실에 매체명과 발행일을 붙인다. 웹검색으로 확인되지 않은 수치는 '확인 필요'라고 적고 지어내지 않는다.",
       "'유망'·'성장 기대' 같은 표현은 근거 없이 쓰지 않는다."
     ].join("\n");
-    const ask = `아래 제안을 위 기준으로 검토해 테제 초안을 만들어라. 웹검색으로 최근 사실을 확인하고 근거를 붙일 것.
+    const ask = `아래 제안을 위 기준으로 검토해 Thesis 초안을 만들어라. 웹검색으로 최근 사실을 확인하고 근거를 붙일 것.
 
 제안자 입력
 - 한 줄 명제: ${title}
@@ -548,7 +553,7 @@
           ${pending ? `<span class="nv-bpend">저장 중 ${pending}건</span>` : ""}
           ${sb ? `<span class="nv-bshare-on">${shareLabel}</span>` : `<button id="nvBoardShare" title="이동 내역을 repo(data/board-state.json)에 커밋해 전원 공유">${shareLabel}</button>`}
         </span></h2>
-      <p class="nv-dim">카드 = <b>하위 테제</b>, 굵은 소제목 = <b>상위 축</b>. 드래그·이동 버튼으로 진행→보류→중단 분류. 카드 클릭 = 아래 테마 시트. ${shareDesc} 세분화 원칙·사고기록은 <code>THESIS-LOG.md</code>.</p>
+      <p class="nv-dim">카드 = <b>하위 Thesis</b>, 굵은 소제목 = <b>상위 축</b>. 드래그·이동 버튼으로 진행→보류→중단 분류. 카드 클릭 = 아래 테마 시트. ${shareDesc} 세분화 원칙·사고기록은 <code>THESIS-LOG.md</code>.</p>
       ${boardMsg ? `<div class="nv-bmsg">${esc(boardMsg)}</div>` : ""}
       <div class="nv-board">${STAGES.map(colHTML).join("")}</div>
     </section>`;
@@ -652,9 +657,9 @@
 
   function intro() {
     return `<div class="nv-intro">
-      <p><strong>네러티브 → transmission KPI → value chain 노드 → 외감 롱리스트</strong>. 테제는 3문으로 생성·검증한다 — <strong>① 수요의 확실성</strong>(지불자·백로그·규제일정·인구) × <strong>② 공급·경쟁의 봉쇄</strong>(3년 복제 테스트: 퀄·면허·총량·노하우·설치기반) × <strong>③ 딜 윈도우</strong>(왜 지금 거래되는가: 승계·FI만기·밸류리셋·제도화 캘린더·그룹재편·저평가 P2P).</p>
+      <p><strong>네러티브 → transmission KPI → value chain 노드 → 외감 롱리스트</strong>. Thesis는 3문으로 생성·검증한다 — <strong>① 수요의 확실성</strong>(지불자·백로그·규제일정·인구) × <strong>② 공급·경쟁의 봉쇄</strong>(3년 복제 테스트: 퀄·면허·총량·노하우·설치기반) × <strong>③ 딜 윈도우</strong>(왜 지금 거래되는가: 승계·FI만기·밸류리셋·제도화 캘린더·그룹재편·저평가 P2P).</p>
       <div class="nv-jump">
-        <button type="button" data-pane="idea">▸ 💡 테제 제안</button>
+        <button type="button" data-pane="idea">▸ 💡 Thesis 제안</button>
         <button type="button" data-pane="press">▸ 📰 전문지 스크리닝</button>
         <button type="button" data-pane="sheet">▸ 📄 테마 시트</button>
         <span class="nv-dim nv-jump-hint">클릭해서 펼치기 · 테마 보드는 항상 표시</span>
@@ -892,15 +897,15 @@
         <span class="nv-elas ${e.cls || ""}">공급탄력성 ${esc(e.label || "")}</span></h2>
       <div class="nv-prov-line">📌 ${esc(((_t$provenance = t.provenance) === null || _t$provenance === void 0 ? void 0 : _t$provenance.source) || "")} · ${esc(((_t$provenance2 = t.provenance) === null || _t$provenance2 === void 0 ? void 0 : _t$provenance2.evidence) || "")}</div>
       ${lensChips(t)}
-      ${t.harvest_reinforce && t.harvest_reinforce.length ? `<details class="nv-reinforce"><summary>🌱 우리 리서치 자산에서 이 테제가 다시 확인된 근거 ${t.harvest_reinforce.length}건</summary><ul class="nv-bl">${t.harvest_reinforce.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
+      ${t.harvest_reinforce && t.harvest_reinforce.length ? `<details class="nv-reinforce"><summary>🌱 우리 리서치 자산에서 이 Thesis가 다시 확인된 근거 ${t.harvest_reinforce.length}건</summary><ul class="nv-bl">${t.harvest_reinforce.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
       ${kpiGrid(t)}
       ${t.supply_verdict ? `<div class="nv-verdict"><b>공급이 얼마나 못 늘어나나</b>${Array.isArray(t.supply_verdict) ? "" : " — "}${textBlock(t.supply_verdict)}</div>` : ""}
-      ${t.falsify && t.falsify.length ? `<div class="nv-falsify"><b>어떻게 틀릴 수 있나</b> <span class="nv-dim">— 이게 관측되면 테제를 내린다</span>${textBlock(t.falsify)}</div>` : ""}
+      ${t.falsify && t.falsify.length ? `<div class="nv-falsify"><b>어떻게 틀릴 수 있나</b> <span class="nv-dim">— 이게 관측되면 Thesis를 내린다</span>${textBlock(t.falsify)}</div>` : ""}
       ${screenList(t)}
       ${commentsSection(t.id)}
       ${nodeChips}
       <h3 class="h3">롱리스트 <span class="nv-dim">(우선순위순 · ★=주목 기업)</span></h3>
-      ${scored.length && !scored.some((r) => r.rev != null) ? `<div class="nv-leadnote">🔎 이 테제는 아직 <b>재무 매칭된 기업이 없습니다</b> — 항목은 소싱 지시서/발굴 리드입니다. 관련 상장·우량사는 우리 4만개 외감 유니버스엔 있으나, 배포본이 '자금니즈 풀'로 한정돼 재무가 안 붙은 상태(로컬 풀 빌드 시 채워짐).</div>` : ""}
+      ${scored.length && !scored.some((r) => r.rev != null) ? `<div class="nv-leadnote">🔎 이 Thesis는 아직 <b>재무 매칭된 기업이 없습니다</b> — 항목은 소싱 지시서/발굴 리드입니다. 관련 상장·우량사는 우리 4만개 외감 유니버스엔 있으나, 배포본이 '자금니즈 풀'로 한정돼 재무가 안 붙은 상태(로컬 풀 빌드 시 채워짐).</div>` : ""}
       ${tierSummary(scored)}
       ${angleSummary(scored)}
       ${angleGlossary()}
@@ -916,7 +921,7 @@
     hydrateComments(t.id);
   }
 
-  // 테제 3문 렌즈 칩 — ②해자(3년 복제 테스트) · ③딜 윈도우 · ①지불자
+  // Thesis 3문 렌즈 칩 — ②해자(3년 복제 테스트) · ③딜 윈도우 · ①지불자
   function lensChips(t) {
     const c = t.catalog || {};
     const chip = (ico, lbl, val, cls) => val ? `<span class="nv-lchip ${cls || ""}"><em>${ico} ${lbl}</em>${esc(val)}</span>` : "";
@@ -931,13 +936,13 @@
   }
 
   // 커뮤니티 시그널 — comments-harvest.mjs 가 수집한 giscus Discussions 요약.
-  // 댓글은 테제 검토 로직의 입력 — /deal-angle 세션이 리뷰 후 KPI·스크린·롱리스트에 반영.
+  // 댓글은 Thesis 검토 로직의 입력 — /deal-angle 세션이 리뷰 후 KPI·스크린·롱리스트에 반영.
   function communityBox(t) {
     const c = t.community;
     if (!c || !c.count) return "";
     const recent = (c.recent || []).slice(0, 5).map((m) =>
     `<div class="nv-comm-row"><span class="nv-comm-author">${esc(m.author)}</span><span class="nv-comm-date">${esc((m.date || "").slice(0, 10))}</span><div class="nv-comm-body">${esc(m.body)}</div></div>`).join("");
-    return `<div class="nv-community"><b>💬 커뮤니티 시그널 ${c.count}건</b> <span class="nv-dim">— 검토 큐에 편입됨 (테제 반박·보강·신규 리드 환영)</span>
+    return `<div class="nv-community"><b>💬 커뮤니티 시그널 ${c.count}건</b> <span class="nv-dim">— 검토 큐에 편입됨 (Thesis 반박·보강·신규 리드 환영)</span>
       ${recent}${c.url ? `<a class="nv-comm-link" href="${esc(c.url)}" target="_blank" rel="noopener">전체 스레드 →</a>` : ""}</div>`;
   }
 
@@ -964,14 +969,14 @@
 
   // ── 테마 댓글 UI (밸류체인 노드 위, 실시간) ──────────────────────────────
   function commentsSection(themeId) {
-    if (!sb) return `<div class="nv-cmt"><h3 class="h3">💬 이 테제 토론</h3><p class="nv-dim">실시간 댓글은 Supabase 설정 시 활성화됩니다.</p></div>`;
+    if (!sb) return `<div class="nv-cmt"><h3 class="h3">💬 이 Thesis 토론</h3><p class="nv-dim">실시간 댓글은 Supabase 설정 시 활성화됩니다.</p></div>`;
     const author = (lsGet("dar_comment_author") || "");
     return `<div class="nv-cmt" data-theme="${esc(themeId)}">
-      <h3 class="h3">💬 이 테제 토론 <span class="nv-dim">실시간 · 로그인 불필요</span></h3>
+      <h3 class="h3">💬 이 Thesis 토론 <span class="nv-dim">실시간 · 로그인 불필요</span></h3>
       <div id="nvCmtList" class="nv-cmt-list nv-dim">불러오는 중…</div>
       <form id="nvCmtForm" class="nv-cmt-form">
         <input id="nvCmtAuthor" class="nv-cmt-author" placeholder="이름" value="${esc(author)}" maxlength="40" />
-        <textarea id="nvCmtBody" class="nv-cmt-body" rows="2" placeholder="이 테제에 대한 의견·반박·리드 제보… (Enter 등록, Shift+Enter 줄바꿈)"></textarea>
+        <textarea id="nvCmtBody" class="nv-cmt-body" rows="2" placeholder="이 Thesis에 대한 의견·반박·리드 제보… (Enter 등록, Shift+Enter 줄바꿈)"></textarea>
         <button type="submit" class="nv-cmt-send">등록</button>
       </form>
     </div>`;
@@ -991,8 +996,8 @@
       try { await sbDeleteComment(b.dataset.id); await hydrateComments(curTheme); }
       catch (e) {
         b.disabled = false;
-        alert(/401|403/.test(String(e.message || e))
-          ? "삭제 권한이 없습니다 — Supabase 에서 comments 삭제 정책(site-config _sql_comments_delete)을 한 번 실행해 주세요."
+        alert(e.noPolicy || /401|403/.test(String(e.message || e))
+          ? "삭제가 데이터베이스에서 막혀 있습니다 (삭제 정책 없음).\n\nSupabase → SQL Editor 에서 아래를 한 번 실행해 주세요:\n\ncreate policy \"c anon delete\" on comments for delete to anon using (true);"
           : "삭제 실패: " + (e.message || e));
       }
     }));

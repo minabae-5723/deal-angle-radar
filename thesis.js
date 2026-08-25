@@ -1,5 +1,5 @@
 // Thesis 보드 (thesis-first) — data/theses.json + data/thesis-candidates.json
-// 탑다운 신규 네러티브 테제 → 클릭 시 바텀업(외감 후보) 드릴다운.
+// 탑다운 신규 네러티브 Thesis → 클릭 시 바텀업(외감 후보) 드릴다운.
 (function () {
   let loaded = false;
   let THESES = null,CAND = null;
@@ -110,14 +110,14 @@
     if (!p || p.length < 2 || p.length > 46 || PROD_JUNK.test(p)) return '';
     return p;
   }
-  // 딜 앵글 = 우량/고성장(thesis 수혜) + 조달니즈(딜앵글) + 테제적합
+  // 딜 앵글 = 우량/고성장(thesis 수혜) + 조달니즈(딜앵글) + Thesis적합
   function angleOf(r) {
     const a = [];
     if (r.quality) a.push(`우량 · 매출CAGR ${r.revCagr != null ? (r.revCagr >= 0 ? '+' : '') + Math.round(r.revCagr * 100) + '%' : '—'} · OPM ${pct(r.opm)}`);else
     if (r.revCagr != null && r.revCagr >= 0.15) a.push(`고성장 · 매출CAGR +${Math.round(r.revCagr * 100)}%`);
     const tl = TYPE_KO[r.type];
     if (r.need != null && r.need >= 40 && tl) a.push(`${tl}형 조달니즈 ${r.need}`);
-    if (r.bizFit) a.push('테제 적합');
+    if (r.bizFit) a.push('Thesis 적합');
     return a.length ? a.join('   ·   ') : '재무·지분 확인 필요';
   }
   function candBlock(id) {
@@ -125,7 +125,7 @@
     if (!c || !c.rows || !c.rows.length) return `<div class="th-sec-label">타깃·리드 풀</div><div class="th-cand-empty">배선 데이터 없음.</div>`;
     const leads = c.rows.map((r) => {
       const off = r.curated && r.onThesis === false;
-      const cat = off ? { k: '오프테제', c: 'off' } : catOf(r);
+      const cat = off ? { k: '오프Thesis', c: 'off' } : catOf(r);
       const prod = r.curProduct || productOf(r.biz);
       const angle = r.curAngle || angleOf(r);
       const fin = [`매출 ${won(r.rev)}`];
@@ -148,13 +148,13 @@
         <label class="ax-q"><input type="checkbox" class="th-flt" data-k="q"> 우량만</label>
         <label class="ax-need"><input type="checkbox" class="th-flt" data-k="need"> 조달니즈만</label>
         <label><input type="checkbox" class="th-flt" data-k="unl"> 비상장만</label>
-        <label><input type="checkbox" class="th-flt" data-k="off" checked> 오프테제 숨기기</label>
+        <label><input type="checkbox" class="th-flt" data-k="off" checked> 오프Thesis 숨기기</label>
         <span class="th-hint">🔎 상위 20 DART 사업내용 LLM 큐레이션(제품·앵글·오탐필터)</span>
       </div>
       <div class="th-leads">${leads}</div>`;
   }
 
-  // 필터 (우량 / 조달니즈 / 비상장 / 오프테제)
+  // 필터 (우량 / 조달니즈 / 비상장 / 오프Thesis)
   function applyFlt(box) {
     const pool = box.parentElement.querySelector('.th-leads');
     const q = box.querySelector('[data-k="q"]').checked;
@@ -171,7 +171,7 @@
     const flt = e.target.closest('.th-flt');if (!flt) return;
     applyFlt(flt.closest('.th-screen'));
   });
-  // 카드 펼칠 때 기본 필터(오프테제 숨김) 적용
+  // 카드 펼칠 때 기본 필터(오프Thesis 숨김) 적용
   document.addEventListener('click', (e) => {
     const top = e.target.closest('.th-card-top');if (!top) return;
     const card = top.closest('.th-card');

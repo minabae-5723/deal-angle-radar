@@ -63,7 +63,7 @@
     return `당신은 Reverent Partners 의 'Deal Angle Radar' 딜소싱 대시보드에 내장된 리서치 어시스턴트다.
 이 페이지는 한국 PE 딜소싱 도구다: DART 공시 스크리닝 + 외감법인 재무 바텀업 + 네러티브 탑다운 스크리너.
 
-테제 프레임 (테제 생성 3문):
+Thesis 프레임 (Thesis 생성 3문):
 ① 수요의 확실성 — 지불자가 확정적인가 (수주잔고·규제 일정·인구구조·수가/환급/방위비/의무보험)
 ② 공급·경쟁의 봉쇄 — 3년 복제 테스트 (퀄·면허·총량 인허가·공정 노하우·설치기반)
 ③ 딜 윈도우 — 왜 지금 거래되는가 (승계절벽·FI 만기·밸류 리셋·제도화 캘린더·그룹 재편·저평가 P2P)
@@ -278,7 +278,7 @@ ${lines}
       <div id="dcMsgs"></div>
       <div id="dcSetupWrap"></div>
       <form id="dcForm">
-        <textarea id="dcInput" rows="2" placeholder="예: 뿌리산업 테제의 반박 논리는? / 성림첨단산업 재무 보여줘 / 간병 급여화 최신 진행상황 웹에서 확인해줘"></textarea>
+        <textarea id="dcInput" rows="2" placeholder="예: 뿌리산업 Thesis의 반박 논리는? / 성림첨단산업 재무 보여줘 / 간병 급여화 최신 진행상황 웹에서 확인해줘"></textarea>
         <button id="dcSend" type="submit">전송</button>
       </form>`;
     document.body.appendChild(panel);
@@ -340,7 +340,7 @@ ${lines}
   }
 
   // ── 외부 노출 API ──────────────────────────────────────────────────────────
-  // 네러티브 화면의 '테제 제안' 기능이 제안자 본인의 키로 초안을 생성할 때 쓴다.
+  // 네러티브 화면의 'Thesis 제안' 기능이 제안자 본인의 키로 초안을 생성할 때 쓴다.
   // 토큰 비용은 키 소유자(제안자)에게 부과된다 — 운영자 키를 공유하지 않는 것이 설계 의도.
   async function callOnce(system, userText, basicSearch) {
     const m = model(), eff = effort();

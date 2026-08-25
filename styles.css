@@ -734,7 +734,7 @@ table.nv-mtab td:first-child { font-weight: 700; color: var(--navy-light); white
   background: transparent;
 }
 
-/* ═══════════ 네러티브 — 테제 3문 렌즈 · 스크리닝 · 커뮤니티 (2026-08-20) ═══════════ */
+/* ═══════════ 네러티브 — Thesis 3문 렌즈 · 스크리닝 · 커뮤니티 (2026-08-20) ═══════════ */
 .nv-matrix .nv-lens { font-size: 11.5px; color: var(--text-muted); max-width: 240px; }
 .nv-matrix .nv-payer { font-size: 11.5px; white-space: nowrap; }
 .nv-commct { color: var(--gold); }
@@ -920,7 +920,7 @@ ul.nv-psrcs { margin: 4px 0 0; padding-left: 18px; font-size: 12px; }
 ul.nv-psrcs li { margin: 3px 0; }
 .nv-psrc-use { color: #6b7280; font-size: 11px; }
 
-/* ── 💡 테제 제안 ────────────────────────────────────────────────────────── */
+/* ── 💡 Thesis 제안 ────────────────────────────────────────────────────────── */
 .nv-ideaform { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 12px; }
 .nv-idea-row { display: flex; gap: 6px; }
 .nv-idea-row input { flex: 1; }
@@ -935,7 +935,7 @@ ul.nv-psrcs li { margin: 3px 0; }
 .nv-ideadraft { margin-top: 6px; }
 .nv-ideadraft summary { cursor: pointer; font-weight: 600; color: #5b3fa0; }
 .nv-ideadraft > div { white-space: pre-wrap; line-height: 1.62; margin-top: 6px; background: #fff; border: 1px solid #e6e0f5; border-radius: 8px; padding: 8px 10px; }
-/* 반증 조건 — 승격기준 ⑥. 테제를 내릴 조건을 눈에 보이게 둔다. */
+/* 반증 조건 — 승격기준 ⑥. Thesis를 내릴 조건을 눈에 보이게 둔다. */
 .nv-falsify { margin: 8px 0 12px; padding: 10px 12px; background: #fdf1f0; border: 1px solid #f2cfcb; border-left: 3px solid #c0392b; border-radius: 8px; font-size: 12.5px; color: #6d2b23; }
 .nv-falsify b { color: #a3271f; }
 /* 화면이 길어져서 섹션 점프 링크 — '전문지 스크리닝 어디?'를 없애기 위한 것 */

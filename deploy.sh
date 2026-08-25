@@ -41,6 +41,14 @@ if git cat-file -e origin/gh-pages:data/board-state.json 2>/dev/null; then
   fi
 fi
 
+# 로컬 머신의 /deal-angle 세션은 일별 공시 레이더 결과(data/YYYY-MM-DD.md·index.json)를
+# gh-pages 에 직접 커밋한다. 그 커밋을 먼저 병합하지 않으면 이쪽 푸시가 거절되거나(비강제)
+# 레이더 갱신이 배포본에서 사라진다. 병합 후 푸시한다.
+if ! git merge-base --is-ancestor origin/gh-pages HEAD; then
+  echo "배포본에 우리에게 없는 커밋 있음(레이더 갱신 등) — 병합"
+  git merge --no-edit origin/gh-pages
+fi
+
 echo "작업 브랜치 푸시…"
 git push -u origin "$BRANCH"
 
