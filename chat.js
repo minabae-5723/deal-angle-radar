@@ -339,6 +339,54 @@ ${lines}
     });
   }
 
+  // ── 외부 노출 API ──────────────────────────────────────────────────────────
+  // 네러티브 화면의 '테제 제안' 기능이 제안자 본인의 키로 초안을 생성할 때 쓴다.
+  // 토큰 비용은 키 소유자(제안자)에게 부과된다 — 운영자 키를 공유하지 않는 것이 설계 의도.
+  async function callOnce(system, userText, basicSearch) {
+    const m = model(), eff = effort();
+    const hi = (eff === "xhigh" || eff === "max");
+    const body = {
+      model: m, max_tokens: hi ? 32000 : 12000,
+      system: [{ type: "text", text: system }],
+      tools: [webSearchTool(m, basicSearch)],
+      messages: [{ role: "user", content: userText }]
+    };
+    if (EFFORT_OK[m]) body.output_config = { effort: eff };
+    const headers = {
+      "content-type": "application/json",
+      "x-api-key": apiKey(),
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    };
+    if (m.startsWith("claude-opus-5") || m.startsWith("claude-fable")) {
+      headers["anthropic-beta"] = "server-side-fallback-2026-07-01";
+      body.fallbacks = "default";
+    }
+    let msgs = body.messages, out = "";
+    for (let i = 0; i < 4; i++) {
+      const res = await fetch(API, { method: "POST", headers, body: JSON.stringify({ ...body, messages: msgs }) });
+      if (!res.ok) {
+        let detail = "", errType = "";
+        try { const j = await res.json(); detail = (j.error && j.error.message) || ""; errType = (j.error && j.error.type) || ""; } catch (e) {}
+        if (!basicSearch && res.status === 400 && /web_search|tool.*type|_20260209/i.test(detail + errType)) return callOnce(system, userText, true);
+        const e2 = new Error("HTTP " + res.status + (detail ? " — " + detail : "")); e2.status = res.status; throw e2;
+      }
+      const j = await res.json();
+      out += (j.content || []).filter((b) => b.type === "text").map((b) => b.text).join("");
+      // 서버 툴(웹검색)이 길어지면 pause_turn 으로 끊긴다 — 이어서 계속 요청
+      if (j.stop_reason === "pause_turn") { msgs = msgs.concat([{ role: "assistant", content: j.content }]); continue; }
+      break;
+    }
+    return out.trim();
+  }
+
+  window.darChat = {
+    hasKey: () => !!apiKey(),
+    model,
+    callOnce,
+    openSettings: () => { const p = $("#dcPanel"); if (p) { p.hidden = false; const g = $("#dcGear"); if (g) g.click(); } }
+  };
+
   document.addEventListener("DOMContentLoaded", ensurePanel);
   if (document.readyState !== "loading") ensurePanel();
 })();

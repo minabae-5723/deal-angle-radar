@@ -1,0 +1,835 @@
+{
+ "meta": {
+  "title": "전문지 기반 테제 스크리닝",
+  "updated": "2026-08-25",
+  "purpose": "개별 기업을 먼저 고르지 않는다. 산업 전문지·공식기관·기술/규제 자료에서 반복되는 구조 변화를 잡아 테제를 만들고, 테제별로 넓은 롱리스트를 만든다.",
+  "source": "섹터별 전문지 모니터링 맵 v2 (2026-08-18) + 전문지 스크리너 프롬프트"
+ },
+ "promotion": [
+  {
+   "n": 1,
+   "title": "인과가 이어지는가",
+   "body": "촉매 → 수요 변화 → 공급 제약 → 가격·마진 또는 반복매출 → 국내 중소형 가치사슬. 한 칸이라도 비면 테제가 아니라 뉴스다.",
+   "base": "기존 3문 ①②"
+  },
+  {
+   "n": 2,
+   "title": "공급이 못 늘어나는가",
+   "body": "인허가·부지·환경규제·주민반대 / 고객 승인·인증·안전기록 / 숙련인력·정비자격 / 공정 노하우·검사 데이터 / 전환비용 / 설치기반·반복 유지보수 / 긴 납기·희소 원료 중 하나 이상.",
+   "base": "기존 3문 ②"
+  },
+  {
+   "n": 3,
+   "title": "2~3년 이상 가는가",
+   "body": "재고 사이클, 주가 모멘텀, 정책 발표만으로는 부족하다.",
+   "base": "기존 3문 ③ 보강"
+  },
+  {
+   "n": 4,
+   "title": "국내 후보가 3개 이상인가",
+   "body": "바로 확인 가능한 후보가 최소 3개, 이상적으로 5개 이상. 대형 상장사 한 곳뿐인 테제는 보류.",
+   "base": "신규"
+  },
+  {
+   "n": 5,
+   "title": "우리 거래 단위인가",
+   "body": "대형 플랫폼 인수만 가능한 영역보다 소형 상장사·비상장 외감·지역 강자·사업부·볼트온 후보가 있어야 한다.",
+   "base": "신규"
+  },
+  {
+   "n": 6,
+   "title": "어떻게 틀릴 수 있는가",
+   "body": "반증 조건을 먼저 적는다. 고객 설비투자 취소, 중국 공급과잉, 단일 고객 의존, 재고평가이익, 규제 시행 지연, 낮은 현금전환.",
+   "base": "신규"
+  }
+ ],
+ "exclusion": [
+  "대형 상장주 주가 상승을 산업 테제로 포장한 것",
+  "시장 규모만 크고 공급 제약이 없는 것",
+  "단일 정부과제·MOU·실증·시제품 기사만 있는 것",
+  "원자재 가격 방향성만 근거로 삼은 것",
+  "범용 상온물류·일반 요양·일반 건기식·일반 F&B 위탁생산처럼 신규 진입이 쉬운 사업",
+  "벤처 투자유치 자체를 경쟁력으로 읽은 것",
+  "특정 회사 한 곳에만 맞는 테제",
+  "기사 수는 많지만 전부 같은 보도자료를 전재한 것",
+  "한국 가치사슬과 중소형 후보가 식별되지 않는 글로벌 유행어"
+ ],
+ "exclusion_note": "단, 위 영역이라도 인허가·독점 유통권·고객 승인·독점 데이터·고가동 생산설비 같은 독립적인 해자가 확인되면 예외로 다시 본다.",
+ "evidence_tiers": [
+  {
+   "tier": "Tier 1",
+   "what": "법령·규제기관·국제기구·협회·기업공시·DART·기업 IR·고객사 공식자료",
+   "use": "승인 근거로 쓴다"
+  },
+  {
+   "tier": "Tier 2",
+   "what": "산업 전문지·기술 전문매체·전문 데이터기관·산업 컨퍼런스",
+   "use": "승인 근거로 쓴다"
+  },
+  {
+   "tier": "Tier 3",
+   "what": "일반 경제지·PE/VC 매체·투자유치 기사·인터뷰",
+   "use": "기업·거래 단서 보완에만"
+  },
+  {
+   "tier": "Tier 4",
+   "what": "블로그·커뮤니티·2차 요약·출처 불명 시장자료",
+   "use": "방향 탐색용. 근거로 쓰지 않는다"
+  }
+ ],
+ "evidence_rule": "승인 테제는 Tier 1 또는 Tier 2 근거를 최소 2개 이상 쓴다. 같은 보도자료를 여러 매체가 전재한 것은 '반복 신호'로 세지 않는다.",
+ "states": [
+  {
+   "k": "승인",
+   "d": "승격 기준 6개를 통과. 롱리스트를 만든다."
+  },
+  {
+   "k": "강화",
+   "d": "기존 테제를 보강하는 신호. 새 이름을 붙이지 말고 노드·후보를 추가한다."
+  },
+  {
+   "k": "관찰",
+   "d": "연결은 보이나 반복 신호·직접 노출·재무 검증이 부족."
+  },
+  {
+   "k": "보류",
+   "d": "배제 규칙에 걸리거나 근거 등급이 낮음. 다시 볼 조건을 적어둔다."
+  }
+ ],
+ "longlist_rules": {
+  "note": "후보는 '투자 확정'이 아니라 넓은 롱리스트다. 접근 가능성이 아직 없다는 이유로 빼지 않는다.",
+  "fields": [
+   "후보명·상장 여부 (법인명 정확히)",
+   "테제 연결 — 가치사슬의 어느 병목을 담당하는지 1~2문장",
+   "전문지 신호 — 기사명·매체·날짜·구체적 사건 (막연한 '수혜' 표현 금지)",
+   "직전 매출·영업이익·시총 (DART·IR·감사보고서 우선, 미확인은 '확인 필요')",
+   "다음 원문 확인 — 사업보고서에서 볼 항목(고객·사업부·영업현금흐름·설비투자·주주·CB/BW)",
+   "상태 — EVENT / RESEARCH / WATCH"
+  ],
+  "status": [
+   {
+    "k": "EVENT",
+    "d": "증설·수주·투자유치·구조개편·공시 같은 새 사건이 있다"
+   },
+   {
+    "k": "RESEARCH",
+    "d": "테제 연결은 강하나 사실·재무·사업부 검증이 먼저다"
+   },
+   {
+    "k": "WATCH",
+    "d": "산업 연결은 있으나 반복 신호·직접 노출·재무 검증이 부족하다"
+   }
+  ]
+ },
+ "finance_rule": "이 단계의 재무는 점수용이 아니라 실패 가능성과 자금수요를 빠르게 보는 보조 정보다. 직전 매출·영업이익·시총, 성장·수익성 변곡, 영업현금흐름과 영업이익의 괴리, 설비투자·재고·매출채권·순차입금, 사업부별 분해 가능 여부까지만 본다. 불확실하면 '확인 필요'로 남기고 정확한 척 하지 않는다.",
+ "deal_angle_rule": "테제와 롱리스트를 먼저 만들고 딜 앵글은 뒤로 분리한다. 창업주 연령·승계·지분분산, 재무적투자자 지분과 펀드 만기, CB/BW·차입 만기, 증설·해외진출 성장자금, 비핵심 사업부 카브아웃, 상장사 밸류업·자사주. 접근 단서가 없다는 이유로 롱리스트에서 빼지 않되, 확인되지 않은 거래 사실을 만들지 않는다.",
+ "routine": [
+  {
+   "freq": "매일 5~10분",
+   "what": "딜 플로우 스캔",
+   "src": "더벨·딜사이트 헤드라인, THE VC 최신 투자"
+  },
+  {
+   "freq": "주 2~3회",
+   "what": "A등급 섹터 깊이 읽기",
+   "src": "A등급 국내 전문지 1~2개 집중"
+  },
+  {
+   "freq": "주 1회",
+   "what": "해외 트렌드 뉴스레터 일괄",
+   "src": "CB Insights, Payload, MedTech Dive 등"
+  },
+  {
+   "freq": "격주",
+   "what": "B등급 섹터 스캔",
+   "src": "B등급 전문지 헤드라인"
+  },
+  {
+   "freq": "월 1회",
+   "what": "C등급 + 벤처 생태계 리뷰",
+   "src": "플래텀·아웃스탠딩·THE VC 월간"
+  }
+ ],
+ "triggers": [
+  "매출 급증 — 전문지에 '전년 대비 XX% 성장' 언급(특히 중소기업)",
+  "고객 다변화·글로벌화 — 신규 대형 고객, 수출 비중 상승",
+  "생산능력 증설 투자 — 신공장·라인 증설 발표",
+  "인증·허가 취득 — FDA·CE·UL·방산 적격업체 등록",
+  "창업주 고령화·승계 이슈 — 경영권 변동 가능성",
+  "정부 수주·R&D 과제 — 국가과제 수행, 정책펀드 출자",
+  "벤처 후기 라운드 — 시리즈B 이후 성장 검증, 바이아웃 후보",
+  "경쟁사 M&A 발생 — 섹터 내 롤업 가능성",
+  "규제 변경 수혜 — 신규 의무 인증, 국산화 정책"
+ ],
+ "trigger_rule": "위 신호 중 2개 이상이면 딜 소싱 파이프라인에 등록한다.",
+ "layers": [
+  {
+   "id": "L0",
+   "title": "Layer 0 — 딜 플로우 (섹터 무관, 소형·비상장 발견의 1차 필터)",
+   "groups": [
+    {
+     "g": "국내 딜·거래",
+     "sources": [
+      {
+       "name": "더벨",
+       "url": "https://www.thebell.co.kr/",
+       "focus": "M&A·ECM/DCM·PE/VC 딜·기업재무",
+       "use": "매각/인수 딜 초기 탐지, IB 파이프라인"
+      },
+      {
+       "name": "딜사이트",
+       "url": "https://dealsite.co.kr/",
+       "focus": "M&A 리그테이블·PE 딜·구조화금융",
+       "use": "경쟁 GP 딜 추적, 섹터별 딜 트렌드"
+      },
+      {
+       "name": "IB토마토",
+       "url": "https://www.ibtomato.com/",
+       "focus": "IB 딜·IPO·공모",
+       "use": "Pre/Post-IPO 타이밍, 공모 센티먼트"
+      },
+      {
+       "name": "한국M&A거래소",
+       "url": "https://www.kmna.or.kr/",
+       "focus": "중소기업 매물 DB",
+       "use": "비상장 소형사 매각 매물 직접 탐색"
+      }
+     ]
+    },
+    {
+     "g": "국내 벤처 생태계",
+     "sources": [
+      {
+       "name": "THE VC",
+       "url": "https://thevc.kr/",
+       "focus": "스타트업 투자 DB·라운드·밸류",
+       "use": "비상장 투자이력 추적 → 성장·바이아웃 파이프라인"
+      },
+      {
+       "name": "플래텀",
+       "url": "https://platum.kr/",
+       "focus": "스타트업 뉴스·아시아 VC",
+       "use": "시리즈B+ 성장기업 조기 포착"
+      },
+      {
+       "name": "벤처스퀘어",
+       "url": "https://www.venturesquare.net/",
+       "focus": "초기 스타트업·액셀러레이팅",
+       "use": "시드~시리즈A 기술 트렌드 감지"
+      },
+      {
+       "name": "아웃스탠딩",
+       "url": "https://outstanding.kr/",
+       "focus": "스타트업·테크 심층",
+       "use": "비즈니스 모델 구조·수익성 분석"
+      },
+      {
+       "name": "스타트업엔",
+       "url": "https://www.startupn.kr/",
+       "focus": "스타트업 투자·정책",
+       "use": "정부 지원사업 공고, 비상장사 뉴스"
+      }
+     ]
+    },
+    {
+     "g": "해외 딜 인텔리전스",
+     "sources": [
+      {
+       "name": "PitchBook Daily",
+       "url": "https://pitchbook.com/newsletter",
+       "focus": "PE/VC/M&A 데이터",
+       "use": "글로벌 밸류 벤치마크, 비교거래"
+      },
+      {
+       "name": "CB Insights",
+       "url": "https://www.cbinsights.com/newsletter",
+       "focus": "기술 트렌드·VC 데이터",
+       "use": "섹터별 신기술 맵, 테마 아이디어"
+      },
+      {
+       "name": "Crunchbase News",
+       "url": "https://news.crunchbase.com/",
+       "focus": "스타트업 펀딩·M&A",
+       "use": "글로벌 라운드 → 국내 유사기업 발굴"
+      },
+      {
+       "name": "The Information",
+       "url": "https://www.theinformation.com/",
+       "focus": "테크·VC 딥다이브(유료)",
+       "use": "빅테크·그로스 내부 동향"
+      },
+      {
+       "name": "Mergermarket",
+       "url": "https://www.mergermarket.com/",
+       "focus": "M&A 루머·파이프라인(유료)",
+       "use": "크로스보더 딜 초기 탐지"
+      }
+     ]
+    },
+    {
+     "g": "비상장 발굴 원천 데이터",
+     "sources": [
+      {
+       "name": "DART",
+       "url": "https://dart.fss.or.kr/",
+       "focus": "외감 감사보고서·CB/BW·주주",
+       "use": "기업 카드에 원문 링크로 저장"
+      },
+      {
+       "name": "KIND",
+       "url": "https://kind.krx.co.kr/",
+       "focus": "상장사 공시",
+       "use": "지분·거래 공시 추적"
+      },
+      {
+       "name": "NTIS",
+       "url": "https://www.ntis.go.kr/",
+       "focus": "국가 R&D 과제",
+       "use": "과제 수행기업 = 기술 보유 비상장 후보"
+      },
+      {
+       "name": "KIPRIS",
+       "url": "https://www.kipris.or.kr/",
+       "focus": "특허",
+       "use": "공정 노하우·독점 기술 확인"
+      },
+      {
+       "name": "나라장터",
+       "url": "https://www.g2b.go.kr/",
+       "focus": "공공 조달",
+       "use": "납품 실적으로 실체 확인"
+      },
+      {
+       "name": "한국벤처캐피탈협회",
+       "url": "https://www.kvca.or.kr/",
+       "focus": "펀드·투자자 데이터",
+       "use": "펀드 조성연도·만기 교차"
+      },
+      {
+       "name": "한국벤처투자",
+       "url": "https://www.kvic.or.kr/",
+       "focus": "모태펀드 출자",
+       "use": "출자 이력으로 회수 압박 추정"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "A",
+   "title": "A등급 — 핵심 투자 테마 (주 2~3회 깊이 읽기)",
+   "groups": [
+    {
+     "g": "A-1 반도체 소부장",
+     "signal": "고객 승인 진입·탈락, 팹 증설 타임라인, 공급부족 경보, 소재 전환, 고객 다변화, 국산화 과제 지정",
+     "sources": [
+      {
+       "name": "THE ELEC",
+       "url": "https://www.thelec.kr/",
+       "focus": "반도체·디스플레이·배터리",
+       "use": "업계 내부 소식이 가장 빠름"
+      },
+      {
+       "name": "전자신문",
+       "url": "https://www.etnews.com/",
+       "focus": "IT·전자 종합",
+       "use": "소부장 기업 커버리지 넓음"
+      },
+      {
+       "name": "KIPOST",
+       "url": "https://www.kipost.net/",
+       "focus": "패키징·소재 특화",
+       "use": "후공정 노드 신호"
+      },
+      {
+       "name": "반도체네트워크",
+       "url": "https://www.semi-net.co.kr/",
+       "focus": "장비·소재 동향",
+       "use": "전시회·세미나 발표 기업"
+      },
+      {
+       "name": "SemiEngineering",
+       "url": "https://semiengineering.com/",
+       "focus": "기술 로드맵",
+       "use": "노드 전환 심층"
+      },
+      {
+       "name": "EE Times",
+       "url": "https://www.eetimes.com/",
+       "focus": "전자·반도체 종합",
+       "use": ""
+      },
+      {
+       "name": "SEMI.org",
+       "url": "https://www.semi.org/",
+       "focus": "업계 단체",
+       "use": "장비 투자·팹 증설 데이터"
+      }
+     ]
+    },
+    {
+     "g": "A-2 의료기기·헬스케어",
+     "signal": "허가·급여·수가 변경, 설치기반 확대, 위탁생산 전환, 해외 인허가·유통 확보, GMP 인증",
+     "sources": [
+      {
+       "name": "메디게이트뉴스",
+       "url": "https://www.medigatenews.com/",
+       "focus": "의료기기·병원·정책",
+       "use": ""
+      },
+      {
+       "name": "히트뉴스",
+       "url": "https://www.hitnews.co.kr/",
+       "focus": "헬스케어 산업경제",
+       "use": ""
+      },
+      {
+       "name": "메디칼타임즈",
+       "url": "https://www.medicaltimes.com/",
+       "focus": "의료계 정책·규제",
+       "use": ""
+      },
+      {
+       "name": "의료기기뉴스",
+       "url": "https://www.kmdianews.com/",
+       "focus": "허가·인증 특화",
+       "use": ""
+      },
+      {
+       "name": "MedTech Dive",
+       "url": "https://www.medtechdive.com/",
+       "focus": "글로벌 기기 딜·규제",
+       "use": ""
+      },
+      {
+       "name": "Fierce Medtech",
+       "url": "https://www.fiercebiotech.com/medtech",
+       "focus": "글로벌 M&A·제품",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "A-3 바이오·제약",
+     "signal": "기술이전 딜, 임상 단계 전환, 허가, 위탁생산 수주, 마일스톤",
+     "sources": [
+      {
+       "name": "바이오스펙테이터",
+       "url": "https://www.biospectator.com/",
+       "focus": "신약·파이프라인·딜 심층",
+       "use": ""
+      },
+      {
+       "name": "약업신문",
+       "url": "https://www.yakup.com/",
+       "focus": "제약산업 종합",
+       "use": "기업총람"
+      },
+      {
+       "name": "팜뉴스",
+       "url": "https://www.pharmnews.com/",
+       "focus": "제약바이오 종합",
+       "use": ""
+      },
+      {
+       "name": "KHIDI 제약산업정보포털",
+       "url": "https://www.khidi.or.kr/",
+       "focus": "정부 통계·정책",
+       "use": ""
+      },
+      {
+       "name": "Fierce Pharma",
+       "url": "https://www.fiercepharma.com/",
+       "focus": "빅파마 딜·M&A",
+       "use": ""
+      },
+      {
+       "name": "Endpoints News",
+       "url": "https://endpts.com/",
+       "focus": "바이오텍 임상·자금조달",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "A-4 AI·산업 소프트웨어",
+     "signal": "유료 전환·구독매출 성장, 레퍼런스 고객, 기간계 연동, 정부 조달 등록",
+     "sources": [
+      {
+       "name": "AI타임스",
+       "url": "https://www.aitimes.com/",
+       "focus": "AI 기술·정책·기업",
+       "use": ""
+      },
+      {
+       "name": "디지털데일리",
+       "url": "https://www.ddaily.co.kr/",
+       "focus": "IT·클라우드·SaaS",
+       "use": ""
+      },
+      {
+       "name": "블로터",
+       "url": "https://www.bloter.net/",
+       "focus": "테크·스타트업",
+       "use": ""
+      },
+      {
+       "name": "CIO Korea",
+       "url": "https://www.ciokorea.com/",
+       "focus": "엔터프라이즈 IT",
+       "use": ""
+      },
+      {
+       "name": "VentureBeat",
+       "url": "https://venturebeat.com/",
+       "focus": "AI 엔터프라이즈 적용",
+       "use": ""
+      },
+      {
+       "name": "a16z Newsletter",
+       "url": "https://a16z.com/newsletters/",
+       "focus": "AI·인프라 투자 테마",
+       "use": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "title": "B등급 — 활성 모니터링 (격주 스캔)",
+   "groups": [
+    {
+     "g": "B-1 방산·조선 기자재",
+     "signal": "수출계약, 국산화 과제 지정·해제, 정비 수요, 병목 공정 부품사, 창업주 승계, 조선 수주잔고",
+     "sources": [
+      {
+       "name": "방위사업청",
+       "url": "https://www.dapa.go.kr/",
+       "focus": "수출·조달·국산화 과제",
+       "use": ""
+      },
+      {
+       "name": "한국방위산업진흥회",
+       "url": "https://www.kdia.or.kr/",
+       "focus": "방산 통계·전시회",
+       "use": ""
+      },
+      {
+       "name": "국방일보",
+       "url": "https://kookbang.dema.mil.kr/",
+       "focus": "군 조달·무기체계",
+       "use": ""
+      },
+      {
+       "name": "해양한국",
+       "url": "https://www.monthlymaritimekorea.com/",
+       "focus": "조선·해운 월간",
+       "use": ""
+      },
+      {
+       "name": "Defense News",
+       "url": "https://www.defensenews.com/",
+       "focus": "글로벌 방산 M&A·수출",
+       "use": ""
+      },
+      {
+       "name": "Naval News",
+       "url": "https://www.navalnews.com/",
+       "focus": "해군·조선 특화",
+       "use": ""
+      },
+      {
+       "name": "TradeWinds",
+       "url": "https://www.tradewindsnews.com/",
+       "focus": "해운·조선 시황",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "B-2 전력망·전기장비",
+     "signal": "수주잔고 추이, 납기 병목, 유틸리티 설비투자 사이클, 미국 인증, 변압기·배전반 수급",
+     "sources": [
+      {
+       "name": "전기신문",
+       "url": "https://www.electimes.com/",
+       "focus": "전력·에너지 전문",
+       "use": ""
+      },
+      {
+       "name": "전기저널",
+       "url": "https://www.keaj.kr/",
+       "focus": "전력기기 기술",
+       "use": ""
+      },
+      {
+       "name": "에너지경제신문",
+       "url": "https://www.ekn.kr/",
+       "focus": "에너지 정책·기업",
+       "use": ""
+      },
+      {
+       "name": "한전 공급망 공고",
+       "url": "https://srm.kepco.co.kr/",
+       "focus": "한전 조달·입찰",
+       "use": "유자격 등록업체 역추적"
+      },
+      {
+       "name": "Utility Dive",
+       "url": "https://www.utilitydive.com/",
+       "focus": "유틸리티 설비투자·규제",
+       "use": ""
+      },
+      {
+       "name": "T&D World",
+       "url": "https://www.tdworld.com/",
+       "focus": "송배전 장비 특화",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "B-3 2차전지 소재·장비",
+     "signal": "소재 전환, 생산능력 증설 타임라인, 북미·유럽 현지 공급 적격, 스크랩 재활용, 전고체 전환",
+     "sources": [
+      {
+       "name": "THE ELEC",
+       "url": "https://www.thelec.kr/",
+       "focus": "배터리 커버",
+       "use": ""
+      },
+      {
+       "name": "SNE리서치",
+       "url": "https://www.sneresearch.com/",
+       "focus": "시장 데이터·점유율",
+       "use": ""
+      },
+      {
+       "name": "인터배터리 뉴스레터",
+       "url": "https://interbattery.or.kr/newsletters",
+       "focus": "전시회 밸류체인",
+       "use": ""
+      },
+      {
+       "name": "Benchmark Minerals",
+       "url": "https://www.benchmarkminerals.com/",
+       "focus": "리튬·니켈 가격·공급망",
+       "use": ""
+      },
+      {
+       "name": "BloombergNEF",
+       "url": "https://about.bnef.com/",
+       "focus": "배터리 가격 전망",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "B-4 뷰티·화장품 위탁생산",
+     "signal": "인디 브랜드 고객사 확보, 생산능력 증설·자동화, 해외 인증, 수출 비중, 특수 제형 독점기술",
+     "sources": [
+      {
+       "name": "코스인코리아닷컴",
+       "url": "https://cosinkorea.com/",
+       "focus": "위탁생산사 실적 분석",
+       "use": "108개사 연간 실적 정리"
+      },
+      {
+       "name": "장업신문",
+       "url": "https://www.jangup.com/",
+       "focus": "화장품 최장수 전문지",
+       "use": ""
+      },
+      {
+       "name": "CMN",
+       "url": "https://www.cmn.co.kr/",
+       "focus": "뷰티 산업 종합",
+       "use": ""
+      },
+      {
+       "name": "코스모닝",
+       "url": "https://www.cosmorning.com/",
+       "focus": "K뷰티 경쟁력 분석",
+       "use": ""
+      },
+      {
+       "name": "CosmeticsDesign",
+       "url": "https://www.cosmeticsdesign.com/",
+       "focus": "원료·처방·규제",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "B-5 시험인증·안전·환경",
+     "signal": "법 시행일, 지정·인증 범위 확대, 갱신주기 의무화, 지역 파편화, 글로벌 TIC의 한국 인수",
+     "sources": [
+      {
+       "name": "안전저널",
+       "url": "https://www.anjunj.com/",
+       "focus": "산업안전·소방",
+       "use": ""
+      },
+      {
+       "name": "환경미디어",
+       "url": "https://www.ecomedia.co.kr/",
+       "focus": "환경 산업·정책",
+       "use": ""
+      },
+      {
+       "name": "환경부",
+       "url": "https://www.me.go.kr/",
+       "focus": "법 시행·인증 범위",
+       "use": "원문 추적"
+      },
+      {
+       "name": "국가기술표준원",
+       "url": "https://www.kats.go.kr/",
+       "focus": "인증·표준 제도 변경",
+       "use": ""
+      },
+      {
+       "name": "EHS Today",
+       "url": "https://www.ehstoday.com/",
+       "focus": "산업안전·환경보건",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "B-6 우주·위성",
+     "signal": "발사 성공/실패, 위성 양산 계약, 지상국 장비 수주, 부품 국산화, 정부 R&D 수주",
+     "sources": [
+      {
+       "name": "우주항공청",
+       "url": "https://www.kasa.go.kr/",
+       "focus": "정책·예산·사업 공고",
+       "use": ""
+      },
+      {
+       "name": "SpaceNews",
+       "url": "https://spacenews.com/",
+       "focus": "우주산업 종합",
+       "use": ""
+      },
+      {
+       "name": "Payload Space",
+       "url": "https://payloadspace.com/",
+       "focus": "우주 비즈니스 뉴스레터",
+       "use": "투자자 관점"
+      },
+      {
+       "name": "Via Satellite",
+       "url": "https://www.viasatellite.com/",
+       "focus": "위성통신 산업",
+       "use": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C",
+   "title": "C등급 — 기회주의적 (월 1회)",
+   "groups": [
+    {
+     "g": "C-1 식품·소비재",
+     "signal": "브랜드 수출 급증, 자체 브랜드 전환, 생산능력 증설, 해외 유통 입점, 인증 확보",
+     "sources": [
+      {
+       "name": "식품음료신문",
+       "url": "https://www.thinkfood.co.kr/",
+       "focus": "식품 산업 종합",
+       "use": ""
+      },
+      {
+       "name": "식품저널",
+       "url": "https://www.foodnews.co.kr/",
+       "focus": "식품 기업·제도·원료",
+       "use": ""
+      },
+      {
+       "name": "aT 한국농수산식품유통공사",
+       "url": "https://www.at.or.kr/",
+       "focus": "수출 통계·시장보고서",
+       "use": ""
+      },
+      {
+       "name": "Food Dive",
+       "url": "https://www.fooddive.com/",
+       "focus": "식품 M&A·트렌드",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "C-2 산업유통·물류·교육",
+     "signal": "수수료율 변동, 물동량, 창고 리스 만기·증설, 환급·국가지불, 재무적투자자 회수 압력, 자동화 도입",
+     "sources": [
+      {
+       "name": "물류신문",
+       "url": "https://www.klnews.co.kr/",
+       "focus": "물류 산업 전문",
+       "use": ""
+      },
+      {
+       "name": "유통저널",
+       "url": "https://www.retailing.co.kr/",
+       "focus": "유통·프랜차이즈",
+       "use": ""
+      },
+      {
+       "name": "한국HRD협회",
+       "url": "https://www.kshrd.or.kr/",
+       "focus": "직업훈련·교육 정책",
+       "use": ""
+      },
+      {
+       "name": "FreightWaves",
+       "url": "https://www.freightwaves.com/",
+       "focus": "화물·물류 시황",
+       "use": ""
+      },
+      {
+       "name": "Modern Materials Handling",
+       "url": "https://www.mmh.com/",
+       "focus": "창고 자동화·물류 장비",
+       "use": ""
+      }
+     ]
+    },
+    {
+     "g": "C-3 자동차 부품",
+     "signal": "완성차 벤더 등록·탈락, 전장 전환, 고객 다변화, 전기차 전환기 구조조정, 경량화 소재, 창업주 승계",
+     "sources": [
+      {
+       "name": "오토타임즈",
+       "url": "https://autotimeskr.com/",
+       "focus": "자동차 산업 전문",
+       "use": ""
+      },
+      {
+       "name": "한국자동차산업협회",
+       "url": "https://www.kama.or.kr/",
+       "focus": "생산·수출 통계",
+       "use": ""
+      },
+      {
+       "name": "한국자동차연구원",
+       "url": "https://www.katech.re.kr/",
+       "focus": "기술 트렌드",
+       "use": ""
+      },
+      {
+       "name": "Automotive News",
+       "url": "https://www.autonews.com/",
+       "focus": "글로벌 산업 종합",
+       "use": ""
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

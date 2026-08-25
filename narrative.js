@@ -23,6 +23,8 @@
   let boardOverrides = {};            // 로컬 미확정 변경 (낙관적 업데이트)
   let boardMsg = "";                  // 저장 상태 표시줄
   let boardThemes = [];               // 폴링 재렌더용 approved 목록 참조
+  let press = null;                   // data/press-screen.json — 전문지 맵 + 스크리닝 프로토콜
+  let ideas = [];                     // 외부 제안 목록 (Supabase thesis_ideas)
   let sb = null;                      // Supabase 설정 {url, anonKey} — 있으면 공유 store
   let dragging = false, pollTimer = null;
   // localStorage 는 브라우저 정책(사이트 데이터 차단)에서 접근 자체가 예외를 던질 수 있음 — 항상 가드
@@ -55,6 +57,22 @@
     });
     if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
   }
+  // ── 테제 제안 (Supabase, 로그인 불필요 — 외부 참여자의 집단지성 투입구) ──
+  //   thesis_ideas: 누구나 아이디어를 넣고, 본인 API 키가 있으면 전문지 프로토콜로 초안까지 만든다.
+  //   초안 생성 토큰은 제안자 본인 키로 결제된다(운영자 키를 공유하지 않는 것이 설계 의도).
+  async function sbIdeas() {
+    const r = await fetch(sb.url + "/rest/v1/thesis_ideas?select=id,title,body,author,sector,draft,status,created_at&order=created_at.desc&limit=60", { headers: sbHeaders(), cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }
+  async function sbPostIdea(row) {
+    const r = await fetch(sb.url + "/rest/v1/thesis_ideas", {
+      method: "POST", headers: Object.assign(sbHeaders(), { Prefer: "return=minimal" }),
+      body: JSON.stringify([row])
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+  }
+
   // ── 테마별 댓글 (Supabase, 실시간 자동 반영) ──────────────────────────────
   async function sbComments(themeId) {
     const r = await fetch(sb.url + "/rest/v1/comments?theme_id=eq." + encodeURIComponent(themeId) + "&select=author,body,created_at&order=created_at.asc", { headers: sbHeaders(), cache: "no-store" });
@@ -198,10 +216,15 @@
       if (bres.ok) { const bj = await bres.json(); boardBase = bj; if (!boardBase.stages) boardBase.stages = {}; }
     } catch (e) { /* 기본값 유지 */ }
     try {
+      const pres = await fetch("./data/press-screen.json", { cache: "default" });
+      if (pres.ok) press = await pres.json();
+    } catch (e) { /* 전문지 모듈 없이도 화면은 뜬다 */ }
+    try {
       const cres = await fetch(`./data/site-config.json?_=${Date.now()}`, { cache: "no-store" });
       if (cres.ok) { const cj = await cres.json(); if (cj.supabase && cj.supabase.url && cj.supabase.anonKey) sb = cj.supabase; }
     } catch (e) { /* site-config 없음 — 파일/토큰 폴백 */ }
     if (sb) { try { await sbLoad(); } catch (e) { boardMsg = "Supabase 조회 실패: " + (e.message || e) + " — 파일 기준값 사용"; } }
+    if (sb) { try { ideas = await sbIdeas(); } catch (e) { ideas = []; } }
     curTheme = (data.themes.find((t) => t.status === "approved") || data.themes[0]).id;
     render();
     // Supabase 모드: 보드가 보일 때만 주기적으로 공유 상태를 당겨와 보드 카드만 갱신 (near-realtime)
@@ -213,6 +236,7 @@
         try { await sbLoad(); } catch (e) { return; }
         if (JSON.stringify(boardBase.stages) !== before) refreshBoard();
         if (curTheme) hydrateComments(curTheme);   // 현재 테제 댓글도 실시간 갱신
+        try { const fresh = await sbIdeas(); if (JSON.stringify(fresh) !== JSON.stringify(ideas)) { ideas = fresh; renderIdeaList(); } } catch (e) { }
       }, 12000);
     }
   };
@@ -237,10 +261,182 @@
     intro() + (
     candidates.length ? candidateBox(candidates) : "") +
     boardBox(approved) +
+    ideaBox() +
+    pressBox() +
     `<details class="nv-matrix-details"><summary>📊 상세 카탈로그 — 렌즈 비교 테이블 (공급탄력성·해자·딜윈도우·지불자)</summary>${matrix(approved)}</details>` +
     `<div id="themeSheet"></div>`;
     wireBoard(root, approved);
+    wireIdea(root);
     renderSheet();
+  }
+
+  // ── 📰 전문지 기반 스크리닝 모듈 ───────────────────────────────────────────
+  //   개별 기업이 아니라 전문지에서 반복되는 구조 변화를 먼저 잡는다는 원칙을 화면에 고정한다.
+  //   여기 있는 승격 기준·배제 규칙·증거 등급이 테제를 올릴지 말지의 기준이고,
+  //   전문지 맵은 그 근거를 어디서 가져오는지의 목록이다. (data/press-screen.json)
+  function pressBox() {
+    if (!press) return "";
+    const p = press;
+    const srcRow = (x) => `<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a>` +
+      (x.focus ? ` <span class="nv-dim">— ${esc(x.focus)}</span>` : "") +
+      (x.use ? `<div class="nv-psrc-use">${esc(x.use)}</div>` : "") + `</li>`;
+    const grpHTML = (g) => `<div class="nv-pgrp">
+        <div class="nv-pgrp-head">${esc(g.g)}</div>
+        ${g.signal ? `<div class="nv-psignal"><b>잡아낼 신호</b> ${esc(g.signal)}</div>` : ""}
+        <ul class="nv-psrcs">${(g.sources || []).map(srcRow).join("")}</ul>
+      </div>`;
+    const layerHTML = (L) => `<details class="nv-player"><summary>${esc(L.title)} <span class="nv-dim">${L.groups.reduce((n, g) => n + g.sources.length, 0)}개 소스</span></summary>
+        ${L.groups.map(grpHTML).join("")}</details>`;
+    return `<section class="card nv-press">
+      <h2 class="card-title">📰 전문지 기반 테제 스크리닝</h2>
+      <p class="nv-dim">${esc(p.meta.purpose)}</p>
+      <div class="nv-pgrid">
+        <div class="nv-pcol">
+          <h3>테제로 올리는 기준</h3>
+          <ol class="nv-pcrit">${p.promotion.map((c) => `<li><b>${esc(c.title)}</b> <span class="nv-ptag${c.base === "신규" ? " nv-ptag-new" : ""}">${esc(c.base)}</span><div>${esc(c.body)}</div></li>`).join("")}</ol>
+          <h3>올리지 않는 것</h3>
+          <ul class="nv-bl">${p.exclusion.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+          <p class="nv-dim">${esc(p.exclusion_note)}</p>
+        </div>
+        <div class="nv-pcol">
+          <h3>근거 등급</h3>
+          <table class="nv-ptier">${p.evidence_tiers.map((t) => `<tr><th>${esc(t.tier)}</th><td>${esc(t.what)}<div class="nv-dim">${esc(t.use)}</div></td></tr>`).join("")}</table>
+          <p class="nv-dim">${esc(p.evidence_rule)}</p>
+          <h3>판정</h3>
+          <div class="nv-pstates">${p.states.map((x) => `<span class="nv-pstate"><b>${esc(x.k)}</b> ${esc(x.d)}</span>`).join("")}</div>
+          <h3>후보를 적는 법</h3>
+          <ul class="nv-bl">${p.longlist_rules.fields.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
+          <div class="nv-pstates">${p.longlist_rules.status.map((x) => `<span class="nv-pstate"><b>${esc(x.k)}</b> ${esc(x.d)}</span>`).join("")}</div>
+        </div>
+      </div>
+      <details class="nv-pmore"><summary>재무·딜앵글 사용 원칙, 운용 루틴, 발견 트리거</summary>
+        <p><b>재무</b> ${esc(p.finance_rule)}</p>
+        <p><b>딜 앵글</b> ${esc(p.deal_angle_rule)}</p>
+        <table class="nv-proutine">${p.routine.map((r) => `<tr><th>${esc(r.freq)}</th><td>${esc(r.what)} <span class="nv-dim">${esc(r.src)}</span></td></tr>`).join("")}</table>
+        <ol class="nv-bl">${p.triggers.map((t) => `<li>${esc(t)}</li>`).join("")}</ol>
+        <p class="nv-dim">${esc(p.trigger_rule)}</p>
+      </details>
+      <h3 class="nv-pmaphead">전문지 맵 <span class="nv-dim">— 근거를 가져오는 곳. 해외는 산업 트렌드, 국내는 개별 기업.</span></h3>
+      ${p.layers.map(layerHTML).join("")}
+    </section>`;
+  }
+
+  // ── 💡 테제 제안 (집단지성 투입구) ─────────────────────────────────────────
+  //   외부 참여자가 로그인 없이 아이디어를 넣는다. 본인 API 키가 있으면 위 전문지 프로토콜로
+  //   초안(인과사슬·공급탄력성·왜 지금·후보군·반증)까지 생성해 함께 올린다 — 토큰은 제안자 부담.
+  function ideaBox() {
+    const on = !!sb;
+    return `<section class="card nv-idea">
+      <h2 class="card-title">💡 테제 제안 <span class="nv-dim">— 누구나</span></h2>
+      <p class="nv-dim">${on ?
+        "로그인 없이 바로 등록됩니다. 등록된 제안은 전원에게 실시간으로 보이고, 검토 후 테마 보드의 테제로 승격됩니다." :
+        "Supabase 설정 후 활성화됩니다 (data/site-config.json)."}</p>
+      ${on ? `<form id="nvIdeaForm" class="nv-ideaform">
+        <div class="nv-idea-row">
+          <input id="nvIdeaAuthor" placeholder="이름" maxlength="40">
+          <input id="nvIdeaSector" placeholder="섹터·분야 (선택)" maxlength="40">
+        </div>
+        <input id="nvIdeaTitle" placeholder="한 줄 명제 — 어떤 수요 변화와 공급 제약인가" maxlength="120">
+        <textarea id="nvIdeaBody" rows="3" placeholder="근거를 적어주세요. 어떤 전문지·공시·기관 자료에서 봤는지, 어떤 회사가 떠오르는지."></textarea>
+        <div class="nv-idea-btns">
+          <button id="nvIdeaSubmit" type="submit">제안 등록</button>
+          <button id="nvIdeaDraft" type="button" title="본인 API 키로 전문지 프로토콜을 돌려 테제 초안을 만듭니다 (토큰 비용은 본인 키에 부과)">🤖 내 키로 초안까지 만들기</button>
+          <span id="nvIdeaMsg" class="nv-dim"></span>
+        </div>
+      </form>
+      <div id="nvIdeaList" class="nv-idealist"></div>` : ""}
+    </section>`;
+  }
+
+  function renderIdeaList() {
+    const el = document.getElementById("nvIdeaList");
+    if (!el) return;
+    if (!ideas.length) { el.className = "nv-idealist nv-dim"; el.innerHTML = "아직 제안이 없습니다 — 첫 테제를 넣어보세요."; return; }
+    el.className = "nv-idealist";
+    el.innerHTML = ideas.map((i) => `<div class="nv-ideacard">
+      <div class="nv-ideahead"><b>${esc(i.title || "(제목 없음)")}</b>
+        <span class="nv-dim">${esc(i.author || "익명")}${i.sector ? " · " + esc(i.sector) : ""} · ${esc((i.created_at || "").slice(0, 10))}</span></div>
+      ${i.body ? `<div class="nv-ideabody">${esc(i.body)}</div>` : ""}
+      ${i.draft ? `<details class="nv-ideadraft"><summary>🤖 테제 초안 보기</summary><div>${esc(i.draft)}</div></details>` : ""}
+    </div>`).join("");
+  }
+
+  // 제안자 본인 키로 돌리는 초안 프롬프트 — 화면의 프로토콜을 그대로 규칙으로 넘긴다.
+  function draftPrompt(title, body, sector) {
+    const p = press || {};
+    const rules = [
+      "당신은 국내 소형 PE(운용 2,000억원 수준)의 딜소싱 리서치 파트너다.",
+      "개별 기업을 먼저 고르지 말고, 산업 전문지·공식기관·규제 자료에서 반복되는 구조 변화로 테제를 세운다.",
+      "선호 대상은 소형 상장사와 비상장 외감법인이다. 대형 상장사·대형 PE 보유자산은 밸류 기준점으로만 쓴다.",
+      "", "[테제로 올리는 기준]",
+      ...(p.promotion || []).map((c) => `${c.n}. ${c.title} — ${c.body}`),
+      "", "[올리지 않는 것]", ...(p.exclusion || []).map((x) => "- " + x),
+      "", "[근거 등급]", ...(p.evidence_tiers || []).map((t) => `${t.tier}: ${t.what} (${t.use})`),
+      p.evidence_rule || "",
+      "", "[작성 규칙]",
+      "한국어로 쓴다. 문어체로 쓰되 업계 약어는 처음 나올 때 풀어 쓴다.",
+      "모든 외부 사실에 매체명과 발행일을 붙인다. 웹검색으로 확인되지 않은 수치는 '확인 필요'라고 적고 지어내지 않는다.",
+      "'유망'·'성장 기대' 같은 표현은 근거 없이 쓰지 않는다."
+    ].join("\n");
+    const ask = `아래 제안을 위 기준으로 검토해 테제 초안을 만들어라. 웹검색으로 최근 사실을 확인하고 근거를 붙일 것.
+
+제안자 입력
+- 한 줄 명제: ${title}
+- 섹터: ${sector || "(미지정)"}
+- 근거·설명: ${body || "(없음)"}
+
+다음 형식으로만 답한다.
+1) 판정: 승인 / 강화 / 관찰 / 보류 중 하나 + 한 줄 이유
+2) 한 줄 명제 (다시 쓴 것)
+3) 인과 사슬: 촉매 → 수요 변화 → 공급 병목 → 가격·마진 또는 반복매출 → 국내 중소형 후보군
+4) 왜 지금인가: 전문지·공식기관에서 확인된 사실 2~4개 (매체명·날짜 포함)
+5) 공급이 얼마나 못 늘어나나: very_low / low / mid / high 중 하나 + 근거
+6) 우리 거래 단위에 맞는가: 기업 규모·구조·볼트온 가능성
+7) 후보 3개 이상: 회사명 / 상장 여부 / 어느 병목을 맡는지 / 전문지 신호(매체·날짜) / 직전 매출·영업이익(확인 안 되면 '확인 필요') / 상태(EVENT·RESEARCH·WATCH)
+8) 어떻게 틀릴 수 있나: 반증 조건과 바로 확인할 원문
+9) 모니터링 소스와 다음 확인 시점`;
+    return { system: rules, user: ask };
+  }
+
+  function wireIdea(root) {
+    const form = root.querySelector("#nvIdeaForm");
+    if (!form) return;
+    renderIdeaList();
+    const msg = (t) => { const m = root.querySelector("#nvIdeaMsg"); if (m) m.textContent = t; };
+    const vals = () => ({
+      author: (root.querySelector("#nvIdeaAuthor").value || "").trim(),
+      sector: (root.querySelector("#nvIdeaSector").value || "").trim(),
+      title: (root.querySelector("#nvIdeaTitle").value || "").trim(),
+      body: (root.querySelector("#nvIdeaBody").value || "").trim()
+    });
+    async function save(draft) {
+      const v = vals();
+      if (!v.title) { msg("한 줄 명제를 입력해 주세요."); return false; }
+      await sbPostIdea({ title: v.title, body: v.body, author: v.author || "익명", sector: v.sector || null, draft: draft || null, status: "new" });
+      root.querySelector("#nvIdeaTitle").value = "";
+      root.querySelector("#nvIdeaBody").value = "";
+      try { ideas = await sbIdeas(); renderIdeaList(); } catch (e) { }
+      return true;
+    }
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg("등록 중…");
+      try { if (await save(null)) msg("등록됐습니다."); }
+      catch (err) { msg("등록 실패: " + (err.message || err)); }
+    });
+    root.querySelector("#nvIdeaDraft").addEventListener("click", async () => {
+      const chat = window.darChat;
+      if (!chat) { msg("리서치 챗이 로드되지 않았습니다."); return; }
+      if (!chat.hasKey()) { msg("먼저 오른쪽 아래 💬에서 본인 API 키를 넣어주세요 — 초안 생성 비용은 본인 키에 부과됩니다."); chat.openSettings(); return; }
+      const v = vals();
+      if (!v.title) { msg("한 줄 명제를 먼저 입력해 주세요."); return; }
+      msg("초안 생성 중… (모델·웹검색 사용, 1~3분)");
+      try {
+        const pr = draftPrompt(v.title, v.body, v.sector);
+        const out = await chat.callOnce(pr.system, pr.user);
+        if (await save(out)) msg("초안과 함께 등록됐습니다.");
+      } catch (err) { msg("초안 생성 실패: " + (err.message || err)); }
+    });
   }
 
   // ── Work·Hold·Drop 보드 렌더 ──────────────────────────────────────────────
@@ -632,6 +828,7 @@
       ${t.harvest_reinforce && t.harvest_reinforce.length ? `<details class="nv-reinforce"><summary>🌱 우리 리서치 자산에서 이 테제가 다시 확인된 근거 ${t.harvest_reinforce.length}건</summary><ul class="nv-bl">${t.harvest_reinforce.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
       ${kpiGrid(t)}
       ${t.supply_verdict ? `<div class="nv-verdict"><b>공급이 얼마나 못 늘어나나</b>${Array.isArray(t.supply_verdict) ? "" : " — "}${textBlock(t.supply_verdict)}</div>` : ""}
+      ${t.falsify && t.falsify.length ? `<div class="nv-falsify"><b>어떻게 틀릴 수 있나</b> <span class="nv-dim">— 이게 관측되면 테제를 내린다</span>${textBlock(t.falsify)}</div>` : ""}
       ${screenList(t)}
       ${commentsSection(t.id)}
       ${nodeChips}
