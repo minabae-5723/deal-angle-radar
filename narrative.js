@@ -674,11 +674,33 @@
     </div>`;
   }
 
+  // 승인 대기(하베스트·스카우트·전문지 스캔 후보) — 판정과 그 근거를 함께 보여준다.
+  // 숨겨두면 다시 잊히므로, 무엇이 확인되면 올릴지(승격 조건)까지 화면에 남긴다.
+  const VERDICT = {
+    promote: { ko: "승격 추천", cls: "nv-vd-go" },
+    hold: { ko: "보류 — 조건 확인 필요", cls: "nv-vd-hold" },
+    drop: { ko: "현 시점 제외 — 재검토 트리거 있음", cls: "nv-vd-drop" }
+  };
   function candidateBox(cands) {
-    return `<section class="card nv-cand"><h2 class="card-title">🌱 하베스트 후보 (승인 대기 ${cands.length})</h2>
-      <p class="nv-dim">PPI 가속·insight·news 에서 포착된 신규 narrative 후보. 승인 시 정식 테마로 편입.</p>
-      ${cands.map((c) => {var _c$provenance, _c$provenance2;return `<div class="nv-cand-row nv-candclick" data-id="${esc(c.id)}" title="클릭 = 이 Thesis 시트 열기"><span class="nv-cand-title">${esc(c.emoji)} ${esc(c.title)}</span>
-        <span class="nv-prov">${esc(((_c$provenance = c.provenance) === null || _c$provenance === void 0 ? void 0 : _c$provenance.source) || "")} · ${esc(((_c$provenance2 = c.provenance) === null || _c$provenance2 === void 0 ? void 0 : _c$provenance2.evidence) || "")}</span></div>`;}).join("")}
+    const order = { promote: 0, hold: 1, drop: 2 };
+    const sorted = [...cands].sort((a, b) => (order[a.harvest_verdict] || 1) - (order[b.harvest_verdict] || 1));
+    return `<section class="card nv-cand" id="nvCand"><h2 class="card-title">🌱 승인 대기 Thesis <span class="nv-dim">${sorted.length}건</span></h2>
+      <p class="nv-dim">하베스트·스카우트·전문지 스캔이 잡았지만 아직 승격하지 않은 것들. 클릭하면 근거·롱리스트·승격 조건이 담긴 시트가 열린다. 승격 판단은 사람이 한다.</p>
+      ${sorted.map((c) => {
+        const v = VERDICT[c.harvest_verdict] || null;
+        const e = ELAS[c.catalog && c.catalog.supply_elasticity] || {};
+        const why = (c.provenance && c.provenance.evidence) || "";
+        return `<div class="nv-cand-row nv-candclick" data-id="${esc(c.id)}" title="클릭 = 이 Thesis 시트 열기">
+          <div class="nv-cand-head">
+            <span class="nv-cand-title">${esc(c.emoji || "")} ${esc(c.title)}</span>
+            ${v ? `<span class="nv-vd ${v.cls}">${v.ko}</span>` : ""}
+            ${e.label ? `<span class="nv-elas ${e.cls || ""}">공급 ${esc(e.label)}</span>` : ""}
+            ${c.group ? `<span class="nv-axis-tag">${esc(c.group.emoji || "")} ${esc(c.group.title || "")}</span>` : ""}
+          </div>
+          ${why ? `<div class="nv-cand-why">${esc(why)}</div>` : ""}
+          ${(c.screen && c.screen.length) ? `<div class="nv-cand-gate"><b>승격 조건</b> ${esc(c.screen[0])}</div>` : ""}
+        </div>`;
+      }).join("")}
     </section>`;
   }
 
