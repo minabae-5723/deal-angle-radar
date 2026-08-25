@@ -938,3 +938,10 @@ ul.nv-psrcs li { margin: 3px 0; }
 /* 반증 조건 — 승격기준 ⑥. 테제를 내릴 조건을 눈에 보이게 둔다. */
 .nv-falsify { margin: 8px 0 12px; padding: 10px 12px; background: #fdf1f0; border: 1px solid #f2cfcb; border-left: 3px solid #c0392b; border-radius: 8px; font-size: 12.5px; color: #6d2b23; }
 .nv-falsify b { color: #a3271f; }
+/* 화면이 길어져서 섹션 점프 링크 — '전문지 스크리닝 어디?'를 없애기 위한 것 */
+.nv-jump { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 6px; }
+.nv-jump a { font-size: 12px; text-decoration: none; color: var(--navy-dark); background: #eef1f5; border: 1px solid #dde3ec; border-radius: 999px; padding: 4px 11px; }
+.nv-jump a:hover { background: #e2e8f2; }
+/* 댓글 삭제 버튼 — 내 댓글에만 노출 */
+.nv-cmt-del { float: right; border: none; background: none; cursor: pointer; font-size: 12px; opacity: .45; padding: 0 2px; }
+.nv-cmt-del:hover { opacity: 1; }

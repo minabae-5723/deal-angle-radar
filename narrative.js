@@ -38,6 +38,16 @@
     return "work"; // 기본: 진행
   }
   function ghToken() { return (lsGet("dar_gh_token") || "").trim(); }
+  // 로그인이 없는 구조라 '내 댓글' 판별은 브라우저별 임의 식별자로 한다.
+  // 이 값은 이 브라우저에만 있고, 댓글과 함께 저장돼 삭제 버튼 노출 여부를 정한다.
+  function clientId() {
+    let v = lsGet("dar_client_id");
+    if (!v) {
+      v = "c" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+      lsSet("dar_client_id", v);
+    }
+    return v;
+  }
 
   // ── Supabase 공유 store (권장 경로) — anon 키로 브라우저에서 직접 read/write ──
   function sbHeaders() { return { apikey: sb.anonKey, Authorization: "Bearer " + sb.anonKey, "Content-Type": "application/json" }; }
@@ -74,15 +84,33 @@
   }
 
   // ── 테마별 댓글 (Supabase, 실시간 자동 반영) ──────────────────────────────
+  // client_id 컬럼은 나중에 추가됐다 — 아직 없는 DB 에서도 댓글이 죽지 않도록 두 번 시도한다.
+  let cmtHasClientId = true;
   async function sbComments(themeId) {
-    const r = await fetch(sb.url + "/rest/v1/comments?theme_id=eq." + encodeURIComponent(themeId) + "&select=author,body,created_at&order=created_at.asc", { headers: sbHeaders(), cache: "no-store" });
-    if (!r.ok) throw new Error("HTTP " + r.status);
+    const cols = cmtHasClientId ? "id,author,body,created_at,client_id" : "id,author,body,created_at";
+    const r = await fetch(sb.url + "/rest/v1/comments?theme_id=eq." + encodeURIComponent(themeId) + "&select=" + cols + "&order=created_at.asc", { headers: sbHeaders(), cache: "no-store" });
+    if (!r.ok) {
+      if (cmtHasClientId && (r.status === 400 || r.status === 404)) { cmtHasClientId = false; return sbComments(themeId); }
+      throw new Error("HTTP " + r.status);
+    }
     return r.json();
   }
   async function sbPostComment(themeId, author, body) {
+    const row = { theme_id: themeId, author: author, body: body };
+    if (cmtHasClientId) row.client_id = clientId();
     const r = await fetch(sb.url + "/rest/v1/comments", {
       method: "POST", headers: Object.assign(sbHeaders(), { Prefer: "return=minimal" }),
-      body: JSON.stringify([{ theme_id: themeId, author: author, body: body }])
+      body: JSON.stringify([row])
+    });
+    if (!r.ok) {
+      if (cmtHasClientId && r.status === 400) { cmtHasClientId = false; return sbPostComment(themeId, author, body); }
+      throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+    }
+  }
+  // 삭제는 본인 것만 — UI 가 내 client_id 인 댓글에만 버튼을 띄운다.
+  async function sbDeleteComment(id) {
+    const r = await fetch(sb.url + "/rest/v1/comments?id=eq." + encodeURIComponent(id), {
+      method: "DELETE", headers: Object.assign(sbHeaders(), { Prefer: "return=minimal" })
     });
     if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
   }
@@ -264,7 +292,7 @@
     ideaBox() +
     pressBox() +
     `<details class="nv-matrix-details"><summary>📊 상세 카탈로그 — 렌즈 비교 테이블 (공급탄력성·해자·딜윈도우·지불자)</summary>${matrix(approved)}</details>` +
-    `<div id="themeSheet"></div>`;
+    `<div id="nvSheet"></div><div id="themeSheet"></div>`;
     wireBoard(root, approved);
     wireIdea(root);
     renderSheet();
@@ -287,7 +315,7 @@
       </div>`;
     const layerHTML = (L) => `<details class="nv-player"><summary>${esc(L.title)} <span class="nv-dim">${L.groups.reduce((n, g) => n + g.sources.length, 0)}개 소스</span></summary>
         ${L.groups.map(grpHTML).join("")}</details>`;
-    return `<section class="card nv-press">
+    return `<section class="card nv-press" id="nvPress">
       <h2 class="card-title">📰 전문지 기반 테제 스크리닝</h2>
       <p class="nv-dim">${esc(p.meta.purpose)}</p>
       <div class="nv-pgrid">
@@ -326,7 +354,7 @@
   //   초안(인과사슬·공급탄력성·왜 지금·후보군·반증)까지 생성해 함께 올린다 — 토큰은 제안자 부담.
   function ideaBox() {
     const on = !!sb;
-    return `<section class="card nv-idea">
+    return `<section class="card nv-idea" id="nvIdea">
       <h2 class="card-title">💡 테제 제안 <span class="nv-dim">— 누구나</span></h2>
       <p class="nv-dim">${on ?
         "로그인 없이 바로 등록됩니다. 등록된 제안은 전원에게 실시간으로 보이고, 검토 후 테마 보드의 테제로 승격됩니다." :
@@ -490,7 +518,7 @@
         ${body || `<div class="nv-bempty">비어 있음 — 카드를 끌어다 놓으세요</div>`}
       </div>`;
     };
-    return `<section class="card nv-board-card">
+    return `<section class="card nv-board-card" id="nvBoard">
       <h2 class="card-title">테마 보드 — Work · Hold · Drop
         <span class="nv-board-tools">
           ${pending ? `<span class="nv-bpend">저장 중 ${pending}건</span>` : ""}
@@ -600,6 +628,12 @@
   function intro() {
     return `<div class="nv-intro">
       <p><strong>네러티브 → transmission KPI → value chain 노드 → 외감 롱리스트</strong>. 테제는 3문으로 생성·검증한다 — <strong>① 수요의 확실성</strong>(지불자·백로그·규제일정·인구) × <strong>② 공급·경쟁의 봉쇄</strong>(3년 복제 테스트: 퀄·면허·총량·노하우·설치기반) × <strong>③ 딜 윈도우</strong>(왜 지금 거래되는가: 승계·FI만기·밸류리셋·제도화 캘린더·그룹재편·저평가 P2P).</p>
+      <div class="nv-jump">
+        <a href="#nvBoard">🗂 테마 보드</a>
+        <a href="#nvIdea">💡 테제 제안</a>
+        <a href="#nvPress">📰 전문지 스크리닝</a>
+        <a href="#nvSheet">📄 테마 시트</a>
+      </div>
       <p class="nv-dim">유니버스: 외감법인 41,409개 패널 × funding-pool 니즈 오버레이 · 재무: funding-pool 수록사는 <b>최신 DART 감사보고서(2025 다수)</b> 반영(매출 옆 '25/'24 = 기준연도), 그 외 패널사는 직전 빌드(2024) · 포착: 자산 하베스트 + 사용자 승인 · 공통 킬 필터: 中 3~5년 복제 가능성 · 재빌드: <code>node narrative/build-narrative.mjs</code>${data.meta.build_mode && data.meta.build_mode.startsWith("patch") ? ` · <b>패치 빌드</b>(패널 전체 2025 갱신은 패널 머신에서)` : ""}</p>
     </div>`;
   }
@@ -920,8 +954,23 @@
   function renderCmtList(el, rows) {
     if (!rows || !rows.length) { el.className = "nv-cmt-list nv-dim"; el.innerHTML = "아직 댓글이 없습니다 — 첫 의견을 남겨보세요."; return; }
     el.className = "nv-cmt-list";
+    const me = clientId();
     el.innerHTML = rows.map((m) =>
-      `<div class="nv-cmt-item"><span class="nv-cmt-name">${esc(m.author || "익명")}</span><span class="nv-cmt-time">${esc((m.created_at || "").slice(0, 16).replace("T", " "))}</span><div class="nv-cmt-text">${esc(m.body || "")}</div></div>`).join("");
+      `<div class="nv-cmt-item"><span class="nv-cmt-name">${esc(m.author || "익명")}</span><span class="nv-cmt-time">${esc((m.created_at || "").slice(0, 16).replace("T", " "))}</span>` +
+      (m.client_id && m.client_id === me ? `<button class="nv-cmt-del" data-id="${esc(m.id)}" title="내 댓글 삭제">🗑</button>` : "") +
+      `<div class="nv-cmt-text">${esc(m.body || "")}</div></div>`).join("");
+    // 삭제 버튼은 목록을 다시 그릴 때마다 새로 붙는다 (폴링 갱신 포함)
+    el.querySelectorAll(".nv-cmt-del").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("이 댓글을 삭제할까요?")) return;
+      b.disabled = true;
+      try { await sbDeleteComment(b.dataset.id); await hydrateComments(curTheme); }
+      catch (e) {
+        b.disabled = false;
+        alert(/401|403/.test(String(e.message || e))
+          ? "삭제 권한이 없습니다 — Supabase 에서 comments 삭제 정책(site-config _sql_comments_delete)을 한 번 실행해 주세요."
+          : "삭제 실패: " + (e.message || e));
+      }
+    }));
   }
   async function hydrateComments(themeId) {
     if (!sb) return;
