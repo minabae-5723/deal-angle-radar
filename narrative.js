@@ -91,6 +91,16 @@
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }
+  // 제안 카드 삭제 — 잘못 올라간 제안·중복을 본 사람이 바로 정리한다(누구나).
+  async function sbDeleteIdea(id) {
+    const r = await fetch(sb.url + "/rest/v1/thesis_ideas?id=eq." + encodeURIComponent(id) + "&select=id", {
+      method: "DELETE", headers: Object.assign(sbHeaders(), { Prefer: "return=representation" })
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+    let gone = [];
+    try { gone = await r.json(); } catch (e) { gone = []; }
+    if (!gone.length) { const e2 = new Error("NO_DELETE_POLICY"); e2.noPolicy = true; throw e2; }
+  }
   async function sbPostIdea(row) {
     const r = await fetch(sb.url + "/rest/v1/thesis_ideas", {
       method: "POST", headers: Object.assign(sbHeaders(), { Prefer: "return=minimal" }),
@@ -421,10 +431,23 @@
     el.className = "nv-idealist";
     el.innerHTML = ideas.map((i) => `<div class="nv-ideacard">
       <div class="nv-ideahead"><b>${esc(i.title || "(제목 없음)")}</b> <span class="nv-vd nv-vd-hold">승인 대기</span>
-        <span class="nv-dim">${esc(i.author || "익명")}${i.sector ? " · " + esc(i.sector) : ""} · ${esc((i.created_at || "").slice(0, 10))}</span></div>
+        <span class="nv-ideameta"><span class="nv-dim">${esc(i.author || "익명")}${i.sector ? " · " + esc(i.sector) : ""} · ${esc((i.created_at || "").slice(0, 10))}</span>
+        ${i.id != null ? `<button class="nv-idea-del" data-id="${esc(i.id)}" title="이 제안 삭제">🗑</button>` : ""}</span></div>
       ${i.body ? `<div class="nv-ideabody">${esc(i.body)}</div>` : ""}
       ${i.draft ? `<details class="nv-ideadraft"><summary>🤖 Thesis 초안 보기</summary><div>${esc(i.draft)}</div></details>` : ""}
     </div>`).join("");
+    // 목록을 다시 그릴 때마다 새로 붙는다 (12초 폴링 갱신 포함)
+    el.querySelectorAll(".nv-idea-del").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("이 제안을 삭제할까요? (누구나 삭제할 수 있습니다)")) return;
+      b.disabled = true;
+      try { await sbDeleteIdea(b.dataset.id); ideas = await sbIdeas(); renderIdeaList(); }
+      catch (e) {
+        b.disabled = false;
+        alert(e.noPolicy || /401|403/.test(String(e.message || e))
+          ? "삭제가 데이터베이스에서 막혀 있습니다 (삭제 정책 없음).\n\nSupabase → SQL Editor 에서 아래를 한 번 실행해 주세요:\n\ncreate policy \"i anon delete\" on thesis_ideas for delete to anon using (true);"
+          : "삭제 실패: " + (e.message || e));
+      }
+    }));
   }
 
   // 제안자 본인 키로 돌리는 초안 프롬프트 — 화면의 프로토콜을 그대로 규칙으로 넘긴다.
