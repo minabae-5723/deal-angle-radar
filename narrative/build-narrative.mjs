@@ -41,7 +41,11 @@ const PATCH_MODE = !panelFile;
 const prevPool = PATCH_MODE ? tryLoad("narrative-pool.json") : null;
 const prevThemes = new Map((prevPool?.themes || []).map(t => [t.id, t]));
 
-const MIN_REV = 300; // 억
+// 규모 게이트 (2026-08-25 변경): 매출 300억 단일 기준 → "작지만 빠른 회사"를 놓치지 않도록
+//   매출 100억 이상  OR  3년 성장률 20% 이상. 둘 중 하나만 넘으면 롱리스트에 올린다.
+const MIN_REV = 100;        // 억 — 하한
+const FAST_CAGR = 0.20;     // 하한 미달이어도 이 성장률이면 통과
+const sizeGate = (rev, cagr3) => (rev != null && rev >= MIN_REV) || (cagr3 != null && cagr3 >= FAST_CAGR);
 const lastRev = r => { if (!r) return null; for (let i = r.length - 1; i >= 0; i--) if (r[i] != null && r[i] > 0) return r[i]; return null; };
 const lastVal = a => { if (!a) return null; for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
 const cagr = r => { const v = (r || []).filter(x => x != null && x > 0); if (v.length < 3) return null; return Math.pow(v[v.length - 1] / v[0], 1 / (v.length - 1)) - 1; };
@@ -82,7 +86,7 @@ function matchNode(node) {
     if (!(kw.some(k => nm.includes(k)) || ksic.some(k => code.startsWith(k)))) continue;
     if (exc.some(e => nm.includes(e))) continue;
     const rev = lastRev(c.rev);
-    if (!rev || rev < MIN_REV) continue;
+    if (!sizeGate(rev, cagr(c.rev))) continue;
     out.push(c);
   }
   return out;
@@ -135,6 +139,7 @@ function overlayFs2025(row) {
   if (f.debt_ratio != null) row.debt_ratio = f.debt_ratio;
   if (f.net_debt != null && f.ebitda) row.nd_ebitda = f.net_debt / f.ebitda;
   if (f.listed != null && row.listed == null) row.listed = f.listed;
+  if (f.ni != null && f.total_equity) row.roe = f.ni / f.total_equity;
   if (f.year != null) row.year = f.year;
   // 전년 매출이 있으면 1년 성장률이라도 채운다(3y CAGR 없는 행의 공백 방지).
   if (row.cagr3 == null && f.prev && f.prev.rev > 0 && f.rev > 0) row.cagr3 = f.rev / f.prev.rev - 1;
@@ -153,6 +158,7 @@ function rowFromFs(f, node, note) {
   };
   if (f.debt_ratio != null) row.debt_ratio = f.debt_ratio;
   if (f.net_debt != null && f.ebitda) row.nd_ebitda = f.net_debt / f.ebitda;
+  if (f.ni != null && f.total_equity) row.roe = f.ni / f.total_equity;
   return row;
 }
 
@@ -166,7 +172,7 @@ function matchNodePool(node) {
     const nm = p.name.toLowerCase();
     if (!kw.some(k => nm.includes(k))) continue;
     if (exc.some(e => nm.includes(e))) continue;
-    if (!p.rev || p.rev < MIN_REV) continue;
+    if (!sizeGate(p.rev, p.cagr3)) continue;
     out.push(p);
   }
   return out;
@@ -328,8 +334,28 @@ if (harvest && harvest.candidates) {
   }
 }
 
+// 업종별 영업이익률 중위값 — '이익률 15% 이상이면 우량'같은 절대 기준은 업종 차이를 무시한다.
+// (조선 기자재 5%와 소프트웨어 20%를 같은 자로 재면 안 된다) 그래서 같은 업종 안에서 상대평가한다.
+// 2자리 표준산업분류 기준, 표본 5개 미만 업종은 전체 중위값으로 대체.
+const opmMedian = (() => {
+  const by = new Map();
+  const push = (div, opm) => {
+    if (!div || opm == null || !isFinite(opm)) return;
+    const k = String(div).slice(0, 2);
+    if (!by.has(k)) by.set(k, []);
+    by.get(k).push(opm);
+  };
+  for (const p of pool) push(p.div, (p.op != null && p.rev) ? p.op / p.rev : p.ebitda_m);
+  const med = a => { const v = a.slice().sort((x, y) => x - y); return v[Math.floor(v.length / 2)]; };
+  const all = [...by.values()].flat();
+  const out = { _all: all.length ? med(all) : 0.05 };
+  for (const [k, v] of by) if (v.length >= 5) out[k] = med(v);
+  return out;
+})();
+
 const out = {
   meta: { ...reg.meta, built: reg.meta.generated, themes: outThemes.length,
+    opm_median: opmMedian,
     approved: outThemes.filter(t => t.status === "approved").length,
     candidates: outThemes.filter(t => t.status === "candidate").length,
     build_mode: PATCH_MODE ? "patch (funding-pool only — 외감 패널 미보유 환경)" : "full",

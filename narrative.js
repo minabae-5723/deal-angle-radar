@@ -164,16 +164,37 @@
   //   가중치·매핑 사전값 출처: Notion <PE 전략 케이스맵> + <Deal_Angle_Screening PHASE3> +
   //   <조달니즈 type 정의>. 절대치보다 회사 간 상대순위로 읽을 것.
   // ═══════════════════════════════════════════════════════════════════════
-  const SFIT_W = { theme: 0.20, angle: 0.22, source: 0.15, ticket: 0.15, quality: 0.10, catalyst: 0.12, payer: 0.06 };
+  // 가중치 개편 (2026-08-25): Thesis 적합도(theme)와 기업의 질(quality)을 올리고 지불자(payer)는 제거.
+  //   지불자는 Thesis 단위 속성이라 같은 Thesis 안 모든 기업에 같은 점수가 붙어 변별력이 없었다.
+  const SFIT_W = { theme: 0.26, angle: 0.20, source: 0.12, ticket: 0.12, quality: 0.18, catalyst: 0.12 };
   const ELAS_SCORE = { very_low: 1.0, low: 0.7, mid: 0.4, high: 0.15 };
   // type → RVP 딜앵글 강점 매핑 (조달니즈 type 정의). GROWTH=FI최적, DISTRESS/REFI=구조조정·리파이 강점.
   const ANGLE_SCORE = { GROWTH: 1.0, DISTRESS: 0.85, REFI: 0.85, TIGHT: 0.55, WC_BURN: 0.45, SELF: 0.15 };
 
-  function opmScore(o) {return o == null ? 0.3 : o >= 0.15 ? 1 : o >= 0.10 ? 0.8 : o >= 0.05 ? 0.55 : o >= 0 ? 0.35 : 0.15;}
+  // 수익성은 절대 기준을 쓰지 않는다 — 조선 기자재 5%와 소프트웨어 20%를 같은 자로 재면 안 된다.
+  // 같은 업종(표준산업분류 2자리) 중위값 대비 상대평가. 업종 중위값은 빌드가 계산해 meta 에 넣는다.
+  function opmRelScore(opm, ksic) {
+    if (opm == null) return 0.35;
+    const med = (data && data.meta && data.meta.opm_median) || {};
+    const base = med[String(ksic || "").slice(0, 2)];
+    const ref = (base == null ? med._all : base);
+    if (ref == null) return 0.5;
+    const gap = opm - ref;                       // 업종 중위 대비 몇 %p 위인가
+    if (gap >= 0.10) return 1;
+    if (gap >= 0.05) return 0.85;
+    if (gap >= 0.02) return 0.7;
+    if (gap >= -0.02) return 0.5;                 // 업종 평균 수준
+    if (gap >= -0.05) return 0.3;
+    return 0.15;
+  }
+  function roeScore(roe) {// 업종 무관 비교가 되는 자본 효율 지표 (있을 때만 가점 요소로)
+    if (roe == null) return null;
+    return roe >= 0.20 ? 1 : roe >= 0.12 ? 0.8 : roe >= 0.05 ? 0.55 : roe >= 0 ? 0.35 : 0.15;
+  }
   function cagrScore(c) {return c == null ? 0.4 : c >= 0.20 ? 1 : c >= 0.10 ? 0.7 : c >= 0 ? 0.4 : 0.1;}
   function ticketScore(rev) {// 매출을 규모 프록시로 — RVP 커버 구간(자체 소수지분 / 컨소 슬롯)
     if (rev == null) return 0.4;
-    return rev <= 2500 ? 1.0 : rev <= 6000 ? 0.6 : 0.3;
+    return rev <= 1000 ? 1.0 : rev <= 3000 ? 0.6 : 0.3;
   }
   const CATALYST_SCORE = { DISTRESS_EVENT: 1.0, IN_MOTION: 0.9, PRE_SIGNAL: 0.8, UNLISTED_BLIND: 0.55, RECENTLY_FUNDED: 0.25 };
   // status(촉매) 를 한국어로 — "지금 이 회사가 거래될 계기가 있는가"
@@ -183,14 +204,8 @@
   };
   const statusKo = (s) => s ? (STATUS_KO[s] || s) : "";
 
-  // 지불자 렌즈 (Thesis 생성 3문 中 ①수요 확실성) — 수가·환급·방위비·의무보험 매출은 경기 무관 채권
-  function payerScore(payer) {
-    const s = payer || "";
-    if (s.includes("국가")) return 1.0;
-    if (s.includes("보험")) return 0.9;
-    if (s.includes("혼합")) return 0.65;
-    return 0.5;
-  }
+  // (2026-08-25) payerScore 제거 — 지불자는 Thesis 단위 속성이라 같은 Thesis 안에서 변별력이 없었다.
+  //   지불자 정보는 렌즈 칩(catalog.payer)으로 계속 보여준다.
 
   // 앵글A 캐시카우/승계 후보 (케이스맵 재현스크린: 비상장·고마진·순현금)
   //   listed!==true = 비상장 또는 풀 밖(이벤트 미관측) — 상장사만 제외.
@@ -201,10 +216,14 @@
     const fAngle = r.type ? (_ANGLE_SCORE$r$type = ANGLE_SCORE[r.type]) !== null && _ANGLE_SCORE$r$type !== void 0 ? _ANGLE_SCORE$r$type : 0.35 : 0.35;
     const fSource = r.listed === false ? 1.0 : r.listed === true ? 0.55 : 0.5;
     const fTicket = ticketScore(r.rev);
-    const fQuality = 0.7 * opmScore(r.opm) + 0.3 * cagrScore(r.cagr3);
+    // 질 = 업종 대비 수익성 + 성장 + (ROE 있으면) 자본효율. ROE 없으면 앞 둘로만 계산.
+    const fRoe = roeScore(r.roe);
+    const fQuality = fRoe == null
+      ? 0.6 * opmRelScore(r.opm, r.ksic) + 0.4 * cagrScore(r.cagr3)
+      : 0.45 * opmRelScore(r.opm, r.ksic) + 0.3 * cagrScore(r.cagr3) + 0.25 * fRoe;
     const fCatalyst = r.status ? (_CATALYST_SCORE$r$sta = CATALYST_SCORE[r.status]) !== null && _CATALYST_SCORE$r$sta !== void 0 ? _CATALYST_SCORE$r$sta : 0.35 : 0.35;
     let s = 100 * (SFIT_W.theme * fTheme + SFIT_W.angle * fAngle + SFIT_W.source * fSource +
-    SFIT_W.ticket * fTicket + SFIT_W.quality * fQuality + SFIT_W.catalyst * fCatalyst + SFIT_W.payer * payerScore(themePayer));
+    SFIT_W.ticket * fTicket + SFIT_W.quality * fQuality + SFIT_W.catalyst * fCatalyst);
     if (isCashCow(r)) s = Math.min(100, s + 6); // 캐시카우(질) 가점
     return Math.round(s);
   }
@@ -367,7 +386,7 @@
       <div class="nv-pgrid">
         <div class="nv-pcol">
           <h3>Thesis로 올리는 기준</h3>
-          <ol class="nv-pcrit">${p.promotion.map((c) => `<li><b>${esc(c.title)}</b> <span class="nv-ptag${c.base === "신규" ? " nv-ptag-new" : ""}">${esc(c.base)}</span><div>${esc(c.body)}</div></li>`).join("")}</ol>
+          <ol class="nv-pcrit">${p.promotion.map((c) => `<li><b>${esc(c.title)}</b> <span class="nv-ptag${c.base === "신규" ? " nv-ptag-new" : ""}">${esc(c.base)}</span><div>${esc(c.body)}</div>${c.note ? `<div class="nv-dim">${esc(c.note)}</div>` : ""}</li>`).join("")}</ol>
           <h3>올리지 않는 것</h3>
           <ul class="nv-bl">${p.exclusion.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
           <p class="nv-dim">${esc(p.exclusion_note)}</p>
@@ -860,7 +879,7 @@
     const debt = (r) => r.debt_ratio == null ? "–" : (r.debt_ratio * 100).toFixed(0) + "%";
     const nde = (r) => r.nd_ebitda == null ? "–" : (r.nd_ebitda < 0 ? "순현금" : r.nd_ebitda.toFixed(1) + "x");
     return `<div class="table-wrap"><table class="nv-ll">
-      <tr><th>우선순위</th><th>회사</th><th>노드</th><th>전략 앵글</th><th>매출</th><th>OPM</th><th>3yCAGR</th><th>부채비율</th><th>ND/EBITDA</th><th>상장</th><th>거래 계기</th><th>note</th></tr>
+      <tr><th>우선순위</th><th>회사</th><th>노드</th><th>전략 앵글</th><th>매출</th><th>영업이익률</th><th>ROE</th><th>3yCAGR</th><th>부채비율</th><th>ND/EBITDA</th><th>상장</th><th>거래 계기</th><th>note</th></tr>
       ${scored.slice(0, 40).map((r) => `<tr class="${r.pick ? "nv-pick" : ""}${r.cashcow ? " nv-cowrow" : ""}">
         <td>${pri(r)}${r.pick ? ' <span class="nv-star" title="pick">★</span>' : ""}</td>
         <td><b>${esc(r.name)}</b>${kindBadge(r)}${r.cashcow ? ` <span class="nv-cowbadge" title="캐시카우: 비상장·고마진(OPM≥15%)·순현금 — 회사의 질 신호. 승계 여부는 지분구조 확인 필요">💰</span>` : ""}${r.rev == null && !r.kind ? ` <span class="nv-leadtag" title="재무 미매칭 — 소싱 지시서/발굴 대상 (풀 빌드 시 재무 채워짐)">발굴</span>` : ""}</td>
@@ -868,6 +887,7 @@
         <td class="nv-angle nv-anglecell" data-angle="${esc(r.angleLbl)}" title="이 앵글만 보기">${esc(r.angleLbl)}</td>
         <td class="nv-rev" title="${r.year ? r.year + "년 재무 기준" : "직전 패널(2024) 기준"}">${money(r.rev)}${r.year ? `<sup class="nv-yr">'${String(r.year).slice(2)}</sup>` : ""}</td>
         <td>${pct(r.opm)}</td>
+        <td>${r.roe == null ? "–" : (r.roe * 100).toFixed(0) + "%"}</td>
         <td>${pct(r.cagr3)}</td>
         <td title="부채비율(총부채/자본)">${debt(r)}</td>
         <td title="순부채/EBITDA — 낮을수록 안전, 음수=순현금">${nde(r)}</td>
