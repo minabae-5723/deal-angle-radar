@@ -1,0 +1,20 @@
+{
+  "00970453": {"product": "PDRN·PN 재생바이오소재·리쥬란 스킨부스터", "angle": "스킨부스터 PN 소재 국산화 대장주(리쥬란), 매출 3,501억·revCagr 33%로 thesis 내 최대 캐시카우", "onThesis": true},
+  "00636656": {"product": "HA 필러·rh-콜라겐 Type3 바이오원료", "angle": "콜라겐·HA 소재 자체기술(MDM) 내재화, 매출 664억·revCagr 35%·운전자본 소요 34억(WC_BURN)", "onThesis": true},
+  "00614478": {"product": "HA·PDRN 원료·엘라비에 필러/스킨부스터 CMO", "angle": "HA·PDRN 원료 국산화+에스테틱 CMO 겸비, 매출 1,619억·revCagr 16%", "onThesis": true},
+  "01279157": {"product": "엑소좀(ASCE+) 스킨부스터 원료", "angle": "엑소좀 스킨부스터 소재 글로벌 선두 국산화, 매출 954억·revCagr 87% 초고성장 비상장 알짜", "onThesis": true},
+  "01454943": {"product": "필러·화장품 용기(패키징)", "angle": "바이오소재 아닌 화장품 용기 제조(Berlin Packaging 자회사), 스킨부스터 소재체인 오분류·매출 209억", "onThesis": false},
+  "01745234": {"product": "뷰티 브랜드 기획·제작·유통(글로벌 커머스)", "angle": "스킨부스터 '부스터' 키워드 오분류, 실제는 뷰티 D2C 커머스(광고비 351억)·소재국산화 무관", "onThesis": false},
+  "01058101": {"product": "용해성 마이크로니들 패치 CDMO·ODM(DEN 송풍인장공법)", "angle": "마이크로니들 경피전달 CDMO 핵심 무기상, 매출 272억·revCagr 18%·GLP-1/골다공증 패치 파이프라인", "onThesis": true},
+  "01142710": {"product": "의약품·화장품 용기(피앤씨) 제조", "angle": "마이크로니들 아닌 의약품 용기 제조, '피앤씨' 오분류·매출 420억·revCagr 15%", "onThesis": false},
+  "00568188": {"product": "반도체 검사용 IC소켓·써멀프로텍터", "angle": "'마이크로'컨텍솔=반도체 부품, 마이크로니들과 무관한 키워드 오분류·매출 697억", "onThesis": false},
+  "00572172": {"product": "정수기 수처리 필터(중국·멕시코 생산)", "angle": "'마이크로'필터=정수 필터, 마이크로니들과 무관한 키워드 오분류·매출 1,984억", "onThesis": false},
+  "00648350": {"product": "디스플레이 광학필름·수처리 소재", "angle": "'마이크로'웍스=광학필름 소재(구 SKC), 마이크로니들 무관 키워드 오분류·매출 4,049억", "onThesis": false},
+  "01267967": {"product": "세포배양기(셀빅)·바이오프로세스 장비·면역진단", "angle": "'마이크로'디지탈=바이오 장비, 마이크로니들 무관 키워드 오분류·매출 115억", "onThesis": false},
+  "01786541": {"product": "온프레미스 sLLM(Solar)·Document AI 플랫폼", "angle": "국산 온프레미스 sLLM 대표주자로 thesis 정중앙, 매출 248억(고성장 적자·대규모 유증)·SK/KT 전략투자", "onThesis": true},
+  "00666064": {"product": "음성 AI(STT/TTS)·의료 음성인식·AI DX", "angle": "음성지능·의료 AI로 sLLM/거버넌스 미들레이어 thesis와는 인접(핵심 아님), 매출 1,125억·revCagr 21%", "onThesis": false},
+  "00463342": {"product": "원료의약품(API)·CDMO(구 에스텍파마)", "angle": "사명만 'AI'(폴라리스그룹 편입)·실제는 원료의약품 CDMO, 키워드 오분류·매출 596억", "onThesis": false},
+  "01381984": {"product": "그래프DB·온톨로지 기반 GraphRAG AI에이전트(Ontovia)", "angle": "온프레미스 조직형 AI·GraphRAG 환각저감으로 AI거버넌스 미들레이어 정합, 매출 156억(솔루션 49%·인프라 리셀 51%)", "onThesis": true},
+  "00980043": {"product": "합법 뉴스·멀티모달 데이터 파이프라인·sLLM/RAG AI서비스", "angle": "합법 데이터+sLLM/RAG·저작권 거버넌스 레이어로 thesis 정합, 매출 173억(성장 정체·revCagr 0.7%)", "onThesis": true},
+  "00369213": {"product": "공공 무선통신·SI + 패션(키플링·이스트팩) 유통", "angle": "SI+패션유통 복합기업, 'AI' 사명뿐(폴라리스그룹)·sLLM 실체 없음 키워드 오분류·매출 531억 역성장", "onThesis": false}
+}

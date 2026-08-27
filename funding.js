@@ -12,63 +12,63 @@
     q: '', types: new Set(), listing: 'all', sector: 'all',
     status: 'all', revMin: 0, revMax: Infinity,
     angle: 'all', stance: 'all',
-    sort: 'priority', desc: true, limit: 120,
+    sort: 'priority', desc: true, limit: 120
   };
 
   // ── 표기 헬퍼 ─────────────────────────────────────────────
-  const esc = s => String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  const nn = v => (v == null || !isFinite(v));
+  const esc = (s) => String(s == null ? '' : s).
+  replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const nn = (v) => v == null || !isFinite(v);
   // 억원 → 규모별 표기
-  const won = v => nn(v) ? '—' : (Math.abs(v) >= 10000 ? (v / 10000).toFixed(1) + '조'
-    : Math.abs(v) >= 1000 ? Math.round(v).toLocaleString() : v.toFixed(0));
+  const won = (v) => nn(v) ? '—' : Math.abs(v) >= 10000 ? (v / 10000).toFixed(1) + '조' :
+  Math.abs(v) >= 1000 ? Math.round(v).toLocaleString() : v.toFixed(0);
   // 단위까지 붙인 표기. won() 이 이미 '조' 로 바꾼 경우 '억' 을 덧붙이면 '1.2조억' 이 된다.
-  const wonU = v => nn(v) ? '—' : (Math.abs(v) >= 10000 ? (v / 10000).toFixed(1) + '조' : won(v) + '억');
-  const signed = v => nn(v) ? '—' : (v < 0 ? '−' : '+') + wonU(Math.abs(v));
+  const wonU = (v) => nn(v) ? '—' : Math.abs(v) >= 10000 ? (v / 10000).toFixed(1) + '조' : won(v) + '억';
+  const signed = (v) => nn(v) ? '—' : (v < 0 ? '−' : '+') + wonU(Math.abs(v));
   const pct = (v, d = 0) => nn(v) ? '—' : (v * 100).toFixed(d) + '%';
-  const mult = v => nn(v) ? '—' : v.toFixed(1) + 'x';
-  const sgn = v => nn(v) ? '' : (v > 0 ? 'pos' : v < 0 ? 'neg' : '');
+  const mult = (v) => nn(v) ? '—' : v.toFixed(1) + 'x';
+  const sgn = (v) => nn(v) ? '' : v > 0 ? 'pos' : v < 0 ? 'neg' : '';
 
   const TYPE_COLOR = {
     DISTRESS: 'tt-red', REFI: 'tt-orange', WC_BURN: 'tt-purple',
-    GROWTH: 'tt-green', TIGHT: 'tt-blue', SELF: 'tt-gray',
+    GROWTH: 'tt-green', TIGHT: 'tt-blue', SELF: 'tt-gray'
   };
   const STATUS_META = {
-    PRE_SIGNAL:      { label: '선행 타겟',   cls: 'st-gold',  tip: '상장사인데 조달 공시가 없다 — 니즈 대비 미조달' },
-    IN_MOTION:       { label: '조달 진행',   cls: 'st-blue',  tip: '6~18개월 내 조달 이력 — 반복 조달 중' },
-    RECENTLY_FUNDED: { label: '조달 완료',   cls: 'st-gray',  tip: '최근 6개월 조달 실행 — 지표 개선이 조달 결과일 수 있음' },
-    DISTRESS_EVENT:  { label: '부실 신호',   cls: 'st-red',   tip: '부실 공시 또는 감사보고서 경고' },
-    UNLISTED_BLIND:  { label: '비상장 사각', cls: 'st-slate', tip: '비상장은 주요사항보고 의무가 없어 조달 공시 부재가 정보가 아님' },
-    NO_FILINGS:      { label: '공시 없음',   cls: 'st-gray',  tip: 'DART 공시 0건 — 상장폐지·등록말소·corp_code 불일치 의심. 재무 갱신 불가' },
-    ERROR:           { label: '조회 실패',   cls: 'st-gray',  tip: 'DART 조회 오류' },
+    PRE_SIGNAL: { label: '선행 타겟', cls: 'st-gold', tip: '상장사인데 조달 공시가 없다 — 니즈 대비 미조달' },
+    IN_MOTION: { label: '조달 진행', cls: 'st-blue', tip: '6~18개월 내 조달 이력 — 반복 조달 중' },
+    RECENTLY_FUNDED: { label: '조달 완료', cls: 'st-gray', tip: '최근 6개월 조달 실행 — 지표 개선이 조달 결과일 수 있음' },
+    DISTRESS_EVENT: { label: '부실 신호', cls: 'st-red', tip: '부실 공시 또는 감사보고서 경고' },
+    UNLISTED_BLIND: { label: '비상장 사각', cls: 'st-slate', tip: '비상장은 주요사항보고 의무가 없어 조달 공시 부재가 정보가 아님' },
+    NO_FILINGS: { label: '공시 없음', cls: 'st-gray', tip: 'DART 공시 0건 — 상장폐지·등록말소·corp_code 불일치 의심. 재무 갱신 불가' },
+    ERROR: { label: '조회 실패', cls: 'st-gray', tip: 'DART 조회 오류' }
   };
 
   // ── 스파크라인 ────────────────────────────────────────────
   function spark(vals, years, opts = {}) {
-    const pts = vals.map((v, i) => ({ v, i })).filter(p => !nn(p.v));
+    const pts = vals.map((v, i) => ({ v, i })).filter((p) => !nn(p.v));
     if (pts.length < 2) return '<span class="muted">—</span>';
-    const W = 108, H = 26, PAD = 2;
-    const xs = i => PAD + (i / (vals.length - 1)) * (W - 2 * PAD);
-    let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v));
-    if (opts.zero) { lo = Math.min(lo, 0); hi = Math.max(hi, 0); }
-    if (hi === lo) { hi = lo + 1; }
-    const ys = v => H - PAD - ((v - lo) / (hi - lo)) * (H - 2 * PAD);
+    const W = 108,H = 26,PAD = 2;
+    const xs = (i) => PAD + i / (vals.length - 1) * (W - 2 * PAD);
+    let lo = Math.min(...pts.map((p) => p.v)),hi = Math.max(...pts.map((p) => p.v));
+    if (opts.zero) {lo = Math.min(lo, 0);hi = Math.max(hi, 0);}
+    if (hi === lo) {hi = lo + 1;}
+    const ys = (v) => H - PAD - (v - lo) / (hi - lo) * (H - 2 * PAD);
     const d = pts.map((p, k) => `${k ? 'L' : 'M'}${xs(p.i).toFixed(1)},${ys(p.v).toFixed(1)}`).join(' ');
-    const zeroLine = (opts.zero && lo < 0 && hi > 0)
-      ? `<line x1="${PAD}" y1="${ys(0).toFixed(1)}" x2="${W - PAD}" y2="${ys(0).toFixed(1)}" class="spark-zero"/>` : '';
+    const zeroLine = opts.zero && lo < 0 && hi > 0 ?
+    `<line x1="${PAD}" y1="${ys(0).toFixed(1)}" x2="${W - PAD}" y2="${ys(0).toFixed(1)}" class="spark-zero"/>` : '';
     const last = pts[pts.length - 1];
     const title = years ? years.map((y, i) => `${y}: ${nn(vals[i]) ? '—' : won(vals[i])}`).join('\n') : '';
-    return `<svg class="spark ${opts.cls || ''}" viewBox="0 0 ${W} ${H}"><title>${esc(title)}</title>`
-      + zeroLine + `<path d="${d}"/>`
-      + `<circle cx="${xs(last.i).toFixed(1)}" cy="${ys(last.v).toFixed(1)}" r="2.1"/></svg>`;
+    return `<svg class="spark ${opts.cls || ''}" viewBox="0 0 ${W} ${H}"><title>${esc(title)}</title>` +
+    zeroLine + `<path d="${d}"/>` +
+    `<circle cx="${xs(last.i).toFixed(1)}" cy="${ys(last.v).toFixed(1)}" r="2.1"/></svg>`;
   }
 
   // ── 필터·정렬 ─────────────────────────────────────────────
   function filtered() {
     const q = F.q.trim().toLowerCase();
-    let rows = DATA.rows.filter(r => {
-      if (q && !(r.name.toLowerCase().includes(q) || (r.industry || '').toLowerCase().includes(q)
-        || (r.stock_code || '').includes(q) || (r.corp_code || '').includes(q))) return false;
+    let rows = DATA.rows.filter((r) => {
+      if (q && !(r.name.toLowerCase().includes(q) || (r.industry || '').toLowerCase().includes(q) ||
+      (r.stock_code || '').includes(q) || (r.corp_code || '').includes(q))) return false;
       if (F.types.size && !F.types.has(r.type)) return false;
       if (F.listing === 'listed' && !r.listed) return false;
       if (F.listing === 'unlisted' && r.listed) return false;
@@ -78,15 +78,15 @@
       // 앵글·stance 필터는 함께 걸릴 때 '그 앵글이 그 stance 인' 회사만 남긴다
       const tags = r.angle_tags || [];
       if (F.angle !== 'all' || F.stance !== 'all') {
-        const hit = tags.some(a => (F.angle === 'all' || a.code === F.angle)
-          && (F.stance === 'all' || a.stance === F.stance));
+        const hit = tags.some((a) => (F.angle === 'all' || a.code === F.angle) && (
+        F.stance === 'all' || a.stance === F.stance));
         if (!hit) return false;
       }
       return true;
     });
     const k = F.sort;
     rows.sort((a, b) => {
-      const av = a[k], bv = b[k];
+      const av = a[k],bv = b[k];
       if (nn(av) && nn(bv)) return 0;
       if (nn(av)) return 1;
       if (nn(bv)) return -1;
@@ -98,36 +98,36 @@
 
   // ── 렌더 ──────────────────────────────────────────────────
   const COLS = [
-    { k: 'priority',   h: 'PRI',      w: 46, fmt: r => `<b class="pri">${r.priority}</b>` },
-    { k: 'name',       h: '회사',     w: 200, fmt: r => nameCell(r), align: 'left' },
-    { k: 'type',       h: '성격',     w: 78, fmt: r => typeCell(r) },
-    { k: 'angle_primary', h: '앵글',  w: 84, fmt: r => angleCell(r) },
-    { k: 'status',     h: '상태',     w: 82, fmt: r => statusCell(r) },
-    { k: 'rev',        h: '매출',     w: 62, fmt: r => won(r.rev) },
-    { k: 'cagr3',      h: '3Y성장',   w: 58, fmt: r => `<span class="${sgn(r.cagr3)}">${pct(r.cagr3)}</span>` },
-    { k: 'ebitda_m',   h: 'EBITDA%',  w: 62, fmt: r => `<span class="${sgn(r.ebitda_m)}">${pct(r.ebitda_m, 1)}</span>` },
-    { k: 'nd_ebitda',  h: 'ND/EB',    w: 56, fmt: r => `<span class="${r.nd_ebitda >= 5 ? 'neg' : ''}">${mult(r.nd_ebitda)}</span>` },
-    { k: 'debt_ratio', h: '부채비율', w: 62, fmt: r => r.impaired_equity ? '<span class="neg">자본잠식</span>' : pct(r.debt_ratio) },
-    { k: 'draw_3y',    h: '3Y조달',   w: 62, fmt: r => `<span class="${sgn(r.draw_3y)}">${won(r.draw_3y)}</span>` },
-    // 실측 브리지가 있으면 3년 누적을 보여준다. 1년만 보면 현금 많은 회사가 0 으로 숨는다.
-    { k: 'gap_view',   h: '부족액',   w: 70, fmt: r => nn(r.gap_view) ? '<span class="muted">—</span>'
-        : `<b class="${r.gap_view > 0 ? 'neg' : ''}">${won(r.gap_view)}</b>`
-          + (r.gap_3y != null ? '<span class="gy">3Y</span>' : '<span class="gy gy1">1Y</span>') },
-    { k: 'need',       h: 'NEED',     w: 50, fmt: r => bar(r.need, 'need') },
-    { k: 'fit',        h: 'FIT',      w: 50, fmt: r => bar(r.fit, 'fit') },
-  ];
+  { k: 'priority', h: 'PRI', w: 46, fmt: (r) => `<b class="pri">${r.priority}</b>` },
+  { k: 'name', h: '회사', w: 200, fmt: (r) => nameCell(r), align: 'left' },
+  { k: 'type', h: '성격', w: 78, fmt: (r) => typeCell(r) },
+  { k: 'angle_primary', h: '앵글', w: 84, fmt: (r) => angleCell(r) },
+  { k: 'status', h: '상태', w: 82, fmt: (r) => statusCell(r) },
+  { k: 'rev', h: '매출', w: 62, fmt: (r) => won(r.rev) },
+  { k: 'cagr3', h: '3Y성장', w: 58, fmt: (r) => `<span class="${sgn(r.cagr3)}">${pct(r.cagr3)}</span>` },
+  { k: 'ebitda_m', h: 'EBITDA%', w: 62, fmt: (r) => `<span class="${sgn(r.ebitda_m)}">${pct(r.ebitda_m, 1)}</span>` },
+  { k: 'nd_ebitda', h: 'ND/EB', w: 56, fmt: (r) => `<span class="${r.nd_ebitda >= 5 ? 'neg' : ''}">${mult(r.nd_ebitda)}</span>` },
+  { k: 'debt_ratio', h: '부채비율', w: 62, fmt: (r) => r.impaired_equity ? '<span class="neg">자본잠식</span>' : pct(r.debt_ratio) },
+  { k: 'draw_3y', h: '3Y조달', w: 62, fmt: (r) => `<span class="${sgn(r.draw_3y)}">${won(r.draw_3y)}</span>` },
+  // 실측 브리지가 있으면 3년 누적을 보여준다. 1년만 보면 현금 많은 회사가 0 으로 숨는다.
+  { k: 'gap_view', h: '부족액', w: 70, fmt: (r) => nn(r.gap_view) ? '<span class="muted">—</span>' :
+    `<b class="${r.gap_view > 0 ? 'neg' : ''}">${won(r.gap_view)}</b>` + (
+    r.gap_3y != null ? '<span class="gy">3Y</span>' : '<span class="gy gy1">1Y</span>') },
+  { k: 'need', h: 'NEED', w: 50, fmt: (r) => bar(r.need, 'need') },
+  { k: 'fit', h: 'FIT', w: 50, fmt: (r) => bar(r.fit, 'fit') }];
 
-  const bar = (v, cls) => nn(v) ? '—'
-    : `<span class="scorebar ${cls}"><i style="width:${Math.min(100, v)}%"></i><em>${Math.round(v)}</em></span>`;
+
+  const bar = (v, cls) => nn(v) ? '—' :
+  `<span class="scorebar ${cls}"><i style="width:${Math.min(100, v)}%"></i><em>${Math.round(v)}</em></span>`;
 
   function nameCell(r) {
-    return `<div class="nm">${esc(r.name)}`
-      + (r.fs ? ` <span class="badge-fs" title="${r.fs.year}년 실측 재무 반영 · ${r.fs.basis === 'CFS' ? '연결' : r.fs.basis === 'OFS' ? '별도' : '기준 미기록'} · ${r.fs.source === 'api' ? 'DART API' : '감사보고서'}${r.fs.ts_extended ? ' · 시계열 확장' : ' · 수준지표만(시계열은 패널 기준)'}">${String(r.fs.year).slice(2)}`
-        + (r.fs.basis === 'CFS' ? '연' : r.fs.basis === 'OFS' ? '별' : '')
-        + (r.fs.ts_extended ? '' : '˚') + '</span>' : '')
-      + '</div>'
-      + `<div class="nm-sub">${r.listed ? `<span class="badge b-listed">상장 ${esc(r.stock_code)}</span>`
-        : '<span class="badge b-unlisted">비상장</span>'} ${esc(r.industry || r.sector || '')}</div>`;
+    return `<div class="nm">${esc(r.name)}` + (
+    r.fs ? ` <span class="badge-fs" title="${r.fs.year}년 실측 재무 반영 · ${r.fs.basis === 'CFS' ? '연결' : r.fs.basis === 'OFS' ? '별도' : '기준 미기록'} · ${r.fs.source === 'api' ? 'DART API' : '감사보고서'}${r.fs.ts_extended ? ' · 시계열 확장' : ' · 수준지표만(시계열은 패널 기준)'}">${String(r.fs.year).slice(2)}` + (
+    r.fs.basis === 'CFS' ? '연' : r.fs.basis === 'OFS' ? '별' : '') + (
+    r.fs.ts_extended ? '' : '˚') + '</span>' : '') +
+    '</div>' +
+    `<div class="nm-sub">${r.listed ? `<span class="badge b-listed">상장 ${esc(r.stock_code)}</span>` :
+    '<span class="badge b-unlisted">비상장</span>'} ${esc(r.industry || r.sector || '')}</div>`;
   }
   function typeCell(r) {
     const t = DATA.meta.types[r.type];
@@ -140,12 +140,12 @@
     if (!tags.length) return '<span class="muted">—</span>';
     // 앵글 필터가 걸려 있으면 그 앵글을 보여준다. primary 를 고집하면
     // "성장 positive" 로 걸러놓고 칩에는 "부실·리파이낸싱−" 이 뜨는 혼란이 생긴다.
-    const a = (F.angle !== 'all' && tags.find(x => x.code === F.angle)) || tags[0];
+    const a = F.angle !== 'all' && tags.find((x) => x.code === F.angle) || tags[0];
     const meta = (DATA.meta.angles || {})[a.code] || { label: a.code, desc: '' };
-    const others = tags.filter(x => x !== a);
-    const extra = others.length ? `<span class="amore" title="${esc(others.map(x => ((DATA.meta.angles || {})[x.code] || {}).label + '(' + x.stance + ')').join(' · '))}">+${others.length}</span>` : '';
-    return `<span class="al ${STANCE_CLS[a.stance]}" title="${esc(a.why)}">${esc(meta.label)}`
-      + `<em>${STANCE_MARK[a.stance]}</em></span>${extra}`;
+    const others = tags.filter((x) => x !== a);
+    const extra = others.length ? `<span class="amore" title="${esc(others.map((x) => ((DATA.meta.angles || {})[x.code] || {}).label + '(' + x.stance + ')').join(' · '))}">+${others.length}</span>` : '';
+    return `<span class="al ${STANCE_CLS[a.stance]}" title="${esc(a.why)}">${esc(meta.label)}` +
+    `<em>${STANCE_MARK[a.stance]}</em></span>${extra}`;
   }
   function statusCell(r) {
     if (!r.status) return '<span class="muted">—</span>';
@@ -157,45 +157,45 @@
     const years = DATA.meta.years;
     const s = r.series || {};
     const kv = (label, val, tip) =>
-      `<div class="kv"${tip ? ` title="${esc(tip)}"` : ''}><span>${esc(label)}</span><b>${val}</b></div>`;
-    const angles = (r.angles || []).map(a => `<span class="angle">${esc(a)}</span>`).join('');
+    `<div class="kv"${tip ? ` title="${esc(tip)}"` : ''}><span>${esc(label)}</span><b>${val}</b></div>`;
+    const angles = (r.angles || []).map((a) => `<span class="angle">${esc(a)}</span>`).join('');
     const STANCE = { positive: ['긍정', 'st-pos'], negative: ['부정', 'st-neg'], neutral: ['판단보류', 'st-neu'] };
-    const angleLayer = (r.angle_tags || []).length
-      ? (r.angle_tags || []).map(a => {
-        const meta = (DATA.meta.angles || {})[a.code] || { label: a.code, desc: '' };
-        const [sl, sc] = STANCE[a.stance] || STANCE.neutral;
-        return `<div class="alrow"><span class="al ${sc}" title="${esc(meta.desc)}">${esc(meta.label)}`
-          + `<em>${sl}</em></span><span class="alwhy">${esc(a.why)}</span></div>`;
-      }).join('')
-      : '<div class="muted">해당 앵글 없음</div>';
-    const drivers = (r.drivers || []).map(d => `<li>${esc(d)}</li>`).join('') || '<li class="muted">해당 없음</li>';
-    const ev = (r.events_24m || []).slice(0, 6).map(e =>
-      `<li><span class="evd">${esc(e.date)}</span> <span class="evc">${esc(e.cat)}</span> ` +
-      `<a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${esc(e.rcept_no)}" target="_blank" rel="noopener">${esc(e.report_nm)}</a></li>`).join('');
+    const angleLayer = (r.angle_tags || []).length ?
+    (r.angle_tags || []).map((a) => {
+      const meta = (DATA.meta.angles || {})[a.code] || { label: a.code, desc: '' };
+      const [sl, sc] = STANCE[a.stance] || STANCE.neutral;
+      return `<div class="alrow"><span class="al ${sc}" title="${esc(meta.desc)}">${esc(meta.label)}` +
+      `<em>${sl}</em></span><span class="alwhy">${esc(a.why)}</span></div>`;
+    }).join('') :
+    '<div class="muted">해당 앵글 없음</div>';
+    const drivers = (r.drivers || []).map((d) => `<li>${esc(d)}</li>`).join('') || '<li class="muted">해당 없음</li>';
+    const ev = (r.events_24m || []).slice(0, 6).map((e) =>
+    `<li><span class="evd">${esc(e.date)}</span> <span class="evc">${esc(e.cat)}</span> ` +
+    `<a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${esc(e.rcept_no)}" target="_blank" rel="noopener">${esc(e.report_nm)}</a></li>`).join('');
     const dartSearch = `https://dart.fss.or.kr/dsab007/main.do?option=corp&textCrpNm=${encodeURIComponent(r.name)}`;
 
     return `<div class="detail">
       <div class="det-grid">
         <div class="det-box">
-          <h4>조달 진단 <span class="hint">${r.gap_basis === 'measured_cashbridge'
-            ? `${r.fs.year}년 실측 캐시브리지` : '현금흐름 항등식 역산'}</span></h4>
+          <h4>조달 진단 <span class="hint">${r.gap_basis === 'measured_cashbridge' ?
+    `${r.fs.year}년 실측 캐시브리지` : '현금흐름 항등식 역산'}</span></h4>
           ${r.gap_basis === 'measured_cashbridge' ? `
             <div class="bridge">
               <div class="brow"><span>기초현금</span><b>${wonU(r.bridge.begin_cash)}</b></div>
               ${[['OCF (실측)', r.bridge.ocf], ['Capex (실측)', -r.bridge.capex],
-                 ...(r.bridge.lease_repay ? [['리스부채 상환 (IFRS16)', -r.bridge.lease_repay]] : []),
-                 [`단기부채 상환(${Math.round((1 - r.bridge.rollover) * 100)}%)`, -r.bridge.st_repay]]
-                .map(([l, v]) => `<div class="brow"><span>${esc(l)}</span><b class="${v < 0 ? 'neg' : 'pos'}">${signed(v)}</b></div>`).join('')}
+    ...(r.bridge.lease_repay ? [['리스부채 상환 (IFRS16)', -r.bridge.lease_repay]] : []),
+    [`단기부채 상환(${Math.round((1 - r.bridge.rollover) * 100)}%)`, -r.bridge.st_repay]].
+    map(([l, v]) => `<div class="brow"><span>${esc(l)}</span><b class="${v < 0 ? 'neg' : 'pos'}">${signed(v)}</b></div>`).join('')}
               <div class="brow tot"><span>= 1년 후 사전현금</span><b class="${r.bridge.pre_fin < r.bridge.min_cash ? 'neg' : 'pos'}">${wonU(r.bridge.pre_fin)}</b></div>
               <div class="brow"><span>목표 최소현금 (매출 3%)</span><b>${wonU(r.bridge.min_cash)}</b></div>
               <table class="btab"><tr><th>연차</th><th>OCF</th><th>사전현금</th><th>부족액</th></tr>
-                ${r.bridge.years.map(y => `<tr><td>${y.y}년</td><td>${won(y.ocf)}</td>` +
-                  `<td class="${y.pre_fin < r.bridge.min_cash ? 'neg' : ''}">${won(y.pre_fin)}</td>` +
-                  `<td class="${y.gap > 0 ? 'neg' : ''}">${won(y.gap)}</td></tr>`).join('')}</table>
+                ${r.bridge.years.map((y) => `<tr><td>${y.y}년</td><td>${won(y.ocf)}</td>` +
+    `<td class="${y.pre_fin < r.bridge.min_cash ? 'neg' : ''}">${won(y.pre_fin)}</td>` +
+    `<td class="${y.gap > 0 ? 'neg' : ''}">${won(y.gap)}</td></tr>`).join('')}</table>
               <div class="brow tot"><span>⇒ ${r.bridge.horizon}년 누적 부족액</span><b class="${r.gap_3y > 0 ? 'neg' : 'pos'}">${wonU(r.gap_3y)}</b></div>
               ${(r.bridge.sensitivity || []).length ? `<div class="sens"><span>미차환율 민감도</span>${
-                r.bridge.sensitivity.map(s => `<b class="${s.nonroll === r.bridge.nonroll ? 'on' : ''}">${Math.round(s.nonroll * 100)}% → ${wonU(s.gap_cum)}</b>`).join('')
-              }</div>` : ''}
+    r.bridge.sensitivity.map((s) => `<b class="${s.nonroll === r.bridge.nonroll ? 'on' : ''}">${Math.round(s.nonroll * 100)}% → ${wonU(s.gap_cum)}</b>`).join('')}</div>` :
+    ''}
             </div>
             <div class="det-note">성장률 ${pct(r.bridge.growth)} (과거 3Y CAGR ${pct(r.bridge.growth_raw)} × 감쇠 ${r.bridge.growth_shrink})
               · 미차환율 ${pct(r.bridge.nonroll)} (산업 기준)
@@ -210,27 +210,27 @@
           ${kv('연평균 자금소요 (역산)', won(r.uses_avg3) + '억', 'uses = ΔNetDebt + OCF코어. 투자+운전자본+배당 합계')}
           ${kv('OCF 코어 (EBITDA−이자−세금)', won(r.ocf_core) + '억')}
           ${r.gap_basis === 'measured_cashbridge' ? '' : kv('향후 12개월 부족액 추정',
-            r.gap_note ? '<span class="muted">추정 부적합</span>'
-              : `<span class="${r.gap_12m > 0 ? 'neg' : ''}">${wonU(r.gap_12m)}</span>` +
-                (nn(r.gap_pct_rev) ? '' : ` <span class="muted">(매출의 ${pct(r.gap_pct_rev)})</span>`),
-            '연평균 자금소요를 성장률로 스케일 → OCF·여유현금 차감')}
+    r.gap_note ? '<span class="muted">추정 부적합</span>' :
+    `<span class="${r.gap_12m > 0 ? 'neg' : ''}">${wonU(r.gap_12m)}</span>` + (
+    nn(r.gap_pct_rev) ? '' : ` <span class="muted">(매출의 ${pct(r.gap_pct_rev)})</span>`),
+    '연평균 자금소요를 성장률로 스케일 → OCF·여유현금 차감')}
           ${r.gap_note ? `<div class="det-note">⚠ ${esc(r.gap_note)}</div>` : ''}
           ${nn(r.nd_rev) ? '' : kv('순부채/매출', r.nd_rev.toFixed(1) + '배')}
           ${r.runway_m == null ? '' : kv('현금 런웨이', r.runway_m + '개월', 'OCF코어 적자 기준')}
         </div>
         <div class="det-box">
-          <h4>재무 추이 <span class="hint">${years[0]}~${r.latest_year}${r.fs
-            ? ` · ${r.fs.year} 실측 ${r.fs.basis === 'CFS' ? '연결' : r.fs.basis === 'OFS' ? '별도' : ''}(${r.fs.source === 'api' ? 'DART API' : '감사보고서'})` : ''}</span></h4>
+          <h4>재무 추이 <span class="hint">${years[0]}~${r.latest_year}${r.fs ?
+    ` · ${r.fs.year} 실측 ${r.fs.basis === 'CFS' ? '연결' : r.fs.basis === 'OFS' ? '별도' : ''}(${r.fs.source === 'api' ? 'DART API' : '감사보고서'})` : ''}</span></h4>
           ${r.fs ? `<div class="basisrow">
             <span class="bch ${r.fs.basis === 'CFS' ? 'on' : ''}">수준지표 = ${r.fs.basis === 'CFS' ? '연결' : r.fs.basis === 'OFS' ? '별도' : '?'}</span>
             <span class="bch ${r.fs.ts_extended ? 'on' : 'off'}">시계열 = ${r.fs.ts_extended ? `${r.fs.year}까지 실측 확장` : `패널 기준(${DATA.meta.years[DATA.meta.years.length - 1]}까지)`}</span>
           </div>` : ''}
           ${r.fs ? `<div class="fsbox">
             ${[['OCF', r.fs.ocf], ['Capex', r.fs.capex], ['배당', r.fs.dividend], ['리스상환', r.fs.lease_repay],
-               ['지분투자', r.fs.equity_inv], ['총차입금', r.fs.gross_debt],
-               ['단기차입', r.fs.borrowings_st], ['이자비용', r.fs.interest]]
-              .filter(([, v]) => v != null)
-              .map(([l, v]) => `<div class="kv"><span>${l}</span><b class="${v < 0 ? 'neg' : ''}">${wonU(v)}</b></div>`).join('')}
+    ['지분투자', r.fs.equity_inv], ['총차입금', r.fs.gross_debt],
+    ['단기차입', r.fs.borrowings_st], ['이자비용', r.fs.interest]].
+    filter(([, v]) => v != null).
+    map(([l, v]) => `<div class="kv"><span>${l}</span><b class="${v < 0 ? 'neg' : ''}">${wonU(v)}</b></div>`).join('')}
             ${r.fs.ebitda_source === 'unavailable' ? '<div class="det-note neg">⚠ 감가상각비 미검출 — EBITDA·마진·ND/EBITDA 를 산출하지 않음(영업이익으로 대체하면 자본집약·리스 사업에서 판정이 뒤집힘)</div>' : ''}
             ${r.fs.identity_ok === false ? '<div class="det-note neg">⚠ 재무제표 검산 불일치</div>' : ''}
             ${r.fs.dep_suspect ? `<div class="det-note">⚠ 감가상각비 일부만 포착된 듯 (매출의 ${pct(r.fs.dep_pct_rev, 2)}) — EBITDA 과소평가 가능</div>` : ''}
@@ -243,22 +243,22 @@
             <div class="brow"><span>− OCF (실측)</span><b class="${r.fs.ocf < 0 ? 'neg' : 'pos'}">${signed(r.fs.ocf)}</b></div>
             ${r.fs.equity_issue ? `<div class="brow"><span>− 유상증자</span><b class="pos">${wonU(r.fs.equity_issue)}</b></div>` : ''}
             <div class="brow"><span>잔차 (항등식 미설명분)</span><b>${signed(r.fs.residual)} <span class="muted">(매출의 ${pct(r.fs.residual_pct, 1)})</span></b></div>
-            ${r.fs.residual_basis === 'core' && r.fs.noncash_debt != null
-              ? `<div class="brow"><span>− 비현금 부채변동 <span class="muted">(리스 신규인식·환율환산)</span></span><b>${signed(r.fs.noncash_debt)}</b></div>` : ''}
+            ${r.fs.residual_basis === 'core' && r.fs.noncash_debt != null ?
+    `<div class="brow"><span>− 비현금 부채변동 <span class="muted">(리스 신규인식·환율환산)</span></span><b>${signed(r.fs.noncash_debt)}</b></div>` : ''}
             <div class="brow tot ${r.fs.residual_high ? 'bad' : ''}"><span>= 설명 안 되는 나머지</span>
               <b class="${r.fs.residual_high ? 'neg' : 'pos'}">${signed(r.fs.residual_eff)}
               <span class="muted">(매출의 ${pct(r.fs.residual_eff_pct, 1)})</span></b></div>
-            ${r.fs.residual_basis && r.fs.residual_basis.startsWith('raw(')
-              ? '<div class="det-note">비현금 부채변동 보정을 적용하면 잔차가 오히려 커져 무효 처리했습니다 — 재무섹션 계정 분류가 부정확할 수 있습니다</div>' : ''}
+            ${r.fs.residual_basis && r.fs.residual_basis.startsWith('raw(') ?
+    '<div class="det-note">비현금 부채변동 보정을 적용하면 잔차가 오히려 커져 무효 처리했습니다 — 재무섹션 계정 분류가 부정확할 수 있습니다</div>' : ''}
           </div>
           ${r.fs.fin ? `
           <div class="det-sub">재무활동 항목별 분해 <span class="hint">${r.fs.fin_verified ? '검증 통과' : '⚠ 미검증 — 잔차 보정에 쓰지 않음'}</span></div>
           <div class="cfdirect">
             ${[['차입 유입', r.fs.fin.debt_in], ['차입 상환', r.fs.fin.debt_out], ['차입 순증감(단일항목)', r.fs.fin.debt_net_item],
-               ['유상증자', r.fs.fin.equity_in], ['배당', r.fs.fin.dividend], ['리스부채 상환', r.fs.fin.lease_out],
-               ['자기주식', r.fs.fin.treasury], ['기타 재무항목', r.fs.fin.other_sum]]
-              .filter(([, v]) => v != null && v !== 0)
-              .map(([l, v]) => `<div class="brow"><span>${l}</span><b class="${v < 0 ? 'neg' : 'pos'}">${signed(v)}</b></div>`).join('')}
+    ['유상증자', r.fs.fin.equity_in], ['배당', r.fs.fin.dividend], ['리스부채 상환', r.fs.fin.lease_out],
+    ['자기주식', r.fs.fin.treasury], ['기타 재무항목', r.fs.fin.other_sum]].
+    filter(([, v]) => v != null && v !== 0).
+    map(([l, v]) => `<div class="brow"><span>${l}</span><b class="${v < 0 ? 'neg' : 'pos'}">${signed(v)}</b></div>`).join('')}
             <div class="brow tot"><span>⇒ 현금 차입순증</span><b class="${r.fs.fin.debt_net_cash < 0 ? 'neg' : 'pos'}">${signed(r.fs.fin.debt_net_cash)}</b></div>
             <div class="brow ${r.fs.fin_fit_ok === false ? 'bad' : ''}"><span>[검증] 항목합계 vs 보고 재무CF</span>
               <b class="${r.fs.fin_fit_ok === false ? 'neg' : 'pos'}">${wonU(r.fs.fin.sum)} vs ${wonU(r.fs.fin.reported)} (차 ${signed(r.fs.fin.fit_gap)})</b></div>
@@ -267,9 +267,9 @@
           </div>
           ${(r.fs.fin.unclassified || []).length ? `<div class="det-note">미분류 재무항목: ${esc(r.fs.fin.unclassified.slice(0, 6).join(' · '))}</div>` : ''}
           ` : ''}
-          ${r.fs.residual_high
-            ? '<div class="det-note neg">⚠ 잔차가 매출의 3%를 초과 — SBC·이연법인세·일회성·환율효과 등으로 항등식이 설명하지 못하는 자금 이동이 크다. <b>이 회사는 현금흐름표를 직접 분해해야 한다.</b></div>'
-            : '<div class="det-note">잔차 3% 이내 — 항등식이 실제 현금 이동을 잘 설명한다</div>'}
+          ${r.fs.residual_high ?
+    '<div class="det-note neg">⚠ 잔차가 매출의 3%를 초과 — SBC·이연법인세·일회성·환율효과 등으로 항등식이 설명하지 못하는 자금 이동이 크다. <b>이 회사는 현금흐름표를 직접 분해해야 한다.</b></div>' :
+    '<div class="det-note">잔차 3% 이내 — 항등식이 실제 현금 이동을 잘 설명한다</div>'}
           ` : ''}` : ''}
           ${r.fs_basis_note ? `<div class="det-note">⚠ ${esc(r.fs_basis_note)} → ${DATA.meta.years[DATA.meta.years.length - 1]}년 기준 유지</div>` : ''}
           <div class="sparkrow"><span>매출</span>${spark(s.rev, years)}<b>${wonU(r.rev)}</b></div>
@@ -291,11 +291,11 @@
           <div class="angles">${angles || '<span class="muted">—</span>'}</div>
           <div class="det-sub">NEED 구성</div>
           <div class="fbars">
-            ${['F1','F2','F3','F4'].map((f, i) => {
-              const nm = ['레버리지','내부창출','외부의존성장','유동성'][i];
-              const v = (r.f || {})[f];
-              return `<div class="fbar"><span>${nm}</span><i style="width:${nn(v) ? 0 : v * 100}%"></i><em>${nn(v) ? '—' : Math.round(v * 100)}</em></div>`;
-            }).join('')}
+            ${['F1', 'F2', 'F3', 'F4'].map((f, i) => {
+      const nm = ['레버리지', '내부창출', '외부의존성장', '유동성'][i];
+      const v = (r.f || {})[f];
+      return `<div class="fbar"><span>${nm}</span><i style="width:${nn(v) ? 0 : v * 100}%"></i><em>${nn(v) ? '—' : Math.round(v * 100)}</em></div>`;
+    }).join('')}
           </div>
           ${r.status ? `<div class="det-note">${esc(statusNote(r))}</div>` : ''}
           <div class="det-links">
@@ -307,7 +307,7 @@
       ${ev ? `<div class="det-box wide"><h4>DART 공시 이력 <span class="hint">최근 24개월 (정기보고서 제외)</span></h4><ul class="evlist">${ev}</ul></div>` : ''}
     </div>`;
   }
-  const statusNote = r => {
+  const statusNote = (r) => {
     const m = STATUS_META[r.status];
     return m ? m.label + ' — ' + m.tip : '';
   };
@@ -315,17 +315,17 @@
   function render() {
     const rows = filtered();
     const shown = rows.slice(0, F.limit);
-    const m = DATA.meta, st = DATA.stats;
+    const m = DATA.meta,st = DATA.stats;
     const stale = m.staleness_months;
 
-    const typeChips = Object.keys(m.types).filter(t => t !== 'SELF').map(t => {
-      const n = DATA.rows.filter(r => r.type === t).length;
-      return `<button class="chip ${F.types.has(t) ? 'on' : ''} ${TYPE_COLOR[t]}" data-type="${t}" title="${esc(m.types[t].desc)}">`
-        + `${esc(m.types[t].label)} <em>${n}</em></button>`;
+    const typeChips = Object.keys(m.types).filter((t) => t !== 'SELF').map((t) => {
+      const n = DATA.rows.filter((r) => r.type === t).length;
+      return `<button class="chip ${F.types.has(t) ? 'on' : ''} ${TYPE_COLOR[t]}" data-type="${t}" title="${esc(m.types[t].desc)}">` +
+      `${esc(m.types[t].label)} <em>${n}</em></button>`;
     }).join('');
 
-    const sectors = [...new Set(DATA.rows.map(r => r.sector))].sort();
-    const statuses = [...new Set(DATA.rows.map(r => r.status).filter(Boolean))];
+    const sectors = [...new Set(DATA.rows.map((r) => r.sector))].sort();
+    const statuses = [...new Set(DATA.rows.map((r) => r.status).filter(Boolean))];
 
     document.getElementById('fundingRoot').innerHTML = `
       <h1 class="doc-title">💰 자금소요 스크리너 <span class="subtitle">Funding-Need Bottom-up Screener</span></h1>
@@ -334,12 +334,12 @@
         니즈 보유 <b>${m.universe.need_pool.toLocaleString()}</b> → 보드 적재 <b>${m.universe.top_n.toLocaleString()}</b>
         (상장 ${st.top_split.상장} / 비상장 ${st.top_split.비상장})
         · 회계 기준연도 <b>${m.latest_year}</b>
-        ${m.fs2025 && m.fs2025.merged ? `<span class="okmark">· ✅ ${m.fs2025.year}년 실측 반영 <b>${DATA.rows.filter(r => r.fs).length}</b>건 (실측 캐시브리지 ${DATA.rows.filter(r => r.gap_basis === 'measured_cashbridge').length}건)</span>`
-          : stale > 15 ? `<span class="warn">· ⚠ 재무 데이터 ${stale}개월 경과 — 최신 이벤트는 DART 오버레이로 보정</span>` : ''}
+        ${m.fs2025 && m.fs2025.merged ? `<span class="okmark">· ✅ ${m.fs2025.year}년 실측 반영 <b>${DATA.rows.filter((r) => r.fs).length}</b>건 (실측 캐시브리지 ${DATA.rows.filter((r) => r.gap_basis === 'measured_cashbridge').length}건)</span>` :
+    stale > 15 ? `<span class="warn">· ⚠ 재무 데이터 ${stale}개월 경과 — 최신 이벤트는 DART 오버레이로 보정</span>` : ''}
         ${m.fs2025 && m.fs2025.basis_mismatch_skipped ? `<span class="muted">· 연결/별도 기준 불일치로 미반영 ${m.fs2025.basis_mismatch_skipped}건</span>` : ''}
-        ${m.has_events
-          ? `<br>DART 공시 오버레이: <b>${(m.events_applied || 0).toLocaleString()}</b>건 적용 (${(m.events_generated || '').slice(0, 10)})`
-          : '<br><span class="warn">DART 공시 오버레이 미적용 — 상태 라벨(선행 타겟·조달 완료)이 비어 있음</span>'}
+        ${m.has_events ?
+    `<br>DART 공시 오버레이: <b>${(m.events_applied || 0).toLocaleString()}</b>건 적용 (${(m.events_generated || '').slice(0, 10)})` :
+    '<br><span class="warn">DART 공시 오버레이 미적용 — 상태 라벨(선행 타겟·조달 완료)이 비어 있음</span>'}
         ${m.events_failed ? `<span class="warn"> · 조회 실패 ${m.events_failed.toLocaleString()}건 (DART IP 스로틀). <code>build.ps1</code> 재실행 시 실패분만 증분 갱신됨</span>` : ''}
       </div>
 
@@ -416,19 +416,19 @@
         <div class="frow">
           <input id="fq" class="fsearch" type="search" placeholder="회사명 · 산업 · 종목코드 검색" value="${esc(F.q)}" />
           <div class="fseg" id="fListing">
-            ${[['all', '전체'], ['unlisted', `비상장 ${st.top_split.비상장}`], ['listed', `상장 ${st.top_split.상장}`]]
-              .map(([v, l]) => `<button class="${F.listing === v ? 'on' : ''}" data-v="${v}">${l}</button>`).join('')}
+            ${[['all', '전체'], ['unlisted', `비상장 ${st.top_split.비상장}`], ['listed', `상장 ${st.top_split.상장}`]].
+    map(([v, l]) => `<button class="${F.listing === v ? 'on' : ''}" data-v="${v}">${l}</button>`).join('')}
           </div>
           <select id="fSector"><option value="all">전체 섹터</option>
-            ${sectors.map(s => `<option value="${esc(s)}" ${F.sector === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
+            ${sectors.map((s) => `<option value="${esc(s)}" ${F.sector === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
           <select id="fStatus"><option value="all">전체 상태</option>
-            ${statuses.map(s => `<option value="${esc(s)}" ${F.status === s ? 'selected' : ''}>${esc((STATUS_META[s] || {}).label || s)}</option>`).join('')}</select>
+            ${statuses.map((s) => `<option value="${esc(s)}" ${F.status === s ? 'selected' : ''}>${esc((STATUS_META[s] || {}).label || s)}</option>`).join('')}</select>
           <select id="fRev">
             ${[['0|Infinity', '매출 전체'], ['300|1000', '300~1,000억'], ['1000|3000', '1,000~3,000억'],
-               ['3000|10000', '3,000~1조'], ['10000|Infinity', '1조 이상']]
-              .map(([v, l]) => { const [a, b] = v.split('|');
-                const on = F.revMin === Number(a) && String(F.revMax) === b;
-                return `<option value="${v}" ${on ? 'selected' : ''}>${l}</option>`; }).join('')}
+    ['3000|10000', '3,000~1조'], ['10000|Infinity', '1조 이상']].
+    map(([v, l]) => {const [a, b] = v.split('|');
+      const on = F.revMin === Number(a) && String(F.revMax) === b;
+      return `<option value="${v}" ${on ? 'selected' : ''}>${l}</option>`;}).join('')}
           </select>
         </div>
         <div class="frow">
@@ -440,12 +440,12 @@
           <span class="controls-label">앵글</span>
           <select id="fAngle"><option value="all">전체 앵글</option>
             ${Object.entries(m.angles || {}).map(([code, a]) => {
-              const n = DATA.rows.filter(r => (r.angle_tags || []).some(x => x.code === code)).length;
-              return n ? `<option value="${code}" ${F.angle === code ? 'selected' : ''}>${esc(a.label)} (${n})</option>` : '';
-            }).join('')}</select>
+      const n = DATA.rows.filter((r) => (r.angle_tags || []).some((x) => x.code === code)).length;
+      return n ? `<option value="${code}" ${F.angle === code ? 'selected' : ''}>${esc(a.label)} (${n})</option>` : '';
+    }).join('')}</select>
           <div class="fseg" id="fStance">
-            ${[['all', '전체'], ['positive', '＋ 긍정'], ['negative', '− 부정'], ['neutral', '? 보류']]
-              .map(([v, l]) => `<button class="${F.stance === v ? 'on' : ''}" data-v="${v}">${l}</button>`).join('')}
+            ${[['all', '전체'], ['positive', '＋ 긍정'], ['negative', '− 부정'], ['neutral', '? 보류']].
+    map(([v, l]) => `<button class="${F.stance === v ? 'on' : ''}" data-v="${v}">${l}</button>`).join('')}
           </div>
           <span class="hintr">앵글·stance는 스코어와 독립된 정성 판단 — positive/negative는 앵글 안에서 갈립니다</span>
         </div>
@@ -457,15 +457,15 @@
 
       <div class="table-wrap ftable-wrap">
         <table class="ftable">
-          <thead><tr>${COLS.map(c =>
-            `<th data-k="${c.k}" style="min-width:${c.w}px" class="${F.sort === c.k ? 'sorted' : ''} ${c.align === 'left' ? 'tl' : ''}">${c.h}${F.sort === c.k ? (F.desc ? ' ▼' : ' ▲') : ''}</th>`).join('')}</tr></thead>
+          <thead><tr>${COLS.map((c) =>
+    `<th data-k="${c.k}" style="min-width:${c.w}px" class="${F.sort === c.k ? 'sorted' : ''} ${c.align === 'left' ? 'tl' : ''}">${c.h}${F.sort === c.k ? F.desc ? ' ▼' : ' ▲' : ''}</th>`).join('')}</tr></thead>
           <tbody>${shown.map((r, i) => {
-            const key = r.corp_code || r.name;
-            const open = expanded.has(key);
-            return `<tr class="frow-r ${open ? 'open' : ''}" data-key="${esc(key)}">`
-              + COLS.map(c => `<td class="${c.align === 'left' ? 'tl' : ''}">${c.fmt(r)}</td>`).join('') + '</tr>'
-              + (open ? `<tr class="fdet"><td colspan="${COLS.length}">${detail(r)}</td></tr>` : '');
-          }).join('')}</tbody>
+      const key = r.corp_code || r.name;
+      const open = expanded.has(key);
+      return `<tr class="frow-r ${open ? 'open' : ''}" data-key="${esc(key)}">` +
+      COLS.map((c) => `<td class="${c.align === 'left' ? 'tl' : ''}">${c.fmt(r)}</td>`).join('') + '</tr>' + (
+      open ? `<tr class="fdet"><td colspan="${COLS.length}">${detail(r)}</td></tr>` : '');
+    }).join('')}</tbody>
         </table>
       </div>
       ${rows.length === 0 ? '<div class="empty"><h3>조건에 맞는 회사가 없습니다</h3></div>' : ''}
@@ -473,45 +473,45 @@
     wire();
   }
 
-  function wire() {
+  function wire() {var _root$querySelector, _root$querySelector2, _root$querySelector3, _root$querySelector4, _root$querySelector5, _root$querySelector6, _root$querySelector7, _root$querySelector8;
     const root = document.getElementById('fundingRoot');
     const q = root.querySelector('#fq');
     if (q) {
       let t;
       q.addEventListener('input', () => {
         clearTimeout(t);
-        t = setTimeout(() => { F.q = q.value; F.limit = 120; render(); document.getElementById('fq').focus(); }, 220);
+        t = setTimeout(() => {F.q = q.value;F.limit = 120;render();document.getElementById('fq').focus();}, 220);
       });
     }
-    root.querySelector('#fListing')?.addEventListener('click', e => {
-      const b = e.target.closest('button'); if (!b) return;
-      F.listing = b.dataset.v; F.limit = 120; render();
+    (_root$querySelector = root.querySelector('#fListing')) === null || _root$querySelector === void 0 || _root$querySelector.addEventListener('click', (e) => {
+      const b = e.target.closest('button');if (!b) return;
+      F.listing = b.dataset.v;F.limit = 120;render();
     });
-    root.querySelector('#fSector')?.addEventListener('change', e => { F.sector = e.target.value; F.limit = 120; render(); });
-    root.querySelector('#fStatus')?.addEventListener('change', e => { F.status = e.target.value; F.limit = 120; render(); });
-    root.querySelector('#fRev')?.addEventListener('change', e => {
+    (_root$querySelector2 = root.querySelector('#fSector')) === null || _root$querySelector2 === void 0 || _root$querySelector2.addEventListener('change', (e) => {F.sector = e.target.value;F.limit = 120;render();});
+    (_root$querySelector3 = root.querySelector('#fStatus')) === null || _root$querySelector3 === void 0 || _root$querySelector3.addEventListener('change', (e) => {F.status = e.target.value;F.limit = 120;render();});
+    (_root$querySelector4 = root.querySelector('#fRev')) === null || _root$querySelector4 === void 0 || _root$querySelector4.addEventListener('change', (e) => {
       const [a, b] = e.target.value.split('|');
-      F.revMin = Number(a); F.revMax = b === 'Infinity' ? Infinity : Number(b);
-      F.limit = 120; render();
+      F.revMin = Number(a);F.revMax = b === 'Infinity' ? Infinity : Number(b);
+      F.limit = 120;render();
     });
-    root.querySelector('#fAngle')?.addEventListener('change', e => { F.angle = e.target.value; F.limit = 120; render(); });
-    root.querySelector('#fStance')?.addEventListener('click', e => {
-      const b = e.target.closest('button'); if (!b) return;
-      F.stance = b.dataset.v; F.limit = 120; render();
+    (_root$querySelector5 = root.querySelector('#fAngle')) === null || _root$querySelector5 === void 0 || _root$querySelector5.addEventListener('change', (e) => {F.angle = e.target.value;F.limit = 120;render();});
+    (_root$querySelector6 = root.querySelector('#fStance')) === null || _root$querySelector6 === void 0 || _root$querySelector6.addEventListener('click', (e) => {
+      const b = e.target.closest('button');if (!b) return;
+      F.stance = b.dataset.v;F.limit = 120;render();
     });
-    root.querySelector('#fTypes')?.addEventListener('click', e => {
-      const b = e.target.closest('.chip'); if (!b) return;
+    (_root$querySelector7 = root.querySelector('#fTypes')) === null || _root$querySelector7 === void 0 || _root$querySelector7.addEventListener('click', (e) => {
+      const b = e.target.closest('.chip');if (!b) return;
       const t = b.dataset.type;
       F.types.has(t) ? F.types.delete(t) : F.types.add(t);
-      F.limit = 120; render();
+      F.limit = 120;render();
     });
-    root.querySelector('#fMore')?.addEventListener('click', () => { F.limit += 200; render(); });
-    root.querySelectorAll('.ftable thead th').forEach(th => th.addEventListener('click', () => {
+    (_root$querySelector8 = root.querySelector('#fMore')) === null || _root$querySelector8 === void 0 || _root$querySelector8.addEventListener('click', () => {F.limit += 200;render();});
+    root.querySelectorAll('.ftable thead th').forEach((th) => th.addEventListener('click', () => {
       const k = th.dataset.k;
-      if (F.sort === k) F.desc = !F.desc; else { F.sort = k; F.desc = true; }
+      if (F.sort === k) F.desc = !F.desc;else {F.sort = k;F.desc = true;}
       render();
     }));
-    root.querySelectorAll('.frow-r').forEach(tr => tr.addEventListener('click', ev => {
+    root.querySelectorAll('.frow-r').forEach((tr) => tr.addEventListener('click', (ev) => {
       if (ev.target.closest('a')) return;
       const key = tr.dataset.key;
       expanded.has(key) ? expanded.delete(key) : expanded.add(key);
@@ -529,7 +529,7 @@
       render();
     } catch (err) {
       document.getElementById('fundingRoot').innerHTML =
-        `<div class="empty"><div class="empty-ico">💰</div><h3>자금소요 데이터가 없습니다</h3>
+      `<div class="empty"><div class="empty-ico">💰</div><h3>자금소요 데이터가 없습니다</h3>
          <p>${esc(err.message)}</p>
          <p><code>powershell -ExecutionPolicy Bypass -File .\\funding\\build.ps1</code> 로 생성하세요.</p></div>`;
     }

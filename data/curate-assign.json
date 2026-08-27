@@ -1,0 +1,887 @@
+{
+ "S4": {
+  "title": "석영·세라믹 소모품 슈퍼사이클 + 창업주 승계",
+  "companies": [
+   {
+    "name": "코미코",
+    "corp_code": "00997812",
+    "listed": true,
+    "rev": 5071,
+    "revCagr": 0.20389736023682636,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "월덱스",
+    "corp_code": "00580065",
+    "listed": true,
+    "rev": 3068,
+    "revCagr": 0.1946364307337669,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)싸이노스",
+    "corp_code": "00597454",
+    "listed": false,
+    "rev": 970,
+    "revCagr": 0.10888647387722661,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "티씨케이",
+    "corp_code": "00245472",
+    "listed": true,
+    "rev": 2757,
+    "revCagr": 0.08338776052836416,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "하나머티리얼즈",
+    "corp_code": "00660750",
+    "listed": true,
+    "rev": 2516,
+    "revCagr": 0.0726589800600026,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "원익",
+    "corp_code": "00210980",
+    "listed": true,
+    "rev": 1387,
+    "revCagr": 0.09542568251350247,
+    "need": 25,
+    "type": "GROWTH"
+   }
+  ]
+ },
+ "AI5": {
+  "title": "제로트러스트發 보안 SW 롤업",
+  "companies": [
+   {
+    "name": "이글루",
+    "corp_code": "00364847",
+    "listed": true,
+    "rev": 1112,
+    "revCagr": 0.09454815839926467,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "파수",
+    "corp_code": "00638487",
+    "listed": true,
+    "rev": 461,
+    "revCagr": 0.06140674550847747,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "한싹",
+    "corp_code": "01602638",
+    "listed": true,
+    "rev": 205,
+    "revCagr": null,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "모니터랩",
+    "corp_code": "01583652",
+    "listed": true,
+    "rev": 149,
+    "revCagr": null,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "한국정보인증",
+    "corp_code": "00306454",
+    "listed": true,
+    "rev": 1219,
+    "revCagr": 0.20961714002652454,
+    "need": 24,
+    "type": "WC_BURN"
+   },
+   {
+    "name": "(주)피앤피시큐어",
+    "corp_code": "00867867",
+    "listed": false,
+    "rev": 624,
+    "revCagr": 0.14368931578446031,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "AI4": {
+  "title": "산업용 AI SW(검사·APS·예지보전) 볼트온",
+  "companies": [
+   {
+    "name": "라온피플",
+    "corp_code": "01251489",
+    "listed": true,
+    "rev": 2202,
+    "revCagr": 0.4706946030320929,
+    "need": 50,
+    "type": "DISTRESS"
+   },
+   {
+    "name": "(주)오리엔탈검사개발",
+    "corp_code": "00868167",
+    "listed": false,
+    "rev": 2492,
+    "revCagr": 0.6668258264683373,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)오리엔탈검사개발",
+    "corp_code": "00868167",
+    "listed": false,
+    "rev": 2492,
+    "revCagr": 0.6668258264683373,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "한화비전(주)",
+    "corp_code": "01313406",
+    "listed": false,
+    "rev": 10132,
+    "revCagr": 0.18636350587015427,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)스마트삼육",
+    "corp_code": "01162422",
+    "listed": false,
+    "rev": 890,
+    "revCagr": 0.1878510071441417,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)로봇앤드디자인",
+    "corp_code": "01135808",
+    "listed": false,
+    "rev": 789,
+    "revCagr": 0.13439639958999638,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "H4": {
+  "title": "수의(반려동물) IVD 리커링 + 진단 밸류체인",
+  "companies": [
+   {
+    "name": "바이오노트",
+    "corp_code": "00622787",
+    "listed": true,
+    "rev": 1028,
+    "revCagr": 0.20017210125562213,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "우진비앤지",
+    "corp_code": "00103547",
+    "listed": true,
+    "rev": 557,
+    "revCagr": 0.1265728276907594,
+    "need": 23,
+    "type": "GROWTH"
+   },
+   {
+    "name": "대성미생물",
+    "corp_code": "00177320",
+    "listed": true,
+    "rev": 238,
+    "revCagr": -0.008778442870982395,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)강동물류",
+    "corp_code": "01741168",
+    "listed": false,
+    "rev": 549,
+    "revCagr": null,
+    "need": 75,
+    "type": "REFI"
+   },
+   {
+    "name": "한국베링거인겔하임동물약품(주)",
+    "corp_code": "00533711",
+    "listed": false,
+    "rev": 1093,
+    "revCagr": 0.22289103955921807,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)복시약품",
+    "corp_code": "01219863",
+    "listed": false,
+    "rev": 706,
+    "revCagr": 0.09864622671088186,
+    "need": 65,
+    "type": "REFI"
+   }
+  ]
+ },
+ "H5": {
+  "title": "치과 디지털 전환의 소모품화(3D레진·클리어얼라이너)",
+  "companies": [
+   {
+    "name": "메타바이오메드",
+    "corp_code": "00317681",
+    "listed": true,
+    "rev": 940,
+    "revCagr": 0.10172037515589549,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "바텍",
+    "corp_code": "00264255",
+    "listed": true,
+    "rev": 3852,
+    "revCagr": 0.08631535601676021,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "레이",
+    "corp_code": "00828761",
+    "listed": true,
+    "rev": 798,
+    "revCagr": 0.07569863821226153,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "디오",
+    "corp_code": "00115931",
+    "listed": true,
+    "rev": 1196,
+    "revCagr": 0.04659225478303375,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)레진엔터테인먼트",
+    "corp_code": "01229994",
+    "listed": false,
+    "rev": 1038,
+    "revCagr": 0.18530353995420046,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)표준교정기술원",
+    "corp_code": "01375248",
+    "listed": false,
+    "rev": 170,
+    "revCagr": 0.08917626940200774,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "S1": {
+  "title": "첨단패키징 소재 국산화(Low-α EMC·언더필·전구체)",
+  "companies": [
+   {
+    "name": "오성첨단소재",
+    "corp_code": "00350048",
+    "listed": true,
+    "rev": 1464,
+    "revCagr": 0.22137178452382855,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "유니소재(주)",
+    "corp_code": "00480543",
+    "listed": false,
+    "rev": 732,
+    "revCagr": 0.15286680036940847,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "서우소재(주)",
+    "corp_code": "01290558",
+    "listed": false,
+    "rev": 298,
+    "revCagr": 0.21479614037778183,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "이앤티스소재(주)",
+    "corp_code": "01373189",
+    "listed": false,
+    "rev": 136,
+    "revCagr": 0.3597990772744528,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)청해소재",
+    "corp_code": "00835938",
+    "listed": false,
+    "rev": 518,
+    "revCagr": 0.1909039494220801,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)청해소재",
+    "corp_code": "00835938",
+    "listed": false,
+    "rev": 518,
+    "revCagr": 0.1909039494220801,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "H2": {
+  "title": "스킨부스터 바이오소재 국산화(엑소좀·콜라겐·PDLLA)",
+  "companies": [
+   {
+    "name": "파마리서치",
+    "corp_code": "00970453",
+    "listed": true,
+    "rev": 3501,
+    "revCagr": 0.32644238356824684,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "바이오플러스",
+    "corp_code": "00636656",
+    "listed": true,
+    "rev": 664,
+    "revCagr": 0.34861861563207763,
+    "need": 34,
+    "type": "WC_BURN"
+   },
+   {
+    "name": "휴메딕스",
+    "corp_code": "00614478",
+    "listed": true,
+    "rev": 1619,
+    "revCagr": 0.16474588091450548,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)엑소코바이오",
+    "corp_code": "01279157",
+    "listed": false,
+    "rev": 954,
+    "revCagr": 0.8657906523895229,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)네스필러PKG",
+    "corp_code": "01454943",
+    "listed": false,
+    "rev": 230,
+    "revCagr": null,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)부스터스",
+    "corp_code": "01745234",
+    "listed": false,
+    "rev": 728,
+    "revCagr": null,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "H3": {
+  "title": "마이크로니들 경피전달 CDMO(무기상)",
+  "companies": [
+   {
+    "name": "라파스",
+    "corp_code": "01058101",
+    "listed": true,
+    "rev": 272,
+    "revCagr": 0.18058530102063441,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)대경피앤씨",
+    "corp_code": "01142710",
+    "listed": false,
+    "rev": 420,
+    "revCagr": 0.15070117933620808,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "마이크로컨텍솔",
+    "corp_code": "00568188",
+    "listed": true,
+    "rev": 697,
+    "revCagr": 0.18093059470839545,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)마이크로필터",
+    "corp_code": "00572172",
+    "listed": false,
+    "rev": 940,
+    "revCagr": 0.0924031243898713,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "에스케이마이크로웍스솔루션즈(주)",
+    "corp_code": "00648350",
+    "listed": false,
+    "rev": 4385,
+    "revCagr": 0.03967398430045188,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "마이크로디지탈",
+    "corp_code": "01267967",
+    "listed": true,
+    "rev": 115,
+    "revCagr": 0.16042330499604263,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "AI1": {
+  "title": "온프레미스 sLLM·AI거버넌스 미들레이어",
+  "companies": [
+   {
+    "name": "(주)업스테이지",
+    "corp_code": "01786541",
+    "listed": false,
+    "rev": 139,
+    "revCagr": null,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "셀바스AI",
+    "corp_code": "00666064",
+    "listed": true,
+    "rev": 1125,
+    "revCagr": 0.21152510940084435,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "폴라리스AI파마",
+    "corp_code": "00463342",
+    "listed": true,
+    "rev": 596,
+    "revCagr": 0.0672398538538721,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "SKAI",
+    "corp_code": "01381984",
+    "listed": true,
+    "rev": 198,
+    "revCagr": 0.06761773169879337,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "비큐AI",
+    "corp_code": "00980043",
+    "listed": true,
+    "rev": 173,
+    "revCagr": 0.006883212142255513,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "폴라리스AI",
+    "corp_code": "00369213",
+    "listed": true,
+    "rev": 531,
+    "revCagr": -0.04878110386619339,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "S2": {
+  "title": "유리기판 전환(TGV·코어·검사)",
+  "companies": [
+   {
+    "name": "필옵틱스",
+    "corp_code": "00938721",
+    "listed": true,
+    "rev": 4109,
+    "revCagr": 0.39600292026927075,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "기가비스",
+    "corp_code": "00765569",
+    "listed": true,
+    "rev": 261,
+    "revCagr": 0.18472683031392423,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "와이씨켐",
+    "corp_code": "00619507",
+    "listed": true,
+    "rev": 703,
+    "revCagr": 0.04495669698783411,
+    "need": 39,
+    "type": "DISTRESS"
+   },
+   {
+    "name": "제이앤티씨",
+    "corp_code": "00447575",
+    "listed": true,
+    "rev": 2732,
+    "revCagr": 0.029607739160998348,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "알에프코어(주)",
+    "corp_code": "01305036",
+    "listed": false,
+    "rev": 666,
+    "revCagr": 0.3201757527663802,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)오리엔탈검사개발",
+    "corp_code": "00868167",
+    "listed": false,
+    "rev": 2492,
+    "revCagr": 0.6668258264683373,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "S3": {
+  "title": "텅스텐→몰리브덴 배선 전환(Mo 전구체 국산화)",
+  "companies": [
+   {
+    "name": "한솔케미칼",
+    "corp_code": "00140955",
+    "listed": true,
+    "rev": 7764,
+    "revCagr": 0.04921126249152952,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "후성",
+    "corp_code": "01172270",
+    "listed": false,
+    "rev": 4378,
+    "revCagr": 0.0806220240819473,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "디엔에프",
+    "corp_code": "00569691",
+    "listed": true,
+    "rev": 739,
+    "revCagr": -0.0006611352109330282,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)탕정제일산단",
+    "corp_code": "01371215",
+    "listed": false,
+    "rev": 220,
+    "revCagr": 0.1346327994425296,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "복정제형(주)",
+    "corp_code": "01223972",
+    "listed": false,
+    "rev": 679,
+    "revCagr": -0.04358757780725109,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)코스알엑스",
+    "corp_code": "01364491",
+    "listed": false,
+    "rev": 5898,
+    "revCagr": 0.5894695755041437,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "S5": {
+  "title": "TCB→하이브리드 본딩 전환(후공정 소재 재편)",
+  "companies": [
+   {
+    "name": "솔브레인에스엘디(주)",
+    "corp_code": "00875042",
+    "listed": false,
+    "rev": 1335,
+    "revCagr": 0.05137936691714318,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "솔브레인",
+    "corp_code": "01489648",
+    "listed": true,
+    "rev": 8634,
+    "revCagr": null,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "솔브레인홀딩스",
+    "corp_code": "00247975",
+    "listed": true,
+    "rev": 5154,
+    "revCagr": -0.09901362191068563,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "케이씨텍",
+    "corp_code": "01261893",
+    "listed": true,
+    "rev": 3854,
+    "revCagr": 0.012729884048059192,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "솔브레인라사(주)",
+    "corp_code": "01223778",
+    "listed": false,
+    "rev": 668,
+    "revCagr": 0.07408821286305489,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)케이씨텍",
+    "corp_code": "01261893",
+    "listed": true,
+    "rev": 203,
+    "revCagr": 0.04948177802355813,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "AI2": {
+  "title": "에이전트 오케스트레이션 + 상장SW Take-Private",
+  "companies": [
+   {
+    "name": "(주)플레이독소프트",
+    "corp_code": "01101403",
+    "listed": false,
+    "rev": 497,
+    "revCagr": 0.17157320338126425,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "사이냅소프트",
+    "corp_code": "01207901",
+    "listed": true,
+    "rev": 133,
+    "revCagr": 0.1572963534444951,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "슈어소프트테크",
+    "corp_code": "01012640",
+    "listed": true,
+    "rev": 888,
+    "revCagr": 0.2607364687151632,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "액토즈소프트",
+    "corp_code": "00348034",
+    "listed": true,
+    "rev": 796,
+    "revCagr": 0.13299888039667174,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "지어소프트",
+    "corp_code": "00389110",
+    "listed": true,
+    "rev": 5472,
+    "revCagr": 0.2681476397416904,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "토탈소프트",
+    "corp_code": "00355089",
+    "listed": true,
+    "rev": 207,
+    "revCagr": 0.10095533902340503,
+    "need": null,
+    "type": ""
+   }
+  ]
+ },
+ "AI3": {
+  "title": "EMR 설치기반 메디컬 OS (AI∩헬스케어 브릿지)",
+  "companies": [
+   {
+    "name": "비트컴퓨터",
+    "corp_code": "00231707",
+    "listed": true,
+    "rev": 371,
+    "revCagr": 0.02078369057278806,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "선헬스케어인터내셔널(주)",
+    "corp_code": "01102828",
+    "listed": false,
+    "rev": 208,
+    "revCagr": 0.26937845515778136,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)케이디헬스케어",
+    "corp_code": "01373019",
+    "listed": false,
+    "rev": 992,
+    "revCagr": 0.2989103439704188,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "인피니트헬스케어",
+    "corp_code": "00435969",
+    "listed": true,
+    "rev": 1016,
+    "revCagr": 0.07913379573661206,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)비엘헬스케어",
+    "corp_code": "01383742",
+    "listed": false,
+    "rev": 984,
+    "revCagr": 0.29653003749229767,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)차헬스케어",
+    "corp_code": "00989497",
+    "listed": false,
+    "rev": 8075,
+    "revCagr": null,
+    "need": 67,
+    "type": "WC_BURN"
+   }
+  ]
+ },
+ "H1": {
+  "title": "에스테틱 소모품 리커링(RF팁·HIFU카트리지)",
+  "companies": [
+   {
+    "name": "RF시스템즈",
+    "corp_code": "01286476",
+    "listed": true,
+    "rev": 327,
+    "revCagr": 0.13167785099364337,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "RF머트리얼즈",
+    "corp_code": "01343665",
+    "listed": true,
+    "rev": 445,
+    "revCagr": 0.14967335335698007,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "한국지이초음파유한회사",
+    "corp_code": "01451733",
+    "listed": false,
+    "rev": 2325,
+    "revCagr": null,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)메디팁",
+    "corp_code": "01814996",
+    "listed": false,
+    "rev": 152,
+    "revCagr": null,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "(주)대영초음파",
+    "corp_code": "00872692",
+    "listed": false,
+    "rev": 350,
+    "revCagr": 0.014862342021421115,
+    "need": null,
+    "type": ""
+   },
+   {
+    "name": "RFHIC",
+    "corp_code": "01078178",
+    "listed": true,
+    "rev": 1149,
+    "revCagr": 0.01018231168954209,
+    "need": null,
+    "type": ""
+   }
+  ]
+ }
+}

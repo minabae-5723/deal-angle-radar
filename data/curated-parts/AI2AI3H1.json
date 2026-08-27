@@ -1,0 +1,20 @@
+{
+  "01101403": {"product": "온라인·모바일 게임(아이템 과금) + 벤처투자 운용", "angle": "게임+투자사, '소프트' 키워드 오탐; rev 497억·CAGR 17%", "onThesis": false},
+  "01207901": {"product": "디지털 문서 뷰어·에디터 + Document AI(사이냅 OCR·온프레미스 LLM 어시스턴트)", "angle": "문서 SaaS→에이전트 전환(Agentic RAG·노코드 AI 워크플로우) Take-Private 정합; rev 133억·CAGR 16% 소형·현금", "onThesis": true},
+  "01012640": {"product": "Mission Critical SW 시험검증 자동화 툴(Controller Tester) + 빅데이터·AIOps", "angle": "고성장 상장SW Take-Private 후보(SW V&V 검증 레그); rev 888억·CAGR 26%", "onThesis": true},
+  "00348034": {"product": "온라인·모바일 게임 개발·퍼블리싱(미르의전설 IP)", "angle": "게임 IP사, '소프트' 키워드 오탐; rev 796억·CAGR 13%", "onThesis": false},
+  "00389110": {"product": "IT서비스·온라인광고 + 오아시스마켓 새벽배송 이커머스", "angle": "유통(오아시스) 중심 지주형, '소프트' 키워드 오탐; rev 5,472억·CAGR 27%", "onThesis": false},
+  "00355089": {"product": "항만 터미널운영시스템(CATOS)·선박 적하계획(CASP) 해운물류 버티컬 SW", "angle": "글로벌 과점·고마진(영업이익률 34%) 버티컬SW Take-Private 적격; rev 207억·CAGR 10%", "onThesis": true},
+  "00231707": {"product": "의료기관 EMR·OCS·HIS(클라우드 EMR·AI 보이스차팅) + 디지털헬스", "angle": "EMR 설치기반 메디컬 OS 핵심(시장1위·AI차팅 화폐화); rev 371억·CAGR 2% 저성장", "onThesis": true},
+  "01102828": {"product": "미국 수술센터 운영 + 의약외품·의료기기 유통", "angle": "수술센터·의료기기 유통, EMR 아님 '헬스케어' 오탐; rev 208억·CAGR 27%", "onThesis": false},
+  "01373019": {"product": "스포츠센터·피트니스 시설 운영 + 운동기구", "angle": "헬스=피트니스, EMR 무관 오탐(자본잠식); rev 992억·CAGR 30%", "onThesis": false},
+  "00435969": {"product": "의료영상저장전송(PACS)·3D 의료영상 + AI(내시경 Smart Endo·디지털병리)", "angle": "의료IT 설치기반(55개국 6,300기관) 메디컬 OS·AI 화폐화, 방어조항 삭제 딜 시그널; rev 1,016억·CAGR 8%", "onThesis": true},
+  "01383742": {"product": "의약품 도매업(부림약품 지분법 관계사)", "angle": "의약품 유통, EMR 무관 '헬스케어' 오탐; rev 984억", "onThesis": false},
+  "00989497": {"product": "국내외 병원 개발·운영·경영컨설팅(차바이오텍 계열)", "angle": "병원 운영 네트워크, EMR SW 아님 오탐; rev 8,075억·WC_BURN need 67(순손실 691억)", "onThesis": false},
+  "01286476": {"product": "방산 레이다·안테나·환경제어 시스템 + 원자현미경", "angle": "RF=방산 전자, 에스테틱 RF팁과 무관 'RF' 오탐; rev 327억·CAGR 13%", "onThesis": false},
+  "01343665": {"product": "화합물반도체(GaN·GaAs) 패키지·히트싱크(통신·레이저·군수)", "angle": "RF=반도체 패키지, 에스테틱 무관 'RF' 오탐; rev 445억·CAGR 15%", "onThesis": false},
+  "01451733": {"product": "초음파 진단 의료기기(GE헬스케어 100% 캡티브)", "angle": "진단용 초음파(GE 캡티브·매각불가), 에스테틱 HIFU 아님 오탐; rev 2,325억", "onThesis": false},
+  "01814996": {"product": "의료기기·의약품 인허가 대행·상업화 컨설팅 + CRO", "angle": "인허가·CRO 서비스, RF팁 무관(사명 '팁' 오탐); rev 152억", "onThesis": false},
+  "00872692": {"product": "초음파 진단기기(프로브·트랜스듀서) 제조·수출", "angle": "진단용 초음파, 에스테틱 HIFU 카트리지 아님 오탐; rev 350억", "onThesis": false},
+  "01078178": {"product": "GaN RF 전력증폭기·트랜지스터(5G·방산 레이다)", "angle": "RF=GaN 반도체, 에스테틱 무관 'RF' 오탐; rev 1,149억", "onThesis": false}
+}
