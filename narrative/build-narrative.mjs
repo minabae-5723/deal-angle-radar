@@ -18,6 +18,9 @@ const tryLoad = f => { try { return load(f); } catch { return null; } };
 const reg = load("narratives.json");
 const harvest = tryLoad("narrative-harvest.json");
 const community = tryLoad("community.json");   // comments-harvest.mjs 산출 (giscus Discussions)
+// 기업 컨텍스트 — 정성 게이트(①사업모델 ②전방산업 ③병목 ④규모·지분 ⑤신호)를 통과한 기업만 워치리스트로.
+// 한 번 조사한 회사는 다시 조사하지 않는다. corp_code 를 키로 누적한다.
+const ctx = tryLoad("company-context.json") || {};
 const panelFile = tryLoad("funding-panel.json");
 const poolRaw = load("funding-pool.json");
 const pool = poolRaw.rows || poolRaw;
@@ -305,13 +308,27 @@ function buildPatch(t) {
 const outThemes = reg.themes.map(t => {
   const { longlist, nodeCounts } = PATCH_MODE ? buildPatch(t) : buildFull(t);
   const comm = community?.byTheme?.[t.id] || null;
+  // 롱리스트 행에 정성 판정을 붙인다 — 화면은 기본적으로 워치리스트(pass)만 보여준다.
+  for (const r of longlist) {
+    const c = ctx[r.corp] || ctx["N:" + r.name];
+    if (!c) continue;
+    const v = (c.verdict || {})[t.id];
+    if (!v) continue;
+    r.wl = v;                                   // pass | front | size | group | thin | hold
+    r.wl_reason = (c.reason || {})[t.id] || null;
+    if (c.biz) r.biz = c.biz;
+    if (c.front) r.front = c.front;
+  }
   return { ...t, longlist, nodeCounts,
     harvest_reinforce: harvest ? (harvest.reinforced?.[t.id] || []) : [],
     community: comm,
     stats: {
       total: longlist.length,
       inPool: longlist.filter(r => r.inPool).length,
-      unlisted: longlist.filter(r => r.listed === false).length
+      unlisted: longlist.filter(r => r.listed === false).length,
+      screened: longlist.filter(r => r.wl).length,          // 정성 게이트를 거친 행
+      watch: longlist.filter(r => r.wl === "pass").length,  // 워치리스트
+      wlHold: longlist.filter(r => r.wl === "hold").length  // 보류(확인 필요)
     } };
 });
 

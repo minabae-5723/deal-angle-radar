@@ -974,3 +974,13 @@ ul.nv-psrcs li { margin: 3px 0; }
 .nv-ideameta { display: inline-flex; align-items: center; gap: 6px; }
 .nv-idea-del { border: none; background: none; cursor: pointer; font-size: 12px; opacity: .45; padding: 0 2px; }
 .nv-idea-del:hover { opacity: 1; }
+/* 목록 모드 바 — 워치리스트 기본, 전체 매칭은 토글 */
+.nv-modebar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0 10px; }
+.nv-mode { font: inherit; font-size: 12px; cursor: pointer; padding: 5px 11px; border-radius: 999px; border: 1px solid #dde3ec; background: #f4f7fb; color: var(--navy-dark); }
+.nv-mode:hover { background: #e7eef7; }
+.nv-mode.on { background: var(--navy-dark); color: #fff; border-color: var(--navy-dark); }
+.nv-mode b { margin-left: 2px; }
+.nv-modehint { font-size: 11.5px; align-self: center; }
+.nv-biz { display: block; color: #37506e; font-size: 11.5px; }
+.nv-wlreason { display: block; color: #a3271f; font-size: 11.5px; }
+.nv-mode-off { opacity: .4; cursor: default; }

@@ -1,0 +1,43 @@
+{
+ "generated": "2026-08-27T01:33:27.824Z",
+ "source": "press-rss",
+ "items": [],
+ "errors": [
+  {
+   "media": "전자신문",
+   "error": "HTTP 403"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "error": "HTTP 403"
+  },
+  {
+   "media": "디지털데일리",
+   "error": "HTTP 403"
+  },
+  {
+   "media": "환경미디어",
+   "error": "HTTP 403"
+  },
+  {
+   "media": "물류신문",
+   "error": "HTTP 403"
+  },
+  {
+   "media": "안전저널",
+   "error": "HTTP 403"
+  },
+  {
+   "media": "바이오타임즈",
+   "error": "HTTP 403"
+  },
+  {
+   "media": "코스인코리아",
+   "error": "HTTP 403"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "error": "HTTP 403"
+  }
+ ]
+}

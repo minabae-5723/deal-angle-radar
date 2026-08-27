@@ -1,0 +1,7 @@
+{
+  "_readme": "텔레그램 수집 대상. handle 은 @ 없이 채널 아이디만. mode: preview(공개 채널, 토큰 불필요) | bot(비공개·봇이 관리자로 있는 채널)",
+  "_how": "공개 채널은 handle 만 주시면 됩니다. 비공개 채널은 ROCKY 를 관리자로 초대하고 TELEGRAM_BOT_TOKEN 을 GitHub Secret 에 넣으세요.",
+  "channels": [
+    { "handle": "example_channel", "note": "샘플 — 실제 채널로 교체하세요", "priority": "B", "mode": "preview", "enabled": false }
+  ]
+}

@@ -4,6 +4,10 @@
 (function () {
   let inited = false,data = null,curTheme = null;
   let nodeFilter = null,tierFilter = null,angleFilter = null; // 롱리스트 필터 상태 (테마 전환 시 리셋)
+  // 목록 모드 — 정성 게이트를 통과한 회사만 보는 것이 기본. 'all' 은 기계 매칭 전체.
+  //   watch(통과) / hold(확인 필요) / drop(제외, 사유와 함께) / all(전체)
+  let listMode = "watch";   // 사용자가 고른 모드 (유지)
+  let curMode = "watch";    // 이번 렌더에 실제로 적용되는 모드 (조사 전 Thesis 면 all 로 대체)
   // 재무 필터 (숫자) — 매출≥억 · OPM≥% · CAGR≥% · 부채비율 범위(%) · ND/EBITDA 범위(배). null=미적용
   let fMinRev = null,fMinOpm = null,fMinCagr = null;
   let fDebtMin = null,fDebtMax = null,fNdeMin = null,fNdeMax = null;
@@ -893,7 +897,7 @@
         <td title="순부채/EBITDA — 낮을수록 안전, 음수=순현금">${nde(r)}</td>
         <td>${r.listed === true ? "상장" : r.listed === false ? "비상장" : "–"}</td>
         <td>${st(r)}</td>
-        <td class="nv-note">${esc(r.note || "")}</td></tr>`).join("")}
+        <td class="nv-note">${r.wl && r.wl !== "pass" && r.wl_reason ? `<span class="nv-wlreason">${esc(r.wl_reason)}</span>` : ""}${r.biz ? `<span class="nv-biz">${esc(r.biz)}</span>` : ""}${esc(r.note || "")}</td></tr>`).join("")}
     </table></div>${scored.length > 40 ? `<p class="nv-dim">…상위 40개 표시 (전체 ${scored.length}) · 구분(소싱 대상 우선) → 우선순위순 정렬</p>` : ""}`;
   }
 
@@ -941,8 +945,21 @@
   }
 
   // 활성 필터 적용 (노드/등급/앵글 + 재무 숫자)
+  // 정성 게이트 판정(wl)에 따른 1차 분류. 아직 조사되지 않은 행(wl 없음)은 'all' 에서만 보인다.
+  function modeFilter(r) {
+    if (curMode === "all") return true;
+    if (curMode === "watch") return r.wl === "pass";
+    if (curMode === "hold") return r.wl === "hold" || r.wl === "thin";
+    if (curMode === "drop") return r.wl === "front" || r.wl === "size" || r.wl === "group";
+    return true;
+  }
+  // 아직 정성 조사를 하지 않은 Thesis 는 워치리스트가 비어 있다 — 그럴 땐 전체 매칭으로 대체한다.
+  // 사용자가 고른 모드(listMode)는 그대로 두고 이번 렌더에만 적용한다(다른 Thesis 로 가면 원래 모드 복귀).
+  function syncMode(scored) {
+    curMode = (!scored.some((r) => r.wl === "pass") && listMode !== "all") ? "all" : listMode;
+  }
   function applyFilters(scored) {
-    return scored.filter((r) =>
+    return scored.filter(modeFilter).filter((r) =>
     (!nodeFilter || (r.node || "") === nodeFilter) &&
     (!tierFilter || (tierFilter === "COW" ? r.cashcow : r.tier === tierFilter)) &&
     (!angleFilter || r.angleLbl === angleFilter) &&
@@ -953,6 +970,26 @@
     (fDebtMax == null || (r.debt_ratio != null && r.debt_ratio * 100 <= fDebtMax)) &&
     (fNdeMin == null || (r.nd_ebitda != null && r.nd_ebitda >= fNdeMin)) &&
     (fNdeMax == null || (r.nd_ebitda != null && r.nd_ebitda <= fNdeMax)));
+  }
+
+  // 목록 모드 바 — 워치리스트가 기본. 기계 매칭 전체는 토글로 연다.
+  //   워치리스트 = 사업모델·전방산업을 확인해 이 Thesis 에 질적으로 맞는다고 판정된 회사만.
+  function modeBar(t, scored) {
+    const n = (f) => scored.filter(f).length;
+    const cW = n((r) => r.wl === "pass");
+    const cH = n((r) => r.wl === "hold" || r.wl === "thin");
+    const cD = n((r) => r.wl === "front" || r.wl === "size" || r.wl === "group");
+    const cA = scored.length;
+    const done = n((r) => !!r.wl);
+    const btn = (k, ico, label, cnt, title) =>
+      `<button class="nv-mode${curMode === k ? " on" : ""}${(k !== "all" && !cnt) ? " nv-mode-off" : ""}" data-mode="${k}"${(k !== "all" && !cnt) ? " disabled" : ""} title="${title}">${ico} ${label} <b>${cnt}</b></button>`;
+    return `<div class="nv-modebar">
+      ${btn("watch", "🎯", "워치리스트", cW, "사업모델·전방산업 확인 결과 이 Thesis 에 맞는 회사")}
+      ${btn("hold", "❓", "확인 필요", cH, "업종코드가 안 맞거나 사업내용이 불명 — DART 사업의 내용 확인 대상")}
+      ${btn("drop", "🚫", "제외", cD, "정성 게이트에서 걸러진 회사 — 사유를 함께 표시")}
+      ${btn("all", "📋", "전체 매칭", cA, "키워드·업종코드로 기계 매칭된 원본 목록")}
+      <span class="nv-dim nv-modehint">${done ? `조사 완료 ${done}/${cA}사` : "이 Thesis 는 아직 정성 조사 전 — '전체 매칭'만 있습니다"}</span>
+    </div>`;
   }
 
   // 재무 필터 바 — 숫자 입력. 값 있는 행에만 적용(없는 행은 해당 조건 활성 시 제외).
@@ -976,6 +1013,9 @@
     if (!t) {el.innerHTML = "";return;}
     const e = ELAS[(_t$catalog0 = t.catalog) === null || _t$catalog0 === void 0 ? void 0 : _t$catalog0.supply_elasticity] || {};
     const scored = scoreLonglist(t.longlist, (_t$catalog1 = t.catalog) === null || _t$catalog1 === void 0 ? void 0 : _t$catalog1.supply_elasticity, (_t$catalog10 = t.catalog) === null || _t$catalog10 === void 0 ? void 0 : _t$catalog10.payer);
+    // 아직 정성 조사를 하지 않은 Thesis 는 워치리스트가 비어 있다 — 그럴 땐 전체 매칭을 보여준다.
+    // (빈 화면을 보여주는 것보다 '아직 조사 전'이라고 말하고 원본을 보여주는 편이 정직하다)
+    syncMode(scored);
     const filtered = applyFilters(scored);
     // 롱리스트에 실제 존재하는 노드별 개수 (표시용)
     const nodeRowCount = {};
@@ -996,7 +1036,8 @@
       ${screenList(t)}
       ${commentsSection(t.id)}
       ${nodeChips}
-      <h3 class="h3">롱리스트 <span class="nv-dim">(우선순위순 · ★=주목 기업)</span></h3>
+      <h3 class="h3">기업 목록 <span class="nv-dim">(우선순위순 · ★=주목 기업)</span></h3>
+      ${modeBar(t, scored)}
       ${scored.length && !scored.some((r) => r.rev != null) ? `<div class="nv-leadnote">🔎 이 Thesis는 아직 <b>재무 매칭된 기업이 없습니다</b> — 항목은 소싱 지시서/발굴 리드입니다. 관련 상장·우량사는 우리 4만개 외감 유니버스엔 있으나, 배포본이 '자금니즈 풀'로 한정돼 재무가 안 붙은 상태(로컬 풀 빌드 시 채워짐).</div>` : ""}
       ${tierSummary(scored)}
       ${angleSummary(scored)}
@@ -1044,6 +1085,7 @@
     const wrap = document.getElementById("nvLLTable");
     if (!t || !wrap) return;
     const scored = scoreLonglist(t.longlist, t.catalog && t.catalog.supply_elasticity, t.catalog && t.catalog.payer);
+    syncMode(scored);
     const filtered = applyFilters(scored);
     wrap.innerHTML = filterBanner(filtered.length, scored.length) + longlistTable(filtered);
     wireTableFilters(wrap);
@@ -1126,6 +1168,11 @@
     const toggleAngle = (a) => {angleFilter = angleFilter === a ? null : a;renderSheet();};
     el.querySelectorAll(".nv-nodeclick").forEach((c) => c.addEventListener("click", () => toggleNode(c.dataset.node)));
     el.querySelectorAll(".nv-nodecell").forEach((c) => c.addEventListener("click", () => {if (c.dataset.node) toggleNode(c.dataset.node);}));
+    el.querySelectorAll(".nv-mode[data-mode]").forEach((b) => b.addEventListener("click", () => {
+      listMode = b.dataset.mode;
+      el.querySelectorAll(".nv-mode[data-mode]").forEach((x) => x.classList.toggle("on", x.dataset.mode === listMode));
+      refreshLLTable();
+    }));
     el.querySelectorAll(".nv-tsum[data-tier]").forEach((c) => c.addEventListener("click", () => toggleTier(c.dataset.tier)));
     el.querySelectorAll(".nv-asum[data-angle]").forEach((c) => c.addEventListener("click", () => toggleAngle(c.dataset.angle)));
     el.querySelectorAll(".nv-anglecell").forEach((c) => c.addEventListener("click", () => {if (c.dataset.angle) toggleAngle(c.dataset.angle);}));
