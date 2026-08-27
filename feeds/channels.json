@@ -1,8 +1,8 @@
 {
-  "_readme": "텔레그램 수집 대상. handle 은 @ 없이 채널 아이디만. mode: preview(공개 채널, 토큰 불필요) | bot(비공개·봇이 관리자로 있는 채널)",
-  "_how": "공개 채널은 handle 만 주시면 됩니다. 비공개 채널은 ROCKY 를 관리자로 초대하고 TELEGRAM_BOT_TOKEN 을 GitHub Secret 에 넣으세요.",
+  "_readme": "텔레그램 수집 대상. 새 채널은 반드시 아래 channels 배열 '안에' 한 줄씩 추가하세요(닫는 } 바깥에 쓰면 파일이 깨집니다).",
+  "_how": "공개 채널은 handle 만 있으면 됩니다(토큰·봇 초대 불필요). handle 은 @ 없이, https://t.me/abc_news 면 abc_news. priority: A(매일)·B(격일)·C(주간).",
+  "_private": "비공개 채널은 ROCKY 를 관리자로 초대하고 mode 를 bot 으로 두세요. TELEGRAM_BOT_TOKEN 은 GitHub Secret 에 등록합니다.",
   "channels": [
     { "handle": "example_channel", "note": "샘플 — 실제 채널로 교체하세요", "priority": "B", "mode": "preview", "enabled": false }
   ]
 }
-{ "handle": "channel_name", "note": "이 채널이 잡는 것", "priority": "A", "mode": "preview", "enabled": true }
