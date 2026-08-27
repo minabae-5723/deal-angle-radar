@@ -1,0 +1,71 @@
+name: daily-feeds
+
+# 매일 새벽 수집만 한다 — 판단은 하지 않는다.
+#   수집(여기, GitHub Actions): 텔레그램 채널·전문지 RSS → data/feeds/*.json 커밋
+#   심사(Claude 예약 작업):     그 파일을 읽어 Thesis 승격·강등 제안, 워치리스트 조사
+#   이렇게 나눈 이유: 러너는 판단을 못 하고, Claude 로 수집을 하면 토큰만 태운다.
+#   또 하나 — Claude 세션 컨테이너는 t.me·api.telegram.org egress 가 막혀 있으나 러너는 열려 있다.
+
+on:
+  schedule:
+    - cron: '0 20 * * *'      # 05:00 KST (UTC+9)
+  workflow_dispatch:           # 수동 실행 (Actions 탭에서 Run workflow)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-feeds
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages          # 배포본이 곧 원본 — 수집 결과도 여기에 쌓는다
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 텔레그램 채널 수집
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: node feeds/telegram.mjs
+        continue-on-error: true   # 한 소스가 죽어도 나머지는 수집한다
+
+      - name: 전문지 RSS 수집
+        run: node feeds/press-rss.mjs
+        continue-on-error: true
+
+      - name: 오래된 피드 정리 (최근 14일만 보관)
+        run: |
+          cd data/feeds 2>/dev/null || exit 0
+          ls -1 telegram-*.json press-*.json 2>/dev/null | sort | head -n -28 | xargs -r rm -f
+          echo "남은 피드: $(ls -1 *.json 2>/dev/null | wc -l)개"
+
+      - name: 커밋
+        run: |
+          git config user.name  "deal-angle-radar bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/feeds
+          if git diff --cached --quiet; then
+            echo "새 수집물 없음 — 커밋 생략"
+          else
+            git commit -m "feeds: $(date -u +%Y-%m-%d) 텔레그램·전문지 수집"
+            for i in 1 2 3 4; do
+              git push origin HEAD:gh-pages && break
+              echo "푸시 실패 — 재시도 $i"; sleep $((i*4)); git pull --rebase origin gh-pages || true
+            done
+          fi
+
+      - name: 요약
+        run: |
+          echo "### 수집 결과" >> $GITHUB_STEP_SUMMARY
+          for f in data/feeds/telegram-*.json data/feeds/press-*.json; do
+            [ -f "$f" ] || continue
+            echo "- \`$(basename $f)\` $(wc -c < "$f") bytes" >> $GITHUB_STEP_SUMMARY
+          done
