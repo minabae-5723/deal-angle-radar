@@ -4,18 +4,109 @@
   "_private": "비공개 채널은 ROCKY 를 관리자로 초대하고 mode 를 bot 으로 두세요. TELEGRAM_BOT_TOKEN 은 GitHub Secret 에 등록합니다.",
   "_tier": "tier 는 증거 등급. 기본은 3(속보 단서 — 반드시 Tier1·2 로 교차 확인). 전문지의 공식 텔레그램 채널만 2 로 둡니다.",
   "channels": [
-    { "handle": "theelec",             "note": "THE ELEC 공식 — 반도체·디스플레이·배터리 전문지", "priority": "A", "mode": "preview", "tier": 2, "enabled": true },
-    { "handle": "clawnewssummary",     "note": "뉴스 요약 (내용 확인 후 note 보정)",              "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "realtime_stock_news", "note": "실시간 증시·기업 뉴스",                          "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "insidertracking",     "note": "내부자·지분 거래 추적 — 딜 윈도우 단서",          "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "corevalue",           "note": "기업가치·밸류 분석",                             "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "Yeouido_Lab",         "note": "여의도 리서치·시황",                             "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "easobi",              "note": "내용 확인 후 note 보정",                         "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "free_life59",         "note": "내용 확인 후 note 보정",                         "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "G2strategy",          "note": "미중 전략·지정학 — 공급망 재편 단서",            "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "fundeasy_choi",       "note": "펀드·자산운용 시각",                             "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "bornlupin",           "note": "내용 확인 후 note 보정",                         "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "gaoshoukorea",        "note": "중국 산업·기업 동향 — 중국 복제 킬필터 점검용",   "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
-    { "handle": "aetherjapanresearch", "note": "일본 리서치 — 일본 타임머신 Thesis 교차 확인",    "priority": "B", "mode": "preview", "tier": 3, "enabled": true }
+    {
+      "handle": "theelec",
+      "note": "THE ELEC 공식 — 반도체·디스플레이·배터리 전문지",
+      "priority": "A",
+      "mode": "preview",
+      "tier": 2,
+      "enabled": true
+    },
+    {
+      "handle": "clawnewssummary",
+      "note": "주요 뉴스 브리핑(요약형) — 거시·환율·증시",
+      "priority": "A",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "realtime_stock_news",
+      "note": "실시간 증시·기업 뉴스",
+      "priority": "A",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "insidertracking",
+      "note": "지정학·정책 속보(전쟁·해상 사고·미 대통령 일정) — 공급망 리스크 단서",
+      "priority": "A",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "corevalue",
+      "note": "섹터 리서치 코멘트(증권사 애널리스트 인용) — 전력기기·ESS",
+      "priority": "A",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "Yeouido_Lab",
+      "note": "증권사 코멘트·보도자료 리캡 — 전력망·바이오·ESS",
+      "priority": "A",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "easobi",
+      "note": "텔레그램 심층분석 리포트(센티먼트·섹터 요약) + 산업 단신 — 전력설비·ESS·소재",
+      "priority": "B",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "free_life59",
+      "note": "해시태그 단문 메모(#변동성 등) + 해외 매크로 인용 — 신호 밀도 낮음",
+      "priority": "C",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "G2strategy",
+      "note": "미중 전략·거시 단문 — 금리·유가",
+      "priority": "B",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "fundeasy_choi",
+      "note": "펀드·자산운용 시각",
+      "priority": "B",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "bornlupin",
+      "note": "속보 리캡 — 빅테크·거시지표·개별기업 공시(산일전기 증설 등)",
+      "priority": "B",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "gaoshoukorea",
+      "note": "중국 산업·기업 동향 — 중국 복제 킬필터 점검용",
+      "priority": "B",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    },
+    {
+      "handle": "aetherjapanresearch",
+      "note": "일본 리서치 — 일본 타임머신 Thesis 교차 확인",
+      "priority": "B",
+      "mode": "preview",
+      "tier": 3,
+      "enabled": true
+    }
   ]
 }

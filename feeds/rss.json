@@ -1,14 +1,62 @@
 {
   "_readme": "전문지 RSS 수집 대상. 전문지 맵(data/press-screen.json)의 소스 중 RSS 를 제공하는 곳.",
   "feeds": [
-    { "name": "전자신문", "url": "https://rss.etnews.com/Section901.xml", "sector": "반도체·전자", "tier": 2 },
-    { "name": "전자신문 소재부품", "url": "https://rss.etnews.com/Section902.xml", "sector": "소부장", "tier": 2 },
-    { "name": "디지털데일리", "url": "https://www.ddaily.co.kr/rss/allArticle.xml", "sector": "IT·클라우드", "tier": 2 },
-    { "name": "환경미디어", "url": "https://www.ecomedia.co.kr/rss/allArticle.xml", "sector": "환경·규제", "tier": 2 },
-    { "name": "물류신문", "url": "https://www.klnews.co.kr/rss/allArticle.xml", "sector": "물류", "tier": 2 },
-    { "name": "안전저널", "url": "https://www.anjunj.com/rss/allArticle.xml", "sector": "산업안전", "tier": 2 },
-    { "name": "바이오타임즈", "url": "https://www.biotimes.co.kr/rss/allArticle.xml", "sector": "바이오", "tier": 2 },
-    { "name": "코스인코리아", "url": "https://www.cosinkorea.com/rss/allArticle.xml", "sector": "화장품 위탁제조", "tier": 2 },
-    { "name": "인더스트리뉴스", "url": "https://www.industrynews.co.kr/rss/allArticle.xml", "sector": "산업·자동화", "tier": 2 }
+    {
+      "name": "전자신문",
+      "url": "https://rss.etnews.com/Section901.xml",
+      "sector": "반도체·전자",
+      "tier": 2
+    },
+    {
+      "name": "전자신문 소재부품",
+      "url": "https://rss.etnews.com/Section902.xml",
+      "sector": "소부장",
+      "tier": 2
+    },
+    {
+      "name": "디지털데일리",
+      "url": "https://www.ddaily.co.kr/rss/S1N1.xml",
+      "sector": "IT·클라우드",
+      "tier": 2,
+      "_note": "1차 실행 0건 — 대체 경로로 교체"
+    },
+    {
+      "name": "환경미디어",
+      "url": "https://www.ecomedia.co.kr/rss/S1N1.xml",
+      "sector": "환경·규제",
+      "tier": 2,
+      "_note": "1차 실행 실패 — 대체 경로로 교체, 다음 실행에서 확인"
+    },
+    {
+      "name": "물류신문",
+      "url": "https://www.klnews.co.kr/rss/allArticle.xml",
+      "sector": "물류",
+      "tier": 2
+    },
+    {
+      "name": "안전저널",
+      "url": "https://www.anjunj.com/rss/allArticle.xml",
+      "sector": "산업안전",
+      "tier": 2
+    },
+    {
+      "name": "바이오타임즈",
+      "url": "https://www.biotimes.co.kr/rss/allArticle.xml",
+      "sector": "바이오",
+      "tier": 2
+    },
+    {
+      "name": "코스인코리아",
+      "url": "https://www.cosinkorea.com/rss/S1N1.xml",
+      "sector": "화장품 위탁제조",
+      "tier": 2,
+      "_note": "1차 실행 0건 — 대체 경로로 교체"
+    },
+    {
+      "name": "인더스트리뉴스",
+      "url": "https://www.industrynews.co.kr/rss/allArticle.xml",
+      "sector": "산업·자동화",
+      "tier": 2
+    }
   ]
 }
