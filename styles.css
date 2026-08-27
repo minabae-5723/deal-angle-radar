@@ -605,6 +605,9 @@ table.th-cand tr.th-bizrow.fit td { background: #f3fbf6; color: #2f6b4a; }
 
 /* ── 네러티브 스크리너 ───────────────────────────────── */
 #narrativeRoot { max-width: 1180px; margin: 0 auto; padding: 18px 20px 60px; }
+/* 네러티브 화면은 표가 넓다 — 본문 폭을 화면에 맞춰 늘리고 좌우 여백을 줄인다. */
+body:has(#view-narrative:not([hidden])) .main { max-width: none; padding: 18px 24px 40px; }
+body:has(#view-narrative:not([hidden])) #narrativeRoot { max-width: none; padding: 18px 0 60px; }
 .nv-intro { margin-bottom: 16px; }
 .nv-intro p { margin: 4px 0; }
 .nv-dim { color: var(--text-muted); font-size: 12px; }
@@ -641,7 +644,7 @@ table.nv-kpi tr:nth-child(4) th { background: #fbe9e6; color: #a3271f; }
 .nv-ll .nv-pick { background: #fff8e6; }
 .nv-ll .nv-pick td { border-bottom-color: #eadfae; }
 .nv-node { color: var(--text-muted); font-size: 11.5px; }
-.nv-note { color: var(--text-muted); font-size: 11.5px; max-width: 260px; }
+.nv-note { color: var(--text-muted); font-size: 11.5px; min-width: 320px; max-width: 620px; }
 .nv-need { display: inline-block; min-width: 30px; text-align: center; border-radius: 4px; padding: 1px 5px; background: #eef1f5; font-weight: 600; }
 .nv-need-hot { background: #d5322a; color: #fff; }
 .nv-st { font-size: 10.5px; color: var(--text-muted); }
@@ -660,7 +663,7 @@ table.nv-kpi tr:nth-child(4) th { background: #fbe9e6; color: #a3271f; }
 .nv-gC  { background: #5a748f; }              /* C 관찰 — 네이비그레이 */
 .nv-gD  { background: #b6bcc4; color: #495260; } /* D 보류 — 연회색 */
 .nv-star { color: var(--gold); font-weight: 700; }
-.nv-angle { font-size: 11.5px; color: var(--navy); font-weight: 600; max-width: 200px; }
+.nv-angle { font-size: 11.5px; color: var(--navy); font-weight: 600; max-width: 110px; }
 .nv-ll .nv-cowrow { background: #fbf3e0; }
 .nv-ll .nv-cowrow td { border-bottom-color: #ecdcb4; }
 .nv-nodecell { cursor: pointer; }
@@ -984,3 +987,18 @@ ul.nv-psrcs li { margin: 3px 0; }
 .nv-biz { display: block; color: #37506e; font-size: 11.5px; }
 .nv-wlreason { display: block; color: #a3271f; font-size: 11.5px; }
 .nv-mode-off { opacity: .4; cursor: default; }
+
+/* 표 칸 폭 정리 — 숫자 칸은 좁게 고정하고 남는 폭을 note 로 보낸다 */
+table.nv-ll { table-layout: auto; }
+table.nv-ll th:nth-child(1), table.nv-ll td:nth-child(1) { width: 62px; }
+table.nv-ll th:nth-child(5), table.nv-ll td:nth-child(5),
+table.nv-ll th:nth-child(6), table.nv-ll td:nth-child(6),
+table.nv-ll th:nth-child(7), table.nv-ll td:nth-child(7),
+table.nv-ll th:nth-child(8), table.nv-ll td:nth-child(8),
+table.nv-ll th:nth-child(9), table.nv-ll td:nth-child(9),
+table.nv-ll th:nth-child(10), table.nv-ll td:nth-child(10),
+table.nv-ll th:nth-child(11), table.nv-ll td:nth-child(11) { width: 66px; white-space: nowrap; }
+table.nv-ll td:nth-child(3) { font-size: 11px; max-width: 130px; }
+/* 헤더도 본문 폭에 맞춘다 — 본문만 넓히면 상단이 가운데 몰려 어색하다 */
+body:has(#view-narrative:not([hidden])) .topbar-inner,
+body:has(#view-narrative:not([hidden])) .viewtabs { max-width: none; padding-left: 24px; padding-right: 24px; }

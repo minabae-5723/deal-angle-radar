@@ -837,7 +837,7 @@
     scored.forEach((r) => c[r.tier]++);
     const chip = (t) => `<span class="nv-tsum nv-sum${t}${tierFilter === t ? " on" : ""}" data-tier="${t}" title="${TIER_LABEL[t]} — 클릭하면 이 등급만 보기">${TIER_LABEL[t]} <b>${c[t]}</b></span>`;
     const cows = scored.filter((r) => r.cashcow).length;
-    return `<div class="nv-tierbar">${TIER_ORDER.map(chip).join("")}` + (
+    return `<div class="nv-tierbar"><span class="nv-abar-lbl">우선순위</span>${TIER_ORDER.map(chip).join("")}` + (
     cows ? `<span class="nv-tsum nv-sumcow${tierFilter === "COW" ? " on" : ""}" data-tier="COW" title="비상장·고마진·순현금 우량 후보 — 클릭 필터">💰 캐시카우 <b>${cows}</b></span>` : "") + `</div>`;
   }
 
@@ -983,7 +983,7 @@
     const done = n((r) => !!r.wl);
     const btn = (k, ico, label, cnt, title) =>
       `<button class="nv-mode${curMode === k ? " on" : ""}${(k !== "all" && !cnt) ? " nv-mode-off" : ""}" data-mode="${k}"${(k !== "all" && !cnt) ? " disabled" : ""} title="${title}">${ico} ${label} <b>${cnt}</b></button>`;
-    return `<div class="nv-modebar">
+    return `<div class="nv-modebar"><span class="nv-abar-lbl">선별</span>
       ${btn("watch", "🎯", "워치리스트", cW, "사업모델·전방산업 확인 결과 이 Thesis 에 맞는 회사")}
       ${btn("hold", "❓", "확인 필요", cH, "업종코드가 안 맞거나 사업내용이 불명 — DART 사업의 내용 확인 대상")}
       ${btn("drop", "🚫", "제외", cD, "정성 게이트에서 걸러진 회사 — 사유를 함께 표시")}
