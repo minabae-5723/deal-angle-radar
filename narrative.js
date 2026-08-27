@@ -743,9 +743,9 @@
         <span class="nv-flow-step">Thesis 보드</span>
       </div>
       <h3 class="nv-candh">포착된 후보 <span class="nv-dim">— 하베스트·스카우트·전문지 스캔. 클릭하면 근거·롱리스트 시트가 열린다</span></h3>
-      ${sorted.length ? sorted.map(candRow).join("") : `<p class="nv-dim">등록된 후보가 없습니다.</p>`}
+      <div class="nv-candscroll">${sorted.length ? sorted.map(candRow).join("") : `<p class="nv-dim">등록된 후보가 없습니다.</p>`}</div>
       <h3 class="nv-candh">구성원 제안 <span class="nv-dim">— 실시간. 아래 '💡 Thesis 제안'에서 등록하면 여기로 들어온다</span></h3>
-      <div id="nvIdeaList" class="nv-idealist"></div>
+      <div id="nvIdeaList" class="nv-idealist nv-candscroll"></div>
     </section>`;
   }
 

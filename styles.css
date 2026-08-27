@@ -1002,3 +1002,6 @@ table.nv-ll td:nth-child(3) { font-size: 11px; max-width: 130px; }
 /* 헤더도 본문 폭에 맞춘다 — 본문만 넓히면 상단이 가운데 몰려 어색하다 */
 body:has(#view-narrative:not([hidden])) .topbar-inner,
 body:has(#view-narrative:not([hidden])) .viewtabs { max-width: none; padding-left: 24px; padding-right: 24px; }
+/* 승인 대기 보드 — 두 목록(포착 후보·구성원 제안)을 각각 고정 높이 스크롤로 (창이 길어지지 않게) */
+.nv-candscroll { max-height: 42vh; overflow-y: auto; padding: 2px 4px 2px 2px; }
+@media (max-width: 760px) { .nv-candscroll { max-height: none; } }
