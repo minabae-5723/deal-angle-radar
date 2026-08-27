@@ -5,3 +5,4 @@
     { "handle": "example_channel", "note": "샘플 — 실제 채널로 교체하세요", "priority": "B", "mode": "preview", "enabled": false }
   ]
 }
+{ "handle": "channel_name", "note": "이 채널이 잡는 것", "priority": "A", "mode": "preview", "enabled": true }
