@@ -2,7 +2,20 @@
   "_readme": "텔레그램 수집 대상. 새 채널은 반드시 아래 channels 배열 '안에' 한 줄씩 추가하세요(닫는 } 바깥에 쓰면 파일이 깨집니다).",
   "_how": "공개 채널은 handle 만 있으면 됩니다(토큰·봇 초대 불필요). handle 은 @ 없이, https://t.me/abc_news 면 abc_news. priority: A(매일)·B(격일)·C(주간).",
   "_private": "비공개 채널은 ROCKY 를 관리자로 초대하고 mode 를 bot 으로 두세요. TELEGRAM_BOT_TOKEN 은 GitHub Secret 에 등록합니다.",
+  "_tier": "tier 는 증거 등급. 기본은 3(속보 단서 — 반드시 Tier1·2 로 교차 확인). 전문지의 공식 텔레그램 채널만 2 로 둡니다.",
   "channels": [
-    { "handle": "example_channel", "note": "샘플 — 실제 채널로 교체하세요", "priority": "B", "mode": "preview", "enabled": false }
+    { "handle": "theelec",             "note": "THE ELEC 공식 — 반도체·디스플레이·배터리 전문지", "priority": "A", "mode": "preview", "tier": 2, "enabled": true },
+    { "handle": "clawnewssummary",     "note": "뉴스 요약 (내용 확인 후 note 보정)",              "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "realtime_stock_news", "note": "실시간 증시·기업 뉴스",                          "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "insidertracking",     "note": "내부자·지분 거래 추적 — 딜 윈도우 단서",          "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "corevalue",           "note": "기업가치·밸류 분석",                             "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "Yeouido_Lab",         "note": "여의도 리서치·시황",                             "priority": "A", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "easobi",              "note": "내용 확인 후 note 보정",                         "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "free_life59",         "note": "내용 확인 후 note 보정",                         "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "G2strategy",          "note": "미중 전략·지정학 — 공급망 재편 단서",            "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "fundeasy_choi",       "note": "펀드·자산운용 시각",                             "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "bornlupin",           "note": "내용 확인 후 note 보정",                         "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "gaoshoukorea",        "note": "중국 산업·기업 동향 — 중국 복제 킬필터 점검용",   "priority": "B", "mode": "preview", "tier": 3, "enabled": true },
+    { "handle": "aetherjapanresearch", "note": "일본 리서치 — 일본 타임머신 Thesis 교차 확인",    "priority": "B", "mode": "preview", "tier": 3, "enabled": true }
   ]
 }

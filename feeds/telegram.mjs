@@ -42,6 +42,8 @@ async function fetchPreview(ch) {
     if (!text) continue;
     posts.push({
       channel: "@" + ch.handle, priority: ch.priority || "C",
+      tier: ch.tier || 3,                 // 증거 등급 — 전문지 공식 채널만 2, 나머지는 속보 단서(3)
+      note: ch.note || null,
       date: dtm ? dtm[1] : null, text,
       url: `https://t.me/${idm[1]}`
     });
