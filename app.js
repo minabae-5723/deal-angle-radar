@@ -262,8 +262,17 @@ document.getElementById('viewTabs').addEventListener('click', e => {
 loadIndex();
 // 기본 뷰 = 네러티브 스크리너 (메인 페이지). 해시가 있으면 해시 우선.
 // initNarrative 등은 뒤에 로드되는 스크립트가 정의하므로 DOMContentLoaded 이후 전환.
+const VALID_VIEWS = ['radar', 'funding', 'thesis', 'narrative', 'review'];
 window.addEventListener('DOMContentLoaded', () => {
   const h = location.hash.slice(1);
-  if (h === 'radar' || h === 'funding' || h === 'thesis' || h === 'narrative' || h === 'review') switchView(h);
+  if (VALID_VIEWS.indexOf(h) >= 0) switchView(h);
   else switchView('narrative');
+});
+
+// 이미 열린 페이지에서 해시만 바뀌는 경우(주소창 직접 수정·북마크 클릭·뒤로가기)도 뷰를 전환한다.
+// 없으면 같은 문서 내 해시 이동이 아무 반응도 없어 "화면이 업데이트 안 된다"로 보인다. (2026-08-27)
+// switchView 내부의 history.replaceState 는 hashchange 를 발생시키지 않으므로 루프는 생기지 않는다.
+window.addEventListener('hashchange', () => {
+  const h = location.hash.slice(1);
+  if (VALID_VIEWS.indexOf(h) >= 0) switchView(h);
 });
