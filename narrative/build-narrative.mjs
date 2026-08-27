@@ -382,4 +382,14 @@ const out = {
 // 배포 전송량 절감을 위해 무들여쓰기(minified)로 기록 — 1MB급 파일이라 ~35% 절약
 fs.writeFileSync(path.join(DATA, "narrative-pool.json"), JSON.stringify(out), "utf8");
 console.log(`narrative-pool.json written — ${outThemes.length} themes${PATCH_MODE ? " [PATCH MODE: 외감 패널 없음 — 기존 빌드 보존 + 풀 증분. 전체 반영은 패널 보유 머신에서 재실행]" : ""}`);
+if (PATCH_MODE) {
+  // 규모 게이트가 패치 모드에서는 사실상 무효라는 점을 매 빌드마다 알린다 —
+  // funding-pool 자체가 매출 300억 이상으로 잘려 있어 100억대 기업이 애초에 후보에 없다.
+  console.log("  ⚠ 규모 게이트(매출 100억+ OR 3y CAGR 20%+)는 이 모드에서 효과가 없습니다.");
+  console.log("    funding-pool 이 이미 매출 300억 이상만 담고 있기 때문입니다.");
+  console.log("    100억대 기업까지 올리려면 funding-panel.json(외감 41,409) 이 있는 머신에서 이 스크립트를 그대로 실행하세요.");
+} else {
+  const small = outThemes.reduce((n, t) => n + t.longlist.filter(r => r.rev != null && r.rev < 300).length, 0);
+  console.log(`  ✔ 풀 빌드 — 매출 300억 미만이지만 게이트를 통과한 행 ${small}개 포함`);
+}
 for (const t of outThemes) console.log(`  ${t.emoji} ${(t.title || "").padEnd(24)} longlist ${String(t.stats.total).padStart(3)} (pool ${t.stats.inPool}, 비상장 ${t.stats.unlisted}) [${t.status}]${t.community ? ` 💬${t.community.count}` : ""}`);
