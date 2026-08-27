@@ -63,6 +63,10 @@ create policy "i anon read"   on thesis_ideas for select to anon using (true);
 create policy "i anon insert" on thesis_ideas for insert to anon with check (true);
 -- 잘못 올라간 제안을 정리할 수 있도록 삭제도 열어 둔다(현재 화면에는 버튼 없음 — 필요 시 추가).
 create policy "i anon delete" on thesis_ideas for delete to anon using (true);
+-- 초안 소유자 판별·수정용 (내 초안만 보이고 편집 가능). 로그인이 없으므로 owner 검증은 화면 단에서만 한다.
+alter table thesis_ideas add column if not exists client_id text;
+drop policy if exists "i anon update" on thesis_ideas;
+create policy "i anon update" on thesis_ideas for update to anon using (true) with check (true);
 
 -- ── 확인 ─────────────────────────────────────────────────────────────────
 -- 아래를 함께 실행하면 세 테이블이 다 보이면 성공.

@@ -29,6 +29,7 @@
   let boardThemes = [];               // 폴링 재렌더용 approved 목록 참조
   let press = null;                   // data/press-screen.json — 전문지 맵 + 스크리닝 프로토콜
   let ideas = [];                     // 외부 제안 목록 (Supabase thesis_ideas)
+  let ideaEditing = false;            // 초안 편집 중 — 폴링 재렌더가 입력을 덮어쓰지 않게
   // 화면이 길어져서 보드만 고정으로 두고 나머지는 클릭해서 펴는 방식.
   // 어떤 걸 펴 뒀는지는 브라우저에 남긴다 — 새로고침마다 다시 여는 건 번거롭다.
   let panes = { cand: false, idea: false, press: false, sheet: false };
@@ -90,10 +91,27 @@
   // ── Thesis 제안 (Supabase, 로그인 불필요 — 외부 참여자의 집단지성 투입구) ──
   //   thesis_ideas: 누구나 아이디어를 넣고, 본인 API 키가 있으면 전문지 프로토콜로 초안까지 만든다.
   //   초안 생성 토큰은 제안자 본인 키로 결제된다(운영자 키를 공유하지 않는 것이 설계 의도).
+  // client_id 컬럼은 초안 소유자 판별용(내 초안만 보이고 수정 가능). 아직 없는 DB 에서도 죽지 않게 폴백.
+  let ideaHasClientId = true;
   async function sbIdeas() {
-    const r = await fetch(sb.url + "/rest/v1/thesis_ideas?select=id,title,body,author,sector,draft,status,created_at&order=created_at.desc&limit=60", { headers: sbHeaders(), cache: "no-store" });
-    if (!r.ok) throw new Error("HTTP " + r.status);
+    const cols = ideaHasClientId ? "id,title,body,author,sector,draft,status,created_at,client_id" : "id,title,body,author,sector,draft,status,created_at";
+    const r = await fetch(sb.url + "/rest/v1/thesis_ideas?select=" + cols + "&order=created_at.desc&limit=60", { headers: sbHeaders(), cache: "no-store" });
+    if (!r.ok) {
+      if (ideaHasClientId && (r.status === 400 || r.status === 404)) { ideaHasClientId = false; return sbIdeas(); }
+      throw new Error("HTTP " + r.status);
+    }
     return r.json();
+  }
+  // 초안 수정 — 작성자만(내 client_id 인 제안). 정책이 없으면 0행 갱신으로 조용히 성공하므로 갱신 행을 확인한다.
+  async function sbUpdateIdea(id, fields) {
+    const r = await fetch(sb.url + "/rest/v1/thesis_ideas?id=eq." + encodeURIComponent(id) + "&select=id", {
+      method: "PATCH", headers: Object.assign(sbHeaders(), { Prefer: "return=representation" }),
+      body: JSON.stringify(fields)
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+    let done = [];
+    try { done = await r.json(); } catch (e) { done = []; }
+    if (!done.length) { const e2 = new Error("NO_UPDATE_POLICY"); e2.noPolicy = true; throw e2; }
   }
   // 제안 카드 삭제 — 잘못 올라간 제안·중복을 본 사람이 바로 정리한다(누구나).
   async function sbDeleteIdea(id) {
@@ -106,11 +124,15 @@
     if (!gone.length) { const e2 = new Error("NO_DELETE_POLICY"); e2.noPolicy = true; throw e2; }
   }
   async function sbPostIdea(row) {
+    const body = ideaHasClientId ? Object.assign({ client_id: clientId() }, row) : row;
     const r = await fetch(sb.url + "/rest/v1/thesis_ideas", {
       method: "POST", headers: Object.assign(sbHeaders(), { Prefer: "return=minimal" }),
-      body: JSON.stringify([row])
+      body: JSON.stringify([body])
     });
-    if (!r.ok) throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+    if (!r.ok) {
+      if (ideaHasClientId && r.status === 400) { ideaHasClientId = false; return sbPostIdea(row); }
+      throw new Error("HTTP " + r.status + " " + (await r.text()).slice(0, 140));
+    }
   }
 
   // ── 테마별 댓글 (Supabase, 실시간 자동 반영) ──────────────────────────────
@@ -318,7 +340,7 @@
         try { await sbLoad(); } catch (e) { return; }
         if (JSON.stringify(boardBase.stages) !== before) refreshBoard();
         if (curTheme) hydrateComments(curTheme);   // 현재 Thesis 댓글도 실시간 갱신
-        try { const fresh = await sbIdeas(); if (JSON.stringify(fresh) !== JSON.stringify(ideas)) { ideas = fresh; renderIdeaList(); } } catch (e) { }
+        if (!ideaEditing) { try { const fresh = await sbIdeas(); if (JSON.stringify(fresh) !== JSON.stringify(ideas)) { ideas = fresh; renderIdeaList(); } } catch (e) { } }
       }, 12000);
     }
   };
@@ -452,13 +474,28 @@
     if (!el) return;
     if (!ideas.length) { el.className = "nv-idealist nv-dim"; el.innerHTML = "아직 제안이 없습니다 — 아래 'Thesis 제안'에서 첫 제안을 넣어보세요."; return; }
     el.className = "nv-idealist";
-    el.innerHTML = ideas.map((i) => `<div class="nv-ideacard">
+    const me = clientId();
+    el.innerHTML = ideas.map((i) => {
+      const mine = i.client_id && i.client_id === me;   // 초안은 작성자에게만 보이고 수정 가능
+      return `<div class="nv-ideacard">
       <div class="nv-ideahead"><b>${esc(i.title || "(제목 없음)")}</b> <span class="nv-vd nv-vd-hold">승인 대기</span>
         <span class="nv-ideameta"><span class="nv-dim">${esc(i.author || "익명")}${i.sector ? " · " + esc(i.sector) : ""} · ${esc((i.created_at || "").slice(0, 10))}</span>
         ${i.id != null ? `<button class="nv-idea-del" data-id="${esc(i.id)}" title="이 제안 삭제">🗑</button>` : ""}</span></div>
       ${i.body ? `<div class="nv-ideabody">${esc(i.body)}</div>` : ""}
-      ${i.draft ? `<details class="nv-ideadraft"><summary>🤖 Thesis 초안 보기</summary><div>${esc(i.draft)}</div></details>` : ""}
-    </div>`).join("");
+      ${i.draft ? (mine
+        ? `<details class="nv-ideadraft"><summary>🤖 내 Thesis 초안 <span class="nv-dim">(작성자에게만 보임)</span></summary>
+            <div class="nv-draftview" data-id="${esc(i.id)}">${esc(i.draft)}</div>
+            <div class="nv-draftbtns"><button class="nv-draft-edit" data-id="${esc(i.id)}">✏️ 수정</button></div>
+           </details>`
+        : `<div class="nv-dim nv-draftlock">🔒 작성자만 볼 수 있는 초안</div>`)
+        : ""}
+    </div>`;
+    }).join("");
+    // 초안 저장본을 DOM 에 실어 둔다 (수정 취소 시 복원용) — esc 안 한 원문
+    el.querySelectorAll(".nv-draftview").forEach((d) => {
+      const it = ideas.find((x) => String(x.id) === d.dataset.id);
+      if (it) d.__raw = it.draft || "";
+    });
     // 목록을 다시 그릴 때마다 새로 붙는다 (12초 폴링 갱신 포함)
     el.querySelectorAll(".nv-idea-del").forEach((b) => b.addEventListener("click", async () => {
       if (!confirm("이 제안을 삭제할까요? (누구나 삭제할 수 있습니다)")) return;
@@ -470,6 +507,34 @@
           ? "삭제가 데이터베이스에서 막혀 있습니다 (삭제 정책 없음).\n\nSupabase → SQL Editor 에서 아래를 한 번 실행해 주세요:\n\ncreate policy \"i anon delete\" on thesis_ideas for delete to anon using (true);"
           : "삭제 실패: " + (e.message || e));
       }
+    }));
+    // 초안 수정 — 뷰를 textarea 로 바꾸고, 저장 시 PATCH. 폴링이 덮어쓰지 않게 편집 중 플래그를 둔다.
+    el.querySelectorAll(".nv-draft-edit").forEach((b) => b.addEventListener("click", () => {
+      const box = el.querySelector('.nv-draftview[data-id="' + b.dataset.id + '"]');
+      const btns = b.parentElement;
+      if (!box || box.dataset.editing) return;
+      box.dataset.editing = "1"; ideaEditing = true;
+      const raw = box.__raw || box.textContent || "";
+      box.innerHTML = '<textarea class="nv-draftedit">' + esc(raw) + '</textarea>';
+      const ta = box.querySelector("textarea"); ta.focus();
+      btns.innerHTML = '<button class="nv-draft-save" data-id="' + esc(b.dataset.id) + '">저장</button>' +
+                       '<button class="nv-draft-cancel" data-id="' + esc(b.dataset.id) + '">취소</button>' +
+                       '<span class="nv-dim nv-draftmsg"></span>';
+      const finish = () => { ideaEditing = false; };
+      btns.querySelector(".nv-draft-cancel").addEventListener("click", () => { finish(); renderIdeaList(); });
+      btns.querySelector(".nv-draft-save").addEventListener("click", async (ev) => {
+        const sBtn = ev.currentTarget; sBtn.disabled = true;
+        const msg = btns.querySelector(".nv-draftmsg"); msg.textContent = "저장 중…";
+        try {
+          await sbUpdateIdea(b.dataset.id, { draft: ta.value });
+          finish(); ideas = await sbIdeas(); renderIdeaList();
+        } catch (e) {
+          sBtn.disabled = false;
+          msg.textContent = (e.noPolicy || /401|403/.test(String(e.message || e)))
+            ? "수정이 막혀 있습니다 — Supabase 에서 update 정책을 실행해 주세요 (supabase-setup.sql)"
+            : "저장 실패: " + (e.message || e);
+        }
+      });
     }));
   }
 
