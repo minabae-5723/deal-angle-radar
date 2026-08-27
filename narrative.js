@@ -34,6 +34,8 @@
   // 어떤 걸 펴 뒀는지는 브라우저에 남긴다 — 새로고침마다 다시 여는 건 번거롭다.
   let panes = { cand: false, idea: false, press: false, sheet: false };
   try { panes = Object.assign(panes, JSON.parse(lsGet("dar_nv_panes") || "{}")); } catch (e) { }
+  // 승인 대기 보드·Thesis 제안은 처음 들어가거나 새로고침할 때 항상 켜둔다(저장값보다 우선).
+  panes.cand = true; panes.idea = true;
   const PANE_LABEL = { cand: "🌱 승인 대기 보드", idea: "💡 Thesis 제안", press: "📰 전문지 스크리닝", sheet: "📄 테마 시트" };
   const PANE_BOX = { cand: "nvCand", idea: "nvIdea", press: "nvPress", sheet: "themeSheet" };
   function savePanes() { lsSet("dar_nv_panes", JSON.stringify(panes)); }
@@ -476,7 +478,8 @@
     el.className = "nv-idealist";
     const me = clientId();
     el.innerHTML = ideas.map((i) => {
-      const mine = i.client_id && i.client_id === me;   // 초안은 작성자에게만 보이고 수정 가능
+      // client_id 가 있으면 그 작성자에게만. 없으면(옛 제안·컬럼 추가 전 등록) 소유자를 알 수 없어 공개로 둔다.
+      const mine = !i.client_id || i.client_id === me;
       return `<div class="nv-ideacard">
       <div class="nv-ideahead"><b>${esc(i.title || "(제목 없음)")}</b> <span class="nv-vd nv-vd-hold">승인 대기</span>
         <span class="nv-ideameta"><span class="nv-dim">${esc(i.author || "익명")}${i.sector ? " · " + esc(i.sector) : ""} · ${esc((i.created_at || "").slice(0, 10))}</span>
