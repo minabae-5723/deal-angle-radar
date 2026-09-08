@@ -1,0 +1,1435 @@
+{
+ "meta": {
+  "title": "PE 보유·개입 기업 레지스트리 (수동 큐레이션 + DART 검증 대상)",
+  "updated": "2026-09-08",
+  "note": "hyslrSttus 최대주주명이 vehicle 패턴과 일치하면 PE_OWNED 확정. confidence=low 항목은 /pe-lens 스킬이 DART·뉴스로 검증 후 갱신. 금액 단위 억원.",
+  "sponsor_types": {
+   "PE_CONTROL": "PE가 경영권(최대주주) 보유",
+   "PE_MINORITY": "PE가 소수지분(RCPS·CB·구주) 보유, 이사회 참여",
+   "PE_PENDING": "PE 인수 계약 체결·클로징 전",
+   "ACTIVIST": "행동주의 펀드 개입",
+   "SI_FI_MIX": "SI 경영권 + FI 소수지분 공동인수",
+   "PE_EXITED": "PE가 과거 보유 후 매각 완료 (케이스 참조용)"
+  }
+ },
+ "companies": [
+  {
+   "name": "휴젤",
+   "stock_code": "145020",
+   "sponsor": "GS 컨소시엄 (GS·CBC그룹·IMM인베스트먼트·무바달라)",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "Aphrodite Acquisition Holdings",
+   "entry_date": "2022-04",
+   "entry_type": "secondary",
+   "seller": "Bain Capital",
+   "equity_krw_bn": 10137,
+   "ev_krw_bn": 15587,
+   "stake_pct": 43.5,
+   "entry_price": 280000,
+   "fund": {
+    "name": "컨소시엄 SPC",
+    "vintage": 2022,
+    "maturity_est": 2030
+   },
+   "debt": {
+    "acq_fin_krw_bn": 7650,
+    "senior_rate": 6.41,
+    "maturity": "2029-06-17",
+    "note": "2차 리파이(2026-06): 중순위 제거, 채권단 15→2개사"
+   },
+   "recovery": {
+    "cum_krw_bn": 0,
+    "ratio": 0,
+    "items": []
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "회수 이력 0 → 밸류업 유인 최대. 2025-10 CEO 교체(장두현), 미국 Letybo 진출·중국 M/S. 2026-06 2차 리파이로 구조 정비 단계",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "00888347",
+   "dart_name": "휴젤"
+  },
+  {
+   "name": "클래시스",
+   "stock_code": "214150",
+   "sponsor": "Bain Capital",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "BCPE Centur Investments",
+   "entry_date": "2022-01",
+   "entry_type": "buyout",
+   "seller": "창업주(정성재)",
+   "equity_krw_bn": 3549,
+   "ev_krw_bn": 6699,
+   "stake_pct": 39.4,
+   "entry_price": 17000,
+   "fund": {
+    "name": "Bain Capital Asia Fund IV",
+    "vintage": 2018,
+    "maturity_est": 2028
+   },
+   "debt": {
+    "acq_fin_krw_bn": 9300,
+    "senior_rate": 5.03,
+    "maturity": "2030-09-30",
+    "note": "2차 리캡(2025-09) 텀론 7,300+RCF 1,000+중순위 1,000"
+   },
+   "recovery": {
+    "cum_krw_bn": 5991,
+    "ratio": 0.894,
+    "items": [
+     {
+      "date": "2024-04",
+      "type": "recap",
+      "krw_bn": 2961
+     },
+     {
+      "date": "2025-05",
+      "type": "block_deal",
+      "krw_bn": 2276,
+      "note": "6.68% @57,915"
+     },
+     {
+      "date": "2025-09",
+      "type": "recap",
+      "krw_bn": 3000
+     },
+     {
+      "date": "2026-02",
+      "type": "block_deal",
+      "krw_bn": 3243,
+      "note": "8.25% @60,000 (-11.2%)"
+     },
+     {
+      "date": "2026-03",
+      "type": "dividend",
+      "krw_bn": 355,
+      "note": "감액배당 88 비과세 포함"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "exit_partial",
+   "notes": "초기 총투자 대비 89.4% 회수. 볼트온 이루다(2023~24). 잔여 지분은 순수익 → 급하지 않음. 이루다 흡수합병으로 수평 확장",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "01061327",
+   "dart_name": "클래시스"
+  },
+  {
+   "name": "파마리서치",
+   "stock_code": "214450",
+   "sponsor": "CVC Capital Partners",
+   "sponsor_type": "PE_MINORITY",
+   "vehicle": "CVC",
+   "entry_date": "2024-10",
+   "entry_type": "growth_minority",
+   "seller": "신주(RCPS 3자배정)",
+   "equity_krw_bn": 2000,
+   "ev_krw_bn": null,
+   "stake_pct": 11.2,
+   "entry_price": 170119,
+   "fund": {
+    "name": "CVC Asia VI",
+    "vintage": 2023,
+    "maturity_est": 2033
+   },
+   "debt": {
+    "acq_fin_krw_bn": 2500,
+    "senior_rate": 5.1,
+    "maturity": "2030-11",
+    "note": "2025-11 리캡(투자 후 첫 레버리지) → 이론상 원금 회수"
+   },
+   "recovery": {
+    "cum_krw_bn": 2543,
+    "ratio": 1.27,
+    "items": [
+     {
+      "date": "2025-11",
+      "type": "recap",
+      "krw_bn": 2500
+     },
+     {
+      "date": "2026-03",
+      "type": "dividend",
+      "krw_bn": 43
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "harvest",
+   "notes": "전환 가능 2025-10~, 락업 해제·상환권 개시 2027-10-08 동시 도래. 전환 안 할 유인(배당 우대) 큼",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "00970453",
+   "dart_name": "파마리서치"
+  },
+  {
+   "name": "덴티움",
+   "stock_code": "145720",
+   "sponsor": "얼라인파트너스",
+   "sponsor_type": "ACTIVIST",
+   "vehicle": "얼라인파트너스",
+   "entry_date": "2024-01",
+   "entry_type": "activist",
+   "seller": "장내",
+   "equity_krw_bn": null,
+   "stake_pct": null,
+   "status": "holding",
+   "stage_hint": "activist_campaign",
+   "notes": "창업주(정성민) 최대주주. 행동주의 등장은 P2P 딜 방아쇠 패턴(오스템 KCGI→MBK)",
+   "confidence": "medium",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "00526599",
+   "dart_name": "덴티움"
+  },
+  {
+   "name": "남양유업",
+   "stock_code": "003920",
+   "sponsor": "한앤컴퍼니",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "한앤코19호",
+   "entry_date": "2024-01",
+   "entry_type": "buyout",
+   "seller": "홍원식 회장 일가",
+   "equity_krw_bn": 3107,
+   "stake_pct": 53.1,
+   "entry_price": 820000,
+   "fund": {
+    "name": "한앤컴퍼니 3호",
+    "vintage": 2019,
+    "maturity_est": 2029
+   },
+   "recovery": {
+    "cum_krw_bn": 0,
+    "ratio": 0,
+    "items": []
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "2021 계약→소송 3년→2024-01 클로징. 소비자 신뢰 회복·경상개선 단계. 회수 0",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00107598",
+   "dart_name": "남양유업"
+  },
+  {
+   "name": "한샘",
+   "stock_code": "009240",
+   "sponsor": "IMM PE",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "하임 유한회사·하임2호",
+   "entry_date": "2021-12",
+   "entry_type": "buyout",
+   "seller": "창업주 조창걸 및 특수관계인",
+   "equity_krw_bn": 14500,
+   "stake_pct": 36,
+   "entry_price": 220000,
+   "fund": {
+    "name": "IMM 로즈골드 4호",
+    "vintage": 2019,
+    "maturity_est": 2029
+   },
+   "debt": {
+    "acq_fin_krw_bn": 6000,
+    "note": "롯데쇼핑 SI 2,995억 공동. 주가 급락으로 인수금융 리파이·추가담보 이슈"
+   },
+   "recovery": {
+    "cum_krw_bn": null,
+    "ratio": null,
+    "items": [
+     {
+      "date": "2023~",
+      "type": "dividend",
+      "note": "고배당 정책 전환(주가 대비 고배당수익률)"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "value_up_stress",
+   "notes": "인수가 대비 주가 -70%대. 회수율 낮고 밸류에이션 회복 유인 극대. 고배당으로 이자 커버 시도 → 오스템·메디트형 배당회수 패턴 주의",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "00161693",
+   "dart_name": "한샘"
+  },
+  {
+   "name": "하나투어",
+   "stock_code": "039130",
+   "sponsor": "IMM PE",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "하모니아1호",
+   "entry_date": "2020-01",
+   "entry_type": "pipe",
+   "seller": "신주 3자배정",
+   "equity_krw_bn": 1347,
+   "stake_pct": 16.7,
+   "entry_price": 55500,
+   "fund": {
+    "name": "IMM 로즈골드 4호",
+    "vintage": 2019,
+    "maturity_est": 2029
+   },
+   "recovery": {
+    "cum_krw_bn": null,
+    "items": [
+     {
+      "date": "2024~2025",
+      "type": "dividend",
+      "note": "고배당"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "exit_attempt",
+   "notes": "2025 매각 프로세스 → 2026-07 중단, 집행임원제 정비 후 2027 재점화 구도. 최대주주 16.68% 정족수 취약",
+   "confidence": "high",
+   "sources": [
+    "RVP 케이스맵 2026-08"
+   ],
+   "corp_code": "00269940",
+   "dart_name": "하나투어"
+  },
+  {
+   "name": "에이블씨엔씨",
+   "stock_code": "078520",
+   "sponsor": "IMM PE",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "리프앤바인",
+   "entry_date": "2017-04",
+   "entry_type": "buyout",
+   "seller": "창업주 서영필",
+   "equity_krw_bn": 1882,
+   "stake_pct": 59.2,
+   "fund": {
+    "name": "IMM 로즈골드 3호",
+    "vintage": 2015,
+    "maturity_est": 2025
+   },
+   "recovery": {
+    "cum_krw_bn": null,
+    "items": [
+     {
+      "date": "2023~",
+      "type": "dividend",
+      "note": "고배당·자본감소 검토"
+     }
+    ]
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "보유 9년. 매각 시도 반복 무산(2022~). 인수금융 만기연장 반복. 실패 사례 후보",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "00400857",
+   "dart_name": "에이블씨엔씨"
+  },
+  {
+   "name": "롯데손해보험",
+   "stock_code": "000400",
+   "sponsor": "JKL파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "빅튜라",
+   "entry_date": "2019-10",
+   "entry_type": "buyout",
+   "seller": "롯데그룹(호텔롯데 등)",
+   "equity_krw_bn": 3734,
+   "stake_pct": 77,
+   "fund": {
+    "name": "JKL 5호",
+    "vintage": 2019,
+    "maturity_est": 2029
+   },
+   "recovery": {
+    "cum_krw_bn": 0,
+    "items": []
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_attempt",
+   "notes": "2024 우리금융 협상 결렬, 2025 후순위채 콜옵션 사태(금감원 불승인). 보유 7년. 금융규제(K-ICS)가 exit 제약",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00113562",
+   "dart_name": "롯데손해보험"
+  },
+  {
+   "name": "HPSP",
+   "stock_code": "403870",
+   "sponsor": "크레센도에쿼티파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "프레스토제6호",
+   "entry_date": "2017-10",
+   "entry_type": "carve_out",
+   "seller": "풍산(PSK 사업부)",
+   "equity_krw_bn": null,
+   "stake_pct": 40,
+   "fund": {
+    "name": "크레센도 2호",
+    "vintage": 2017,
+    "maturity_est": 2027
+   },
+   "recovery": {
+    "cum_krw_bn": null,
+    "items": [
+     {
+      "date": "2022-07",
+      "type": "ipo",
+      "note": "코스닥 상장 구주매출"
+     },
+     {
+      "date": "2024~2025",
+      "type": "exit_attempt",
+      "note": "경영권 매각 추진(2조+ 거론) → 미성사"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "exit_attempt",
+   "notes": "펀드 만기 임박 + 반도체 장비 고밸류. 매각 재개 가능성. SI(글로벌 장비사) vs SBO",
+   "confidence": "medium",
+   "sources": [
+    "RVP 케이스맵 2026-08"
+   ],
+   "corp_code": "01288827",
+   "dart_name": "HPSP"
+  },
+  {
+   "name": "케이카",
+   "stock_code": "381970",
+   "sponsor": "KG스틸 + 캑터스PE",
+   "sponsor_type": "SI_FI_MIX",
+   "vehicle": "KG스틸·캑터스PE",
+   "entry_date": "2026-04",
+   "entry_type": "secondary",
+   "seller": "한앤컴퍼니(한앤코오토서비스홀딩스)",
+   "equity_krw_bn": 5500,
+   "stake_pct": 72.2,
+   "entry_price": 15608,
+   "status": "holding",
+   "stage_hint": "new_owner",
+   "notes": "한앤코 8년 보유 후 exit(2021 IPO+2026-04 KG그룹 SPA 7,500억, EV 1.2조, 09 클로징). 캑터스PE 19.69% FI 슬롯 = 공동인수 모델",
+   "confidence": "high",
+   "sources": [
+    "deal-angle 2026-09-08"
+   ],
+   "corp_code": "01323032",
+   "dart_name": "케이카"
+  },
+  {
+   "name": "롯데렌탈",
+   "stock_code": "089860",
+   "sponsor": "TPG",
+   "sponsor_type": "PE_PENDING",
+   "vehicle": "TPG",
+   "entry_date": "2026-08",
+   "entry_type": "carve_out",
+   "seller": "호텔롯데·부산롯데호텔 (61.17%)",
+   "equity_krw_bn": 13105,
+   "stake_pct": 61.2,
+   "status": "pending",
+   "stage_hint": "entry",
+   "notes": "어피너티 1.6조 SPA(2024-12) → 공정위 불허(2026-01) → 해지(2026-05) → TPG 1조3,105억 SPA(2026-08) → 공정위 승인(2026-09). 공모채 9,610억 CoC → 인수 직후 리파이 수요",
+   "confidence": "medium",
+   "sources": [
+    "RVP 케이스맵 2026-08"
+   ],
+   "corp_code": "00545716",
+   "dart_name": "롯데렌탈"
+  },
+  {
+   "name": "메디트",
+   "stock_code": null,
+   "sponsor": "MBK파트너스 · UCK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "덴티스트리인베스트먼트",
+   "entry_date": "2023-03",
+   "entry_type": "secondary",
+   "seller": "UCK(구 최대주주)·창업주",
+   "equity_krw_bn": null,
+   "ev_krw_bn": 24000,
+   "stake_pct": 88,
+   "fund": {
+    "name": "MBK 6호",
+    "vintage": 2023,
+    "maturity_est": 2033
+   },
+   "debt": {
+    "note": "2025-04 인수금융 재무약정 위반 전망 → 2025-09 1,400억 추가 출자"
+   },
+   "recovery": {
+    "cum_krw_bn": 1211,
+    "items": [
+     {
+      "date": "2024",
+      "type": "dividend",
+      "krw_bn": 899,
+      "note": "순이익 -230억 대비 3.9배"
+     },
+     {
+      "date": "2025",
+      "type": "dividend",
+      "krw_bn": 312
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "value_up_stress",
+   "notes": "'23~'24 영업적자에도 고배당 → 회수 우선 신호. 2026-05 Progressive Orthodontics 볼트온",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "01362280",
+   "dart_name": "메디트"
+  },
+  {
+   "name": "오스템임플란트",
+   "stock_code": null,
+   "sponsor": "MBK파트너스 · UCK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "덴티스트리인베스트먼트",
+   "entry_date": "2023-08",
+   "entry_type": "p2p",
+   "seller": "최규옥 회장 9.3% + 공개매수",
+   "ev_krw_bn": 23977,
+   "stake_pct": 90.4,
+   "entry_price": 190000,
+   "fund": {
+    "name": "MBK 6호 · UCK 3호",
+    "vintage": 2023,
+    "maturity_est": 2033
+   },
+   "recovery": {
+    "cum_krw_bn": 1393,
+    "items": [
+     {
+      "date": "2024",
+      "type": "dividend",
+      "krw_bn": 392
+     },
+     {
+      "date": "2025",
+      "type": "dividend",
+      "krw_bn": 1001,
+      "note": "순이익 -141억 대비 7.1배"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "value_up_stress",
+   "notes": "KCGI 행동주의 → MBK-UCK P2P. 상폐 후 실적 둔화·영업이익 역성장에도 공격 배당. 최규옥 9.6% 잔존",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "00341916",
+   "dart_name": "오스템임플란트"
+  },
+  {
+   "name": "루트로닉",
+   "stock_code": null,
+   "sponsor": "한앤컴퍼니",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "한앤코",
+   "entry_date": "2023-10",
+   "entry_type": "p2p",
+   "seller": "황해령 회장 19.3% + 공개매수",
+   "ev_krw_bn": 9689,
+   "stake_pct": 100,
+   "entry_price": 36700,
+   "fund": {
+    "name": "한앤컴퍼니 4호",
+    "vintage": 2023,
+    "maturity_est": 2033
+   },
+   "recovery": {
+    "cum_krw_bn": 3803,
+    "items": [
+     {
+      "date": "2023-12",
+      "type": "capital_reduction",
+      "krw_bn": 1450
+     },
+     {
+      "date": "2024-03",
+      "type": "capital_reduction",
+      "krw_bn": 2353
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "상폐 3개월 후 Cynosure 3,500억 볼트온. 유상감자 2회로 39% 조기회수. 창업자 SPC 791억 재출자·이사 2/6",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "00549925",
+   "dart_name": "루트로닉"
+  },
+  {
+   "name": "제이시스메디칼",
+   "stock_code": null,
+   "sponsor": "Archimed",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "Archimed",
+   "entry_date": "2024-11",
+   "entry_type": "p2p",
+   "seller": "창업자 등 26% + 공개매수",
+   "ev_krw_bn": 10800,
+   "stake_pct": 100,
+   "entry_price": 13000,
+   "fund": {
+    "name": "MED Platform II",
+    "vintage": 2021,
+    "maturity_est": 2031
+   },
+   "recovery": {
+    "cum_krw_bn": 0,
+    "items": []
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "헬스케어 전문 PE의 첫 한국 투자. 창업자 대금 일부 재투자",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "01267602",
+   "dart_name": "제이시스메디칼"
+  },
+  {
+   "name": "비올",
+   "stock_code": null,
+   "sponsor": "VIG파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "VIG",
+   "entry_date": "2025-12",
+   "entry_type": "p2p",
+   "seller": "DMS 34.76% + 공개매수",
+   "ev_krw_bn": 4511,
+   "stake_pct": 100,
+   "entry_price": 12500,
+   "fund": {
+    "name": "VIG 5호",
+    "vintage": 2023,
+    "maturity_est": 2033
+   },
+   "recovery": {
+    "cum_krw_bn": 0,
+    "items": []
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "LG화학 에스테틱 사업부와 볼트온 결합 구도. 밸류업 초기",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "01124398",
+   "dart_name": "비올"
+  },
+  {
+   "name": "홈플러스",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "한국리테일투자",
+   "entry_date": "2015-10",
+   "entry_type": "buyout",
+   "seller": "Tesco",
+   "ev_krw_bn": 72000,
+   "equity_krw_bn": 22000,
+   "stake_pct": 100,
+   "fund": {
+    "name": "MBK 3호",
+    "vintage": 2013,
+    "maturity_est": 2023
+   },
+   "debt": {
+    "acq_fin_krw_bn": 43000,
+    "note": "점포 S&LB 반복 → 임차료 고정비 → 2025-03 회생 → 2026-07 회생폐지"
+   },
+   "recovery": {
+    "cum_krw_bn": null,
+    "items": [
+     {
+      "date": "2016~2020",
+      "type": "sale_leaseback",
+      "note": "점포 매각 후 임차"
+     }
+    ]
+   },
+   "status": "restructuring",
+   "stage_hint": "failed",
+   "notes": "국내 최대 LBO 실패. S&LB+레버리지+오프라인 리테일 구조 하락 삼중. 2025-03 회생 → 2026-07 폐지 위기 → 2026-09-02 회생계획 인가(회생채권 약 2.5조, 자가점포 19곳 매각 후 M&A). 익스프레스는 하림(2026-04). 김병주 회장 연대보증 → PEF 규제 강화 촉발",
+   "confidence": "high",
+   "sources": [
+    "fnnews 2026-07-16",
+    "bloter 2026"
+   ],
+   "corp_code": "00300061",
+   "dart_name": "홈플러스"
+  },
+  {
+   "name": "롯데카드",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "한국리테일카드홀딩스",
+   "entry_date": "2019-10",
+   "entry_type": "carve_out",
+   "seller": "롯데지주(지주회사 행위제한)",
+   "ev_krw_bn": 13810,
+   "stake_pct": 59.8,
+   "fund": {
+    "name": "MBK 스페셜시츄에이션 1호",
+    "vintage": 2018,
+    "maturity_est": 2028
+   },
+   "recovery": {
+    "cum_krw_bn": null,
+    "items": [
+     {
+      "date": "2022",
+      "type": "exit_attempt",
+      "note": "매각 무산(3조 희망)"
+     },
+     {
+      "date": "2025",
+      "type": "exit_attempt",
+      "note": "재매각 추진, 해킹사고로 차질"
+     }
+    ]
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "규제 강제매각(지주 행위제한) 진입. 2022 매각 무산(3조 희망) → 2025-08 해킹(297만명) → 2026-08 제재 확정 후 재매각 재착수. 금융업 exit은 대주주 적격성·금리 제약",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00219051",
+   "dart_name": "롯데카드"
+  },
+  {
+   "name": "에코비트",
+   "stock_code": null,
+   "sponsor": "IMM PE · IMM인베스트먼트",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "IMM 컨소시엄",
+   "entry_date": "2024-12",
+   "entry_type": "secondary",
+   "seller": "태영그룹·KKR (50:50)",
+   "ev_krw_bn": 20700,
+   "stake_pct": 100,
+   "fund": {
+    "name": "IMM 로즈골드 5호",
+    "vintage": 2023,
+    "maturity_est": 2033
+   },
+   "recovery": {
+    "cum_krw_bn": 0,
+    "items": []
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "폐기물 인허가 = 공급 비탄력 자산(환경규제 네러티브). 태영 워크아웃발 매각 → 매수자 우위",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00565242",
+   "dart_name": "에코비트"
+  },
+  {
+   "name": "지오영",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "조선혜지와이홀딩스",
+   "entry_date": "2024-04",
+   "entry_type": "secondary",
+   "seller": "블랙스톤",
+   "ev_krw_bn": 20000,
+   "fund": {
+    "name": "MBK 6호",
+    "vintage": 2023,
+    "maturity_est": 2033
+   },
+   "recovery": {
+    "items": [
+     {
+      "date": "2022~2025",
+      "type": "dividend",
+      "note": "배당성향 80~101% 고배당 기조"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "harvest",
+   "notes": "의약품 유통 캐시카우 → 배당 회수형",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "00446716",
+   "dart_name": "지오영"
+  },
+  {
+   "name": "SK렌터카",
+   "stock_code": null,
+   "sponsor": "어피너티에쿼티파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "어피너티",
+   "entry_date": "2024-08",
+   "entry_type": "carve_out",
+   "seller": "SK네트웍스",
+   "ev_krw_bn": 8200,
+   "stake_pct": 100,
+   "fund": {
+    "name": "Affinity Asia Pacific Fund VI",
+    "vintage": 2023,
+    "maturity_est": 2033
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "그룹 유동성발 카브아웃. 렌터카 플랫폼 통합(롯데렌탈 인수전 참여 이력)",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00201450",
+   "dart_name": "에스케이렌터카"
+  },
+  {
+   "name": "락앤락",
+   "stock_code": null,
+   "sponsor": "어피너티에쿼티파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "컨슈머스트렝스",
+   "entry_date": "2017-12",
+   "entry_type": "buyout",
+   "seller": "창업주 김준일",
+   "ev_krw_bn": 6293,
+   "stake_pct": 100,
+   "entry_price": 18000,
+   "fund": {
+    "name": "Affinity Asia Pacific Fund V",
+    "vintage": 2017,
+    "maturity_est": 2027
+   },
+   "recovery": {
+    "items": [
+     {
+      "date": "2024-10",
+      "type": "p2p",
+      "note": "공개매수 후 상폐(주당 8,750원, 인수가 대비 -51%)"
+     },
+     {
+      "date": "2024~",
+      "type": "capital_reduction",
+      "note": "유상감자·배당으로 회수 시도"
+     }
+    ]
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "인수 후 중국 매출 붕괴·실적 악화 → 손실 상폐. 실패 사례",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00561866",
+   "dart_name": "락앤락"
+  },
+  {
+   "name": "쌍용씨앤이",
+   "stock_code": null,
+   "sponsor": "한앤컴퍼니",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "한앤코시멘트홀딩스",
+   "entry_date": "2016-04",
+   "entry_type": "buyout",
+   "seller": "채권단(산업은행 등)",
+   "ev_krw_bn": 14000,
+   "stake_pct": 100,
+   "fund": {
+    "name": "한앤컴퍼니 2호→3호",
+    "vintage": 2016,
+    "maturity_est": 2026
+   },
+   "recovery": {
+    "items": [
+     {
+      "date": "2016~2023",
+      "type": "dividend",
+      "note": "분기배당 고배당(배당성향 100%±)"
+     },
+     {
+      "date": "2024-03",
+      "type": "p2p",
+      "note": "공개매수 후 자진상폐"
+     }
+    ]
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "보유 10년. 고배당 회수 후 상폐로 exit 옵션 재설계(CV·리캡 후보). 시멘트=탄소·폐기물 연료 전환 밸류업",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00138224",
+   "dart_name": "쌍용씨앤이"
+  },
+  {
+   "name": "커넥트웨이브",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "vehicle": "한국이커머스홀딩스",
+   "entry_date": "2022-05",
+   "entry_type": "buyout",
+   "seller": "다나와 창업주+코리아센터 합병",
+   "ev_krw_bn": 6000,
+   "stake_pct": 100,
+   "fund": {
+    "name": "MBK 5호",
+    "vintage": 2020,
+    "maturity_est": 2030
+   },
+   "recovery": {
+    "items": [
+     {
+      "date": "2024-09",
+      "type": "p2p",
+      "note": "공개매수 후 상폐"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "이커머스 플랫폼 롤업(다나와+코리아센터) 후 P2P",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "00585608",
+   "dart_name": "커넥트웨이브"
+  },
+  {
+   "name": "프리드라이프",
+   "stock_code": null,
+   "sponsor": "VIG파트너스",
+   "sponsor_type": "PE_EXITED",
+   "vehicle": "VIG",
+   "entry_date": "2020-06",
+   "entry_type": "buyout",
+   "seller": "창업주",
+   "equity_krw_bn": 2000,
+   "exit": {
+    "date": "2025-06",
+    "buyer": "웅진",
+    "ev_krw_bn": 8830,
+    "route": "trade_sale_si"
+   },
+   "status": "exited",
+   "stage_hint": "exited",
+   "notes": "상조 롤업(좋은라이프·금강문화허브 볼트온) → 선수금 규제 산업 SI 매각 성공",
+   "confidence": "high",
+   "sources": []
+  },
+  {
+   "name": "한온시스템",
+   "stock_code": "018880",
+   "sponsor": "한앤컴퍼니",
+   "sponsor_type": "PE_EXITED",
+   "vehicle": "한앤코오토홀딩스",
+   "entry_date": "2015-06",
+   "entry_type": "carve_out",
+   "seller": "Visteon",
+   "ev_krw_bn": 36000,
+   "stake_pct": 50.5,
+   "exit": {
+    "date": "2025-01",
+    "buyer": "한국앤컴퍼니(한국타이어)",
+    "ev_krw_bn": 18000,
+    "route": "trade_sale_si",
+    "note": "인수가 대비 손실 매각 논란, 9.5년 보유"
+   },
+   "status": "exited",
+   "stage_hint": "exited",
+   "notes": "장기보유·SI 우선매수권·EV 전환 자본소요. mixed",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00161125",
+   "dart_name": "한온시스템"
+  },
+  {
+   "name": "코웨이",
+   "stock_code": "021240",
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_EXITED",
+   "vehicle": "코웨이홀딩스",
+   "entry_date": "2013-01",
+   "entry_type": "buyout",
+   "seller": "웅진",
+   "ev_krw_bn": 12000,
+   "stake_pct": 30.9,
+   "exit": {
+    "date": "2019-12",
+    "buyer": "넷마블",
+    "ev_krw_bn": 17400,
+    "route": "trade_sale_si",
+    "moic": 2.2
+   },
+   "status": "exited",
+   "stage_hint": "exited",
+   "notes": "렌탈 구독 캐시플로우 + 배당·블록딜 중간회수 + SI 매각. 국내 대표 성공 사례",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00170558",
+   "dart_name": "코웨이"
+  },
+  {
+   "name": "두산공작기계",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_EXITED",
+   "entry_date": "2016-04",
+   "entry_type": "carve_out",
+   "seller": "두산인프라코어(그룹 유동성)",
+   "ev_krw_bn": 11300,
+   "exit": {
+    "date": "2022-01",
+    "buyer": "디티알오토모티브(DN)",
+    "ev_krw_bn": 24000,
+    "route": "trade_sale_si",
+    "moic": 2.5
+   },
+   "status": "exited",
+   "stage_hint": "exited",
+   "notes": "리캡 2회 + IPO 시도 → SI 매각. 그룹 유동성 카브아웃의 정석",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "01217245",
+   "dart_name": "디엔솔루션즈"
+  },
+  {
+   "name": "오렌지라이프",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_EXITED",
+   "entry_date": "2013-12",
+   "entry_type": "carve_out",
+   "seller": "ING그룹",
+   "ev_krw_bn": 18400,
+   "exit": {
+    "date": "2018-09",
+    "buyer": "신한금융",
+    "ev_krw_bn": 22900,
+    "route": "trade_sale_si",
+    "note": "2017 IPO 구주매출 + 배당 포함 MOIC 2x+"
+   },
+   "status": "exited",
+   "stage_hint": "exited",
+   "notes": "IPO→블록/SI 매각 듀얼트랙 성공",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00176792",
+   "dart_name": "오렌지라이프생명보험"
+  },
+  {
+   "name": "버거킹(비케이알)",
+   "stock_code": null,
+   "sponsor": "어피너티에쿼티파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2016-03",
+   "entry_type": "secondary",
+   "seller": "VIG파트너스",
+   "ev_krw_bn": 2100,
+   "fund": {
+    "name": "Affinity Asia Pacific Fund IV",
+    "vintage": 2013,
+    "maturity_est": 2023
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "보유 10년. 2026-02 버거킹재팬 골드만삭스 7,500억 매각, 한국 BKR 2026-06 매각 재시동. F&B exit 난항 대표",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "00948685",
+   "dart_name": "비케이알"
+  },
+  {
+   "name": "잡코리아",
+   "stock_code": null,
+   "sponsor": "어피너티에쿼티파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2021-05",
+   "entry_type": "secondary",
+   "seller": "H&Q코리아",
+   "ev_krw_bn": 9000,
+   "fund": {
+    "name": "Affinity Asia Pacific Fund V",
+    "vintage": 2017,
+    "maturity_est": 2027
+   },
+   "status": "holding",
+   "stage_hint": "exit_attempt",
+   "notes": "H&Q 2013 인수(2,000억)→2021 9,000억 SBO 성공 사례. 어피너티는 플랫폼 성장 둔화 국면",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "00375700",
+   "dart_name": "잡코리아"
+  },
+  {
+   "name": "현대엘엔지해운",
+   "stock_code": null,
+   "sponsor": "IMM PE · IMM인베스트먼트",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2014-04",
+   "entry_type": "carve_out",
+   "seller": "현대상선",
+   "ev_krw_bn": 5000,
+   "fund": {
+    "name": "IMM 로즈골드 2호",
+    "vintage": 2012,
+    "maturity_est": 2022
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "보유 12년. 매각 반복 무산(HMM 우선협상 결렬 등). 펀드 만기 초과 → CV/연장 사례",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "01033962",
+   "dart_name": "현대엘엔지해운"
+  },
+  {
+   "name": "에어퍼스트",
+   "stock_code": null,
+   "sponsor": "IMM PE",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2019-04",
+   "entry_type": "carve_out",
+   "seller": "린데코리아(합병 조건부 매각)",
+   "ev_krw_bn": 13000,
+   "recovery": {
+    "items": [
+     {
+      "date": "2023-06",
+      "type": "partial_sale",
+      "krw_bn": 11000,
+      "note": "BlackRock에 30% 매각 (지분가치 3.7조 평가)"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "exit_partial",
+   "notes": "산업가스 장기계약 인프라형. 2023 BlackRock 30% 부분매각(1.1조)으로 DPI 창출 후 2026-04 CV(컨티뉴에이션 펀드) 추진 → 국내 CV 선례",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00113003",
+   "dart_name": "에어퍼스트"
+  },
+  {
+   "name": "투썸플레이스",
+   "stock_code": null,
+   "sponsor": "Carlyle",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2021-11",
+   "entry_type": "secondary",
+   "seller": "앵커에쿼티파트너스",
+   "ev_krw_bn": 10000,
+   "fund": {
+    "name": "Carlyle Asia Partners V",
+    "vintage": 2018,
+    "maturity_est": 2028
+   },
+   "status": "holding",
+   "stage_hint": "exit_attempt",
+   "notes": "앵커 2019 CJ 카브아웃(4,500억)→2021 칼라일 1조 SBO 성공. 칼라일 2025~ 매각 추진",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "01275948",
+   "dart_name": "투썸플레이스"
+  },
+  {
+   "name": "맘스터치앤컴퍼니",
+   "stock_code": null,
+   "sponsor": "케이엘앤파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2019-12",
+   "entry_type": "buyout",
+   "seller": "창업주 정현식",
+   "ev_krw_bn": 1973,
+   "recovery": {
+    "items": [
+     {
+      "date": "2022-05",
+      "type": "p2p",
+      "note": "공개매수 후 상폐"
+     },
+     {
+      "date": "2023~",
+      "type": "dividend",
+      "note": "배당 확대"
+     }
+    ]
+   },
+   "status": "holding",
+   "stage_hint": "exit_attempt",
+   "notes": "P2P(2022-05) 후 일본 진출·수익성 개선 → 2026-04 1조 매각 재개",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "01089855",
+   "dart_name": "맘스터치앤컴퍼니"
+  },
+  {
+   "name": "bhc(다이닝브랜즈그룹)",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2018-11",
+   "entry_type": "secondary",
+   "seller": "로하틴그룹(TRG)",
+   "ev_krw_bn": 6800,
+   "fund": {
+    "name": "MBK 스페셜시츄에이션 1호",
+    "vintage": 2018,
+    "maturity_est": 2028
+   },
+   "status": "holding",
+   "stage_hint": "exit_attempt",
+   "notes": "아웃백 볼트온(2021). 경영진(박현종) 분쟁·가맹점 갈등 평판 리스크. 매각 추진",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "00656988",
+   "dart_name": "다이닝브랜즈그룹"
+  },
+  {
+   "name": "골프존카운티",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2018-10",
+   "entry_type": "growth_minority",
+   "seller": "골프존뉴딘홀딩스(신주+구주)",
+   "ev_krw_bn": null,
+   "fund": {
+    "name": "MBK 4호",
+    "vintage": 2016,
+    "maturity_est": 2026
+   },
+   "recovery": {
+    "items": [
+     {
+      "date": "2022",
+      "type": "exit_attempt",
+      "note": "IPO 철회"
+     }
+    ]
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "골프장 롤업 후 IPO 철회. 펀드 만기 → 매각/리캡 후보",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "01304037",
+   "dart_name": "골프존카운티"
+  },
+  {
+   "name": "티몬",
+   "stock_code": null,
+   "sponsor": "앵커에쿼티파트너스 · KKR",
+   "sponsor_type": "PE_EXITED",
+   "entry_date": "2015-04",
+   "entry_type": "buyout",
+   "seller": "그루폰",
+   "ev_krw_bn": 8600,
+   "exit": {
+    "date": "2022-09",
+    "buyer": "큐텐",
+    "route": "trade_sale_si",
+    "note": "지분교환 매각 → 2024 티메프 사태 → 2025 오아시스 회생 인수"
+   },
+   "status": "exited",
+   "stage_hint": "exited",
+   "notes": "이커머스 출혈경쟁·현금소진. 실패 사례",
+   "confidence": "high",
+   "sources": []
+  },
+  {
+   "name": "대성산업가스",
+   "stock_code": null,
+   "sponsor": "맥쿼리PE",
+   "sponsor_type": "PE_EXITED",
+   "entry_date": "2019-07",
+   "entry_type": "secondary",
+   "seller": "MBK파트너스(2017 인수 1.8조)",
+   "ev_krw_bn": 25000,
+   "fund": {
+    "name": "MKOF 5",
+    "vintage": 2018,
+    "maturity_est": 2030
+   },
+   "status": "exited",
+   "stage_hint": "exit_attempt",
+   "notes": "MBK(2017 1.8조)→맥쿼리(2019 2.5조)→에어리퀴드 4.85조(2026-01 종결). 2연속 SBO 성공",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "00110486",
+   "dart_name": "디아이지에어가스",
+   "exit": {
+    "date": "2026-01",
+    "buyer": "Air Liquide",
+    "ev_krw_bn": 48500,
+    "route": "trade_sale_si"
+   }
+  },
+  {
+   "name": "모던하우스(엠에이치앤코)",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2017-05",
+   "entry_type": "carve_out",
+   "seller": "이랜드리테일",
+   "ev_krw_bn": 7130,
+   "fund": {
+    "name": "MBK 4호",
+    "vintage": 2016,
+    "maturity_est": 2026
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "보유 9년, 매각 시도 반복. 홈퍼니싱 업황 부진",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "01283840",
+   "dart_name": "엠에이치앤코"
+  },
+  {
+   "name": "네파",
+   "stock_code": null,
+   "sponsor": "MBK파트너스",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2013-04",
+   "entry_type": "buyout",
+   "seller": "창업주(평안엘앤씨)",
+   "ev_krw_bn": 9970,
+   "fund": {
+    "name": "MBK 3호",
+    "vintage": 2013,
+    "maturity_est": 2023
+   },
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "보유 13년. 아웃도어 업황 붕괴 → 인수금융 리파이 반복. 실패 사례",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00932930",
+   "dart_name": "네파"
+  },
+  {
+   "name": "딜라이브",
+   "stock_code": null,
+   "sponsor": "MBK파트너스 · 맥쿼리 → 채권단",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2008-03",
+   "entry_type": "buyout",
+   "seller": "씨앤엠 (구 이민주)",
+   "ev_krw_bn": 21000,
+   "fund": {
+    "name": "MBK 1호",
+    "vintage": 2005,
+    "maturity_est": 2015
+   },
+   "status": "holding_overdue",
+   "stage_hint": "failed",
+   "notes": "18년 보유. 2016 채권단 출자전환. 케이블TV 구조 하락. 실패 사례",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00364935",
+   "dart_name": "딜라이브"
+  },
+  {
+   "name": "교보생명",
+   "stock_code": null,
+   "sponsor": "어피너티 컨소시엄 (어피너티·IMM·베어링·싱가포르투자청)",
+   "sponsor_type": "PE_MINORITY",
+   "entry_date": "2012-09",
+   "entry_type": "growth_minority",
+   "seller": "대우인터내셔널 24%",
+   "ev_krw_bn": 12000,
+   "fund": {
+    "name": "Affinity IV",
+    "vintage": 2013,
+    "maturity_est": 2023
+   },
+   "status": "holding_overdue",
+   "stage_hint": "dispute",
+   "notes": "IPO 조건 풋옵션(2015) 미이행 → 국제중재 2라운드(2019~2025) → 신창재 회장 풋 이행 가격 분쟁. 소수지분 계약 리스크 교과서",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "00112882",
+   "dart_name": "교보생명보험"
+  },
+  {
+   "name": "카카오모빌리티",
+   "stock_code": null,
+   "sponsor": "TPG · Carlyle",
+   "sponsor_type": "PE_MINORITY",
+   "entry_date": "2017-06",
+   "entry_type": "growth_minority",
+   "seller": "신주(카카오 자회사)",
+   "equity_krw_bn": 5000,
+   "stake_pct": 30,
+   "status": "holding_overdue",
+   "stage_hint": "exit_overdue",
+   "notes": "보유 9년. 2023 MBK 매각 논의 무산, 분식회계 제재·IPO 지연. 성장주 소수지분 exit 경로 부재 사례",
+   "confidence": "high",
+   "sources": [],
+   "corp_code": "01250666",
+   "dart_name": "카카오모빌리티"
+  },
+  {
+   "name": "바디프랜드",
+   "stock_code": null,
+   "sponsor": "스톤브릿지캐피탈 · 한앤브라더스",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2022-08",
+   "entry_type": "secondary",
+   "seller": "VIG파트너스·네오플럭스",
+   "ev_krw_bn": 4500,
+   "status": "holding",
+   "stage_hint": "dispute",
+   "notes": "공동 GP 간 분쟁(2023)·경영권 소송. 클럽딜 거버넌스 리스크",
+   "confidence": "medium",
+   "sources": [],
+   "corp_code": "00869500",
+   "dart_name": "바디프랜드"
+  },
+  {
+   "name": "인비트로스",
+   "stock_code": null,
+   "sponsor": "글랜우드PE",
+   "sponsor_type": "PE_CONTROL",
+   "entry_date": "2023-10",
+   "entry_type": "carve_out",
+   "seller": "LG화학 진단사업부",
+   "ev_krw_bn": 2000,
+   "fund": {
+    "name": "글랜우드 2호",
+    "vintage": 2020,
+    "maturity_est": 2030
+   },
+   "status": "holding",
+   "stage_hint": "value_up",
+   "notes": "인수 1,500억+증자 500억. Roche 독점계약(2024-02), 인력 2배 확대",
+   "confidence": "high",
+   "sources": [
+    "키움 지PE지기 2026-08-19"
+   ],
+   "corp_code": "01826751",
+   "dart_name": "인비트로스"
+  }
+ ]
+}

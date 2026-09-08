@@ -1,0 +1,670 @@
+{
+ "meta": {
+  "title": "PE Lens 규칙 베이스 — 케이스에서 추출한 선행지표 규칙 (증거 카운트로 승격·강등)",
+  "updated": "2026-09-08",
+  "note": "status: active(스코어 반영) · proposed(관찰, 표시만) · retired. evidence.supports/contradicts = pe-cases id. 승격/강등은 제안만 하고 확정은 사람이 (cycle-tracker 규율과 동일). effect.target = 스코어 키, delta = 가감점, flag = 화면 표시 라벨.",
+  "predicate_dsl": "and/or 배열, 각 원소 [field, op, value]. field 는 build 가 만드는 company row 의 feature 키. op ∈ eq,ne,gt,gte,lt,lte,in,has,truthy,falsy"
+ },
+ "rules": [
+  {
+   "id": "R1",
+   "name": "적자·역성장 중 고배당 = 회수 우선 신호",
+   "statement": "PE 보유(특히 95%+ 비상장 전환) 기업이 순이익 적자 또는 영업이익 역성장 중 배당총액이 순이익의 1.5배를 넘으면 실적 개선이 아닌 투자금 회수가 목적. 실패 선행지표.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "eq",
+      "PE_CONTROL"
+     ],
+     [
+      "fin.payout_ratio",
+      "gt",
+      1.5
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "⚠ 회수우선 배당",
+    "target": "lens.exit.recap_only",
+    "delta": 15,
+    "note": "매도자 입장에선 배당으로 이미 회수 → 잔여지분 가격 유연 가능"
+   },
+   "origin": "pdf:키움 2026-08-19",
+   "evidence": {
+    "supports": [
+     "osstem-implant-mbk-uck",
+     "medit-uck-mbk",
+     "homeplus-mbk"
+    ],
+    "contradicts": [
+     "geoyoung-blackstone-mbk"
+    ]
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R2",
+   "name": "회수율 낮음 + 보유 3~5년 = 밸류업 액션 임박",
+   "statement": "PE 최대주주의 누적 회수율이 30% 미만이고 보유 3~5년차면 CEO 교체·볼트온·구조조정·리파이 등 가시적 밸류업 행동이 12개월 내 나올 확률이 높다. 상장사면 카탈리스트, 비상장이면 볼트온 매물·자금 수요.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "eq",
+      "PE_CONTROL"
+     ],
+     [
+      "owner.recovery_ratio",
+      "lt",
+      0.3
+     ],
+     [
+      "owner.hold_years",
+      "gte",
+      3
+     ],
+     [
+      "owner.hold_years",
+      "lt",
+      5.5
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "🔥 밸류업 임박",
+    "target": "owner.valueup_drive",
+    "delta": 15
+   },
+   "origin": "pdf:키움 2026-08-19 (휴젤)",
+   "evidence": {
+    "supports": [
+     "hugel-bain-gs",
+     "namyang-dairy-hahn"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R3",
+   "name": "회수율 90%+ = 급하지 않음",
+   "statement": "누적 회수(리캡·블록딜·배당)가 초기 투자의 90%를 넘으면 잔여 지분은 순수익. 매각을 서두르지 않고 분할 블록딜·장기보유 → 매수자에게 시간 협상력 없음.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "in",
+      [
+       "PE_CONTROL",
+       "PE_MINORITY"
+      ]
+     ],
+     [
+      "owner.recovery_ratio",
+      "gte",
+      0.9
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "😌 회수 완료권",
+    "target": "owner.exit_pressure",
+    "delta": -25
+   },
+   "origin": "pdf:키움 2026-08-19 (클래시스·파마리서치)",
+   "evidence": {
+    "supports": [
+     "classys-bain-recap-block",
+     "pharmaresearch-cvc-rcps"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R4",
+   "name": "장기보유 + 만기 임박 + 매각 무산 이력 = 매수자 우위",
+   "statement": "보유 7년 이상, 펀드 잔존만기 2년 이내, 매각 시도 무산 이력이 있으면 GP의 눈높이가 낮아지고 SBO·CV·부분매각·크레딧 구조를 수용한다.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "eq",
+      "PE_CONTROL"
+     ],
+     [
+      "owner.hold_years",
+      "gte",
+      7
+     ],
+     [
+      "owner.fund_remaining",
+      "lte",
+      2
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "⏳ 만기 압박",
+    "target": "lens.entry.secondary",
+    "delta": 20
+   },
+   "origin": "case",
+   "evidence": {
+    "supports": [
+     "able-cnc-imm",
+     "lotte-card-mbk",
+     "nepa-mbk",
+     "burger-king-korea-vig-affinity",
+     "hyundai-lng-imm",
+     "dlive-cnm-mbk-macquarie"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R5",
+   "name": "S&LB 고정임차 + 고레버리지 + 구조하락 업황 = 회생 리스크",
+   "statement": "점포·공장 S&LB로 임차료를 고정비화한 상태에서 순부채/EBITDA 5x 초과, 업황이 구조적으로 하락하면 리파이 실패→회생 경로.",
+   "when": {
+    "and": [
+     [
+      "fin.nd_ebitda",
+      "gt",
+      5
+     ],
+     [
+      "fin.ebitda_trend",
+      "lt",
+      0
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "🚨 레버리지 경보",
+    "target": "lens.entry.lbo",
+    "delta": -25
+   },
+   "origin": "case:홈플러스",
+   "evidence": {
+    "supports": [
+     "homeplus-mbk"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R6",
+   "name": "행동주의 등장 + 저PBR + 창업주 고령 = P2P 트리거",
+   "statement": "행동주의 펀드 5% 이상 등장, PBR 1배 미만, 창업주 65세 이상이 겹치면 18개월 내 공개매수·경영권 이벤트 확률이 높다.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "in",
+      [
+       "ACTIVIST_TARGET",
+       "FOUNDER",
+       "FAMILY_2G"
+      ]
+     ],
+     [
+      "mkt.pbr",
+      "lt",
+      1
+     ],
+     [
+      "owner.age",
+      "gte",
+      65
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "🎯 P2P 트리거 후보",
+    "target": "lens.entry.p2p",
+    "delta": 15
+   },
+   "origin": "pdf+casemap",
+   "evidence": {
+    "supports": [
+     "osstem-implant-mbk-uck",
+     "gabia-p2p",
+     "golfzon-p2p"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R7",
+   "name": "그룹 유동성·규제 시한 = 카브아웃 강제매각",
+   "statement": "모그룹 유동성 위기 또는 지주회사 행위제한 시한이 있으면 계열사 매각 시점이 강제되어 매수자 우위 가격이 형성된다.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "eq",
+      "GROUP_SUB"
+     ],
+     [
+      "owner.carveout_prob",
+      "gte",
+      60
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "🏷 강제매각 후보",
+    "target": "lens.entry.carve_out",
+    "delta": 10
+   },
+   "origin": "casemap ⓑ + case",
+   "evidence": {
+    "supports": [
+     "lotte-card-mbk",
+     "lotte-rental-affinity-blocked-tpg",
+     "sk-rent-a-car-affinity",
+     "doosan-machine-tools-mbk-dtr",
+     "ecorbit-kkr-ty-imm"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R8",
+   "name": "소수지분 풋·IPO 조건 = 계약 집행력 리스크",
+   "statement": "소수지분 투자의 출구가 풋옵션·IPO 약정에 의존하면 대주주가 불이행할 때 회수가 장기화된다. 담보·상환재원·드래그 명시가 없으면 감점.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "eq",
+      "PE_MINORITY"
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "📜 계약 출구 의존",
+    "target": "lens.exit.ipo",
+    "delta": -10
+   },
+   "origin": "case",
+   "evidence": {
+    "supports": [
+     "kyobo-life-put-option-affinity",
+     "kakao-mobility-tpg-carlyle",
+     "skecoplant-preipo"
+    ],
+    "contradicts": [
+     "pharmaresearch-cvc-rcps"
+    ]
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R9",
+   "name": "공개매수 95% 미달 리스크",
+   "statement": "P2P 공개매수는 자금이 선집행되지만 성공은 응모율에 달려 통제 불가. 1차 미달 후 2차 재실시 사례가 있다.",
+   "when": {
+    "and": [
+     [
+      "listed",
+      "truthy"
+     ],
+     [
+      "owner.top_pct",
+      "lt",
+      30
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "응모율 리스크",
+    "target": "lens.entry.p2p",
+    "delta": -10
+   },
+   "origin": "casemap ⓐ (골프존 78.75%)",
+   "evidence": {
+    "supports": [
+     "golfzon-p2p"
+    ],
+    "contradicts": [
+     "gabia-p2p"
+    ]
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R10",
+   "name": "의무공개매수 시행 = 상장사 경영권 딜 비용 급증",
+   "statement": "25%→50%+1주 의무공개매수 시행 후 상장사 경영권 인수 자금이 최대 2배 필요. 시행 전 마감 러시, 시행 후 소수지분·메자닌·비상장 상대매력 상승.",
+   "when": {
+    "and": [
+     [
+      "listed",
+      "truthy"
+     ],
+     [
+      "policy.mto",
+      "truthy"
+     ],
+     [
+      "lens.entry.p2p",
+      "gte",
+      45
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "MTO 역풍",
+    "target": "lens.entry.p2p",
+    "delta": -15
+   },
+   "origin": "policy:mto",
+   "evidence": {
+    "supports": [],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R11",
+   "name": "창업주 65+ · 2세 임원 부재 · 지분 30%+ = 승계 니즈",
+   "statement": "창업주가 65세 이상이고 임원 명단에 자녀 세대가 없으며 본인 지분이 30% 이상이면 승계·매각 니즈가 잠재. 비가격 조건(경영 유지·롤오버·세금 스케줄)이 가격보다 중요.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "eq",
+      "FOUNDER"
+     ],
+     [
+      "owner.age",
+      "gte",
+      65
+     ],
+     [
+      "owner.family_next_gen",
+      "eq",
+      0
+     ],
+     [
+      "owner.top_pct",
+      "gte",
+      30
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "👴 승계 미정",
+    "target": "lens.entry.succession",
+    "delta": 15
+   },
+   "origin": "casemap Part4 1순위",
+   "evidence": {
+    "supports": [
+     "hct-succession",
+     "metabiomed-succession"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R12",
+   "name": "F&B·소비재 바이아웃은 SI 부재로 exit 장기화",
+   "statement": "프랜차이즈·소비재 바이아웃은 국내 SI 매수자가 얇아 SBO 아니면 exit이 늦어진다. 진입 시 배당 회수 설계와 SBO 가격대 확인이 필수.",
+   "when": {
+    "and": [
+     [
+      "fin.div2",
+      "in",
+      [
+       "56",
+       "10",
+       "14",
+       "47",
+       "32"
+      ]
+     ],
+     [
+      "lens.entry.lbo",
+      "gte",
+      65
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "SI 부재 업종",
+    "target": "lens.exit.trade_sale_si",
+    "delta": -15
+   },
+   "origin": "case",
+   "evidence": {
+    "supports": [
+     "burger-king-korea-vig-affinity",
+     "bhc-mbk",
+     "momstouch-kl-partners",
+     "twosome-place-anchor-carlyle",
+     "nepa-mbk"
+    ],
+    "contradicts": [
+     "gongcha-uck-ta-bain",
+     "hollys-imm-kg",
+     "coway-mbk-woongjin-netmarble"
+    ]
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R13",
+   "name": "볼트온은 인수 후 3~12개월 내 실행이 성공 패턴",
+   "statement": "플랫폼 인수 시점에 볼트온 타겟이 확정돼 있어야 한다. 상폐·인수 후 3~12개월 내 실행된 볼트온이 멀티플 리레이팅으로 이어졌다.",
+   "when": {
+    "and": [
+     [
+      "lens.valueup.bolt_on",
+      "gte",
+      70
+     ],
+     [
+      "lens.entry.rollup",
+      "gte",
+      65
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "볼트온 지도 필요",
+    "target": "lens.valueup.bolt_on",
+    "delta": 0
+   },
+   "origin": "pdf:키움 (루트로닉 3개월·클래시스)",
+   "evidence": {
+    "supports": [
+     "lutronic-hahn-p2p",
+     "classys-bain-recap-block",
+     "viol-vig-p2p-2025"
+    ],
+    "contradicts": []
+   },
+   "status": "proposed",
+   "hit_rate": null
+  },
+  {
+   "id": "R14",
+   "name": "리캡 후 부채/EBITDA 5x 초과 = 리파이 난항",
+   "statement": "배당리캡으로 부채/EBITDA가 5x를 넘긴 뒤 밸류가 정체되면 리파이·추가담보 요구가 발생한다(2023 글로벌 리캡 중간값 5.2x).",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "eq",
+      "PE_CONTROL"
+     ],
+     [
+      "fin.nd_ebitda",
+      "gt",
+      5
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "리파이 압박",
+    "target": "lens.entry.mezz",
+    "delta": 15
+   },
+   "origin": "pdf:키움 + Bain",
+   "evidence": {
+    "supports": [
+     "hanssem-imm",
+     "medit-uck-mbk"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R15",
+   "name": "인수금융 만기 18개월 내 + 실적 하락 = 크레딧 진입 창",
+   "statement": "PE 보유기업의 인수금융 만기가 18개월 이내이고 EBITDA가 감소 추세면 리파이 수요가 확실. 메자닌·유니트랜치 공급자 지위로 진입 가능.",
+   "when": {
+    "and": [
+     [
+      "owner.type",
+      "eq",
+      "PE_CONTROL"
+     ],
+     [
+      "owner.debt_months",
+      "lte",
+      18
+     ],
+     [
+      "fin.ebitda_trend",
+      "lt",
+      0
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "💳 리파이 창",
+    "target": "lens.entry.mezz",
+    "delta": 20
+   },
+   "origin": "pdf+case",
+   "evidence": {
+    "supports": [
+     "hanssem-imm",
+     "medit-uck-mbk"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  },
+  {
+   "id": "R16",
+   "name": "저PBR·지분집중·자사주소각·액면병합 = 상폐 전 단계",
+   "statement": "저PBR 상장사에서 최대주주 지분 집중, 자사주 소각, 액면병합이 이어지면 자진상폐(P2P) 준비 신호다.",
+   "when": {
+    "and": [
+     [
+      "listed",
+      "truthy"
+     ],
+     [
+      "mkt.pbr",
+      "lt",
+      0.7
+     ],
+     [
+      "owner.top_pct",
+      "gte",
+      50
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "상폐 전조",
+    "target": "lens.entry.p2p",
+    "delta": 10
+   },
+   "origin": "casemap ⓙ",
+   "evidence": {
+    "supports": [
+     "samchuly-treasury",
+     "osstem-implant-mbk-uck"
+    ],
+    "contradicts": []
+   },
+   "status": "proposed",
+   "hit_rate": null
+  },
+  {
+   "id": "R17",
+   "name": "순현금 캐시카우 비상장 = 첫 바이아웃 트랙레코드 타겟",
+   "statement": "매출 50~150억·EBITDA 마진 30%+·순현금·오너 승계 미정·비상장 조합은 인수금융 없이 단독 성립하고 배당 조기회수로 IRR이 멀티플에 의존하지 않는다.",
+   "when": {
+    "and": [
+     [
+      "listed",
+      "falsy"
+     ],
+     [
+      "fin.ebitda_m",
+      "gte",
+      0.25
+     ],
+     [
+      "fin.net_debt",
+      "lt",
+      0
+     ],
+     [
+      "fin.rev",
+      "gte",
+      50
+     ],
+     [
+      "fin.rev",
+      "lte",
+      300
+     ]
+    ]
+   },
+   "effect": {
+    "flag": "💰 캐시카우",
+    "target": "lens.entry.lbo",
+    "delta": 15
+   },
+   "origin": "casemap 앵글A",
+   "evidence": {
+    "supports": [
+     "kspearl-nat"
+    ],
+    "contradicts": []
+   },
+   "status": "active",
+   "hit_rate": null
+  }
+ ]
+}

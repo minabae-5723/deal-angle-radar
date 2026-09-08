@@ -6,6 +6,7 @@
   <title>Deal Angle Radar</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%A1%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css?v=35" />
+  <link rel="stylesheet" href="pe-lens.css?v=1" />
 </head>
 <body>
 
@@ -28,6 +29,7 @@
     <button class="viewtab" data-view="funding">💰 자금소요 스크리너</button>
     <button class="viewtab" data-view="thesis">🧭 Thesis 보드</button>
     <button class="viewtab" data-view="review">📄 기업 검토</button>
+    <button class="viewtab" data-view="pelens">🔭 PE Lens</button>
   </nav>
 </header>
 
@@ -73,6 +75,15 @@
     <iframe id="reviewFrame" class="review-frame" title="Company Review Board" src="about:blank"></iframe>
   </section>
 
+  <!-- ═══════════ view: PE Lens (知PE知己) ═══════════ -->
+  <!-- 최대주주 유인구조(선행지표) × Entry/Value-up/Exit 렌즈 스크리너. 데이터: pe-lens/build-pe-lens.js → data/pe-lens-pool.json.
+       외감 재무·오너 판독 원자료 성격이라 배포본에서는 LOCAL_ONLY 로 제거한다. (2026-09-08) -->
+  <section id="view-pelens" class="view" hidden>
+    <div id="pelensRoot">
+      <div class="empty"><div class="empty-ico">🔭</div><h3>로딩 중…</h3></div>
+    </div>
+  </section>
+
   <!-- ═══════════ view: 네러티브 스크리너 ═══════════ -->
   <section id="view-narrative" class="view" hidden>
     <div id="narrativeRoot">
@@ -95,7 +106,7 @@
   (function () {
     var host = location.hostname;
     if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '') return;
-    var LOCAL_ONLY = ['review', 'funding', 'thesis'];
+    var LOCAL_ONLY = ['review', 'funding', 'thesis', 'pelens'];
     if (LOCAL_ONLY.indexOf(location.hash.replace('#', '')) >= 0) location.replace(location.pathname + location.search);
     LOCAL_ONLY.forEach(function (v) {
       var tab = document.querySelector('.viewtab[data-view="' + v + '"]');
@@ -130,11 +141,12 @@
   });
 })();
 </script>
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 <script src="funding.js?v=2"></script>
 <script src="thesis.js?v=9"></script>
 <script src="comments.js?v=2"></script>
 <script src="narrative.js?v=39"></script>
+<script src="pe-lens.js?v=1"></script>
 <script src="chat.js?v=6"></script>
 </body>
 </html>

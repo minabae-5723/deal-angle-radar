@@ -224,6 +224,7 @@ const VIEW_FOOT = {
   funding: 'Source: 국내기업 Screening Masterfile (KISVALUE 재무패널) + DART OpenAPI 공시이력 · 산출: funding\\build.ps1 · Reverent Partners 내부용',
   thesis: 'Source: 섹터별 전문지 모니터링맵 + 웹리서치 (탑다운 신규 발굴) × funding-pool 외감 배선 (바텀업) · theses.json · Reverent Partners 내부용',
   narrative: 'Source: 구조적 narrative(자산 하베스트 PPI·insight·news + 승인) × transmission KPI 웹리서치 × 외감 패널/funding-pool · narratives.json → build-narrative.mjs · Reverent Partners 내부용',
+  pelens: 'Source: 외감 패널 41k × DART 정기보고서(최대주주·임원·배당·자사주·증감자) × 네이버 시세 × PE 레지스트리·케이스·정책·규칙 · 산출: pe-lens\build-pe-lens.js · 知PE知己 · Reverent Partners 내부용',
   review: 'Source: thesis 숏리스트별 initial research 합본 — 기업분석(0~2)·사업분석(3~4)·투자분석(5~6) 3-agent 파이프라인 · code\\company-review (동일 오리진 /review) · Reverent Partners 내부용',
 };
 
@@ -231,7 +232,7 @@ function switchView(name) {
   document.querySelectorAll('.viewtab').forEach(b => b.classList.toggle('active', b.dataset.view === name));
   // 뷰 섹션은 없을 수 있다 — review-gate 가 배포본에서 #view-review 를 DOM 에서 제거한다.
   // 직접 .hidden 을 대입하면 그 시점에 함수가 죽어 뒤따르는 init 이 전혀 호출되지 않는다.
-  ['radar', 'funding', 'thesis', 'narrative', 'review'].forEach(v => {
+  ['radar', 'funding', 'thesis', 'narrative', 'review', 'pelens'].forEach(v => {
     const el = document.getElementById('view-' + v);
     if (el) el.hidden = (name !== v);
   });
@@ -246,6 +247,7 @@ function switchView(name) {
   if (name === 'funding') initOrWarn('initFunding', 'fundingRoot');
   if (name === 'thesis') initOrWarn('initThesis', 'thesisRoot');
   if (name === 'narrative') initOrWarn('initNarrative', 'narrativeRoot');
+  if (name === 'pelens') initOrWarn('initPeLens', 'pelensRoot');
   if (name === 'review') {                                    // iframe 은 첫 활성화 때만 로드
     const f = document.getElementById('reviewFrame');
     if (f && f.src.indexOf('about:blank') === 0) f.src = './review/index.html?embed=1';
@@ -262,7 +264,7 @@ document.getElementById('viewTabs').addEventListener('click', e => {
 loadIndex();
 // 기본 뷰 = 네러티브 스크리너 (메인 페이지). 해시가 있으면 해시 우선.
 // initNarrative 등은 뒤에 로드되는 스크립트가 정의하므로 DOMContentLoaded 이후 전환.
-const VALID_VIEWS = ['radar', 'funding', 'thesis', 'narrative', 'review'];
+const VALID_VIEWS = ['radar', 'funding', 'thesis', 'narrative', 'review', 'pelens'];
 window.addEventListener('DOMContentLoaded', () => {
   const h = location.hash.slice(1);
   if (VALID_VIEWS.indexOf(h) >= 0) switchView(h);
