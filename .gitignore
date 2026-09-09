@@ -29,8 +29,3 @@ data/funding-events.json
 # 기업 검토 뷰: code\company-review 로 향하는 디렉터리 정션(다른 세션이 소유)
 /review
 
-# PE Lens 원자료 캐시 (재생성 가능) — pe-lens-pool.json·pe-cases·pe-policy·pe-registry 는 버전 관리
-data/pe-owner.json
-data/pe-market.json
-pe-lens/*.log
-pe-lens/cases-research-raw.json
