@@ -1,0 +1,1772 @@
+{
+ "generated": "2026-09-09T22:25:04.021Z",
+ "source": "press-rss",
+ "items": [
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "애플 '에어팟5'…ANC 강화·시리 AI·실시간 번역 지원",
+   "link": "https://www.etnews.com/20260910000007",
+   "date": "Thu, 10 Sep 2026 06:54:25 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "애플 차세대 워치12·울트라4…심박 측정 정교해지고 배터리 늘었다",
+   "link": "https://www.etnews.com/20260910000005",
+   "date": "Thu, 10 Sep 2026 06:49:30 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "애플, '아이폰18 프로' 공개…가변 조리개·A20 프로로 카메라·성능 강화",
+   "link": "https://www.etnews.com/20260910000004",
+   "date": "Thu, 10 Sep 2026 06:42:21 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "애플, 첫 폴더블폰 '아이폰 듀오' 공개…출고가 329만원",
+   "link": "https://www.etnews.com/20260910000002",
+   "date": "Thu, 10 Sep 2026 06:30:09 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "신체 나이 최대 6살 어려졌다…폐 질환 후보물질 '뜻밖의 효과'",
+   "link": "https://www.etnews.com/20260909000363",
+   "date": "Thu, 10 Sep 2026 06:00:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "“침 맞는 개·고양이, 효과 있다”…中, 노령 반려동물 '한방치료' 확산",
+   "link": "https://www.etnews.com/20260908000273",
+   "date": "Thu, 10 Sep 2026 06:00:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "'세균 득실' 변기 내부…“물 내릴 때 뚜껑 안 닫으면 호흡기로 침투”",
+   "link": "https://www.etnews.com/20260909000369",
+   "date": "Wed, 9 Sep 2026 22:30:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "코스피, 7000 고지 탈환...14일 애프터마켓 가동 '시너지'",
+   "link": "https://www.etnews.com/20260909000395",
+   "date": "Wed, 9 Sep 2026 18:00:40 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "이재용, 母 지분 1.9조원에 매수...상속세 '정리'",
+   "link": "https://www.etnews.com/20260909000394",
+   "date": "Wed, 9 Sep 2026 17:49:07 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "日, 성범죄자 '본인이 동의해야' GPS 착용?…“누구를 위한 법이냐”",
+   "link": "https://www.etnews.com/20260909000382",
+   "date": "Wed, 9 Sep 2026 17:08:50 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "한국오라클 클라우드 매출 1000억 육박…OCI 국내 사업 본궤도",
+   "link": "https://www.etnews.com/20260909000271",
+   "date": "Wed, 9 Sep 2026 17:00:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "최태원, 노소영 재산분할 7000억원 수용…2440억원만 다투기로",
+   "link": "https://www.etnews.com/20260909000371",
+   "date": "Wed, 9 Sep 2026 16:33:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "총리 연봉이 38억…트럼프보다 많이 받는 이 나라",
+   "link": "https://www.etnews.com/20260909000259",
+   "date": "Wed, 9 Sep 2026 16:30:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "[단독]쿠팡, 초대형 가구까지 '로켓설치'…중국산 저가 가구 공세 온다",
+   "link": "https://www.etnews.com/20260909000226",
+   "date": "Wed, 9 Sep 2026 16:30:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "편의점업계, 상품 탐색부터 추천까지 AI로…대고객 서비스 고도화",
+   "link": "https://www.etnews.com/20260909000275",
+   "date": "Wed, 9 Sep 2026 16:25:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "니콜라스 케이지 140억 저택 앞 '거대 싱크홀' 발생… “허리케인 영향”",
+   "link": "https://www.etnews.com/20260909000364",
+   "date": "Wed, 9 Sep 2026 16:20:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "코스피, 종가 7000선 탈환…SK하이닉스 3%대 상승",
+   "link": "https://www.etnews.com/20260909000368",
+   "date": "Wed, 9 Sep 2026 16:04:31 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "휴머노이드 쏟아지는데…수출입 통계도 못내",
+   "link": "https://www.etnews.com/20260909000291",
+   "date": "Wed, 9 Sep 2026 16:00:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "AI 해양도시 부산의 미래 한눈에…'K-ICT WEEK in BUSAN 2026' 개막",
+   "link": "https://www.etnews.com/20260909000198",
+   "date": "Wed, 9 Sep 2026 16:00:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "서울 지하철 결제망 재편…NFC 이어 태그리스·EMV 시대 열린다",
+   "link": "https://www.etnews.com/20260909000361",
+   "date": "Wed, 9 Sep 2026 15:55:39 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "“ATM도 사라진다”… 3년 반 만에 4600대 증발, 지방은 더 심각",
+   "link": "https://www.etnews.com/20260909000318",
+   "date": "Wed, 9 Sep 2026 15:50:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "韓 총리 “한동훈 녹취록 유출 경위 확인”…5·18 폄훼엔 “합당 조치 필요”",
+   "link": "https://www.etnews.com/20260909000345",
+   "date": "Wed, 9 Sep 2026 15:46:46 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "창업주 이혼 판결에 스마일게이트 지배구조 변화... 권혁빈 경영권은 유지",
+   "link": "https://www.etnews.com/20260909000336",
+   "date": "Wed, 9 Sep 2026 15:18:36 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "A2 vs 락토프리…프리미엄 우유 전선 갈렸다",
+   "link": "https://www.etnews.com/20260909000258",
+   "date": "Wed, 9 Sep 2026 15:14:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "정부, 중소·중견기업 무역금융 연내 120조·내년 140조 푼다",
+   "link": "https://www.etnews.com/20260909000328",
+   "date": "Wed, 9 Sep 2026 15:08:39 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "민주당, 배달수수료 상한제 입법 재시동…국감 앞두고 플랫폼 압박",
+   "link": "https://www.etnews.com/20260909000254",
+   "date": "Wed, 9 Sep 2026 15:07:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "삼성·SK하이닉스, 국제물주간 첫 출격…반도체 '물 혁신' 전면에",
+   "link": "https://www.etnews.com/20260909000304",
+   "date": "Wed, 9 Sep 2026 15:00:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "은행·ERP 경계 허문다…기업금융 '경영 플랫폼' 경쟁",
+   "link": "https://www.etnews.com/20260909000096",
+   "date": "Wed, 9 Sep 2026 15:00:00 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "곽동신 한미반도체 회장, 자사주 7억원 취득…누적 720억원",
+   "link": "https://www.etnews.com/20260909000310",
+   "date": "Wed, 9 Sep 2026 14:51:27 +0900"
+  },
+  {
+   "media": "전자신문",
+   "sector": "반도체·전자",
+   "tier": 2,
+   "title": "카카오 자율주행택시, 강남서 1.3만㎞ 달리며 '돌발상황' 학습…연내 E2E로 진화",
+   "link": "https://www.etnews.com/20260909000306",
+   "date": "Wed, 9 Sep 2026 14:49:03 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "애플 '에어팟5'…ANC 강화·시리 AI·실시간 번역 지원",
+   "link": "https://www.etnews.com/20260910000007",
+   "date": "Thu, 10 Sep 2026 06:54:25 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "한국공학대 GTEP, 시흥기업과 인도서 바이어 상담 100건을 돌파",
+   "link": "https://www.etnews.com/20260910000006",
+   "date": "Thu, 10 Sep 2026 06:53:35 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "애플 차세대 워치12·울트라4…심박 측정 정교해지고 배터리 늘었다",
+   "link": "https://www.etnews.com/20260910000005",
+   "date": "Thu, 10 Sep 2026 06:49:30 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "애플, '아이폰18 프로' 공개…가변 조리개·A20 프로로 카메라·성능 강화",
+   "link": "https://www.etnews.com/20260910000004",
+   "date": "Thu, 10 Sep 2026 06:42:21 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "경기도, 2027년 생활임금 1만2995원…월 271만5955원 확정",
+   "link": "https://www.etnews.com/20260910000003",
+   "date": "Thu, 10 Sep 2026 06:40:15 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "애플, 첫 폴더블폰 '아이폰 듀오' 공개…출고가 329만원",
+   "link": "https://www.etnews.com/20260910000002",
+   "date": "Thu, 10 Sep 2026 06:30:09 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "신체 나이 최대 6살 어려졌다…폐 질환 후보물질 '뜻밖의 효과'",
+   "link": "https://www.etnews.com/20260909000363",
+   "date": "Thu, 10 Sep 2026 06:00:00 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "“침 맞는 개·고양이, 효과 있다”…中, 노령 반려동물 '한방치료' 확산",
+   "link": "https://www.etnews.com/20260908000273",
+   "date": "Thu, 10 Sep 2026 06:00:00 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "AI가 지방행정을 만나면…차세대융합기술연구원, 시민 수용 해법 모색",
+   "link": "https://www.etnews.com/20260910000001",
+   "date": "Thu, 10 Sep 2026 00:29:25 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "신상진 성남시장, 도비 지원 축소 비판…경기도 폐지론·행정체계 개편 제안",
+   "link": "https://www.etnews.com/20260909000423",
+   "date": "Wed, 9 Sep 2026 23:48:49 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "경기국방벤처센터, 33개사 추가 협약…도내 방산시장 진출 지원 확대",
+   "link": "https://www.etnews.com/20260909000422",
+   "date": "Wed, 9 Sep 2026 23:06:17 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "김민석 수첩에 '서울시장 후보 청래'…'이진숙·한동훈 OUT'",
+   "link": "https://www.etnews.com/20260909000421",
+   "date": "Wed, 9 Sep 2026 23:03:49 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "'세균 득실' 변기 내부…“물 내릴 때 뚜껑 안 닫으면 호흡기로 침투”",
+   "link": "https://www.etnews.com/20260909000369",
+   "date": "Wed, 9 Sep 2026 22:30:00 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "과기정통부, 프랑스와 AI·반도체·양자 기술 협력 본격화",
+   "link": "https://www.etnews.com/20260909000403",
+   "date": "Wed, 9 Sep 2026 22:00:00 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "대구 C랩 졸업기업 리브포워드 '매트윈', 레드닷 디자인상 수상 및 엔비디아 인셉션 선정",
+   "link": "https://www.etnews.com/20260909000380",
+   "date": "Wed, 9 Sep 2026 22:00:00 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "골든타임 시계 10년째 가동…아주대병원, 외상센터 더 빠른 도약 채비",
+   "link": "https://www.etnews.com/20260909000420",
+   "date": "Wed, 9 Sep 2026 21:50:41 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "방미통위, 홈쇼핑 12개사 재승인…유효기간 7년",
+   "link": "https://www.etnews.com/20260909000418",
+   "date": "Wed, 9 Sep 2026 21:20:23 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "[기고] 지역의 가능성을 창업과 성장으로 잇다",
+   "link": "https://www.etnews.com/20260909000416",
+   "date": "Wed, 9 Sep 2026 21:02:03 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "영화 제작에 이어 책 출간까지…전화성 대표, 스타트업 '성장의 공식' 풀었다",
+   "link": "https://www.etnews.com/20260909000414",
+   "date": "Wed, 9 Sep 2026 20:50:16 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "송하철 국립목포대 총장 “전남권 국립의대 후보대학 선정 심사 재검증해야”",
+   "link": "https://www.etnews.com/20260909000413",
+   "date": "Wed, 9 Sep 2026 20:20:04 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "GICON, '2026년 창업도약패키지 지원사업 투자 레벨-업 프로그램 모의 IR' 개최",
+   "link": "https://www.etnews.com/20260909000412",
+   "date": "Wed, 9 Sep 2026 19:53:52 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "호남대 앵커사업단, 서구청과 '평화·통일 아트월' 전시 개최",
+   "link": "https://www.etnews.com/20260909000411",
+   "date": "Wed, 9 Sep 2026 19:45:58 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "'취업에 강한 대학' 동신대, 창업까지 잡았다…11개 창업 프로젝트 동시 가동",
+   "link": "https://www.etnews.com/20260909000410",
+   "date": "Wed, 9 Sep 2026 19:43:34 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "조선대, 저전력·지능형 반도체 산화물 메모리 연구성과 발표",
+   "link": "https://www.etnews.com/20260909000409",
+   "date": "Wed, 9 Sep 2026 19:36:38 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "광주앵커사업, 교육부 1차년도 연차점검 최고 'S등급' 획득",
+   "link": "https://www.etnews.com/20260909000408",
+   "date": "Wed, 9 Sep 2026 19:26:28 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "GICON-광주대-부커스, 지역 웹소설 창작 생태계 활성화 위한 '맞손'",
+   "link": "https://www.etnews.com/20260909000407",
+   "date": "Wed, 9 Sep 2026 19:19:01 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "구글, 핀란드 디지털 인프라에 20조 투자",
+   "link": "https://www.etnews.com/20260909000406",
+   "date": "Wed, 9 Sep 2026 19:07:58 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "비상교육, 초등 연구모임 '반올림스쿨'과 예비교원 네트워킹 지원",
+   "link": "https://www.etnews.com/20260909000404",
+   "date": "Wed, 9 Sep 2026 18:49:23 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "토탈소프트뱅크, SLAM 기반 자율주행 항만 이송장비 전시",
+   "link": "https://www.etnews.com/20260909000402",
+   "date": "Wed, 9 Sep 2026 18:32:04 +0900"
+  },
+  {
+   "media": "전자신문 소재부품",
+   "sector": "소부장",
+   "tier": 2,
+   "title": "넥슨재단, '바람의나라' 30주년 맞아 신진예술가 지원…경복궁서 전통공예 전시",
+   "link": "https://www.etnews.com/20260909000401",
+   "date": "Wed, 9 Sep 2026 18:19:18 +0900"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "타타대우모빌리티, 중형트럭 ‘하이쎈’ 전국 전시·판매 확대",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322656",
+   "date": "2026-09-09 13:23:59"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "쿠팡풀필먼트서비스, 여주시보건소와 물류 현장 온열질환 예방 협력",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322655",
+   "date": "2026-09-09 13:10:49"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "테크타카, 물류AX 세미나서 ‘아르고 센터 플렉스’ 전략 발표",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322654",
+   "date": "2026-09-09 12:57:26"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "한국통합물류협회, AI·Connected Fleet로 ‘스마트 물류’ 미래 제시",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322653",
+   "date": "2026-09-09 10:54:18"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "HMM, 브라질 발레와 4조7000억원 장기운송계약…벌크사업 ‘체질 개선’ 속도",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322652",
+   "date": "2026-09-09 10:41:44"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "[2026년 특별기획] 대한민국 물류의 피지컬 인터넷 혁명, LAPI ①",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322651",
+   "date": "2026-09-09 10:32:12"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "&quot;추석 택배 접수는 22일까지?&quot;…주요 택배사 발송 마감일은",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322650",
+   "date": "2026-09-09 10:03:40"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "DHL, GS칼텍스 SAF 2000톤 쓴다…글로벌 특송망 첫 투입",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322649",
+   "date": "2026-09-09 08:47:54"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "LX판토스, 전세기로 신선란 1120만 개 들여왔다",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322648",
+   "date": "2026-09-09 08:43:33"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "소화물배송대행서비스사업 등록제 도입에 관한 소고",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322647",
+   "date": "2026-09-09 08:25:57"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "삼성SDS, AI 풀스텍 전략에 로봇까지…산업 현장 혁신 나선다",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322646",
+   "date": "2026-09-08 21:49:51"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "한국콜드체인협회, ‘제12기 콜드체인 전문가(콜드체인관리사) 양성과정’ 개강",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322645",
+   "date": "2026-09-08 17:30:50"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "면적 중심 물류시설 방화구획…“화재하중·적재 높이 반영해야”",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322644",
+   "date": "2026-09-08 17:05:54"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "[교육] 물류센터장 양성과정 개설 안내",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322643",
+   "date": "2026-09-08 15:02:30"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "로커스코리아, 물류 SaaS 고도화 위한 시리즈A 추진",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322642",
+   "date": "2026-09-08 13:18:59"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "케어캠프, 상반기 매출 7292억 ‘사상 최대’…의료물류 경쟁력 입증",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322641",
+   "date": "2026-09-08 10:16:23"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "두핸즈 XFC, 개소 3개월 만에 적재율 100%…포장 생산성 90% 향상",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322640",
+   "date": "2026-09-08 09:58:30"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "한진, 아이치·나고야 아시안게임 중계장비 운송부터 회수까지 맡는다",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322639",
+   "date": "2026-09-08 09:37:29"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "SSG닷컴 바로퀵, 출시 1년 만에 일평균 주문 7배 증가",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322638",
+   "date": "2026-09-08 09:10:45"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "배민B마트, 명절 선물세트도 퀵커머스로…“원하는 시간에 배송”",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322637",
+   "date": "2026-09-07 14:59:46"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "쿠팡 ‘프레시백’ 도입 6년, 배송 현장 갈등은 계속",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322636",
+   "date": "2026-09-07 14:50:15"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "사방넷, ‘2026 코리아 이커머스페어’ 참가",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322635",
+   "date": "2026-09-07 14:15:42"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "타타대우모빌리티-라이드플럭스, 자율주행 기술 협력 강화",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322632",
+   "date": "2026-09-07 14:02:09"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "한진, 네팔 대홍수 이재민에 긴급구호물자 4만여점 긴급 운송",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322633",
+   "date": "2026-09-07 13:58:57"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "소비자단체까지, 새벽배송 규제 대해 소비자 선택권 위축 경고",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322629",
+   "date": "2026-09-07 13:54:00"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "불스원, 디젤 화물차·버스용 'DPF 파워클리너' 출시",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322631",
+   "date": "2026-09-07 13:49:17"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "현대위아 무인지게차, 기아 공장서 화물차 상·하차 맡는다",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322630",
+   "date": "2026-09-07 13:47:47"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "CJ온스타일, 인천 풀필먼트센터 개소…‘오늘도착’ 오후 3시까지",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322628",
+   "date": "2026-09-07 13:44:55"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "CJ대한통운, ‘ISO 37301’ 6년 연속 인증…준법경영 체계 고도화",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322624",
+   "date": "2026-09-07 13:23:48"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "한국의 對인도 수출, 8월까지 30% 이상 급증",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322623",
+   "date": "2026-09-07 11:05:58"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "티엑스알로보틱스, 물류자동화 넘어 로봇 기업으로",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322622",
+   "date": "2026-09-07 08:49:31"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "자율주행 라이드플럭스 박중희 대표, ‘지식재산의 날’ 국무총리 표창",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322621",
+   "date": "2026-09-04 16:34:52"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "쿠팡이츠서비스, 도로교통공단과 배달파트너 안전 강화 나선다",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322620",
+   "date": "2026-09-04 15:38:50"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "한진, 독서 소외계층 아동 위한 오디오북 직접 제작·전달",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322619",
+   "date": "2026-09-04 15:29:43"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "美 첨단기업 4개사, 한국에 총 20억 달러 투자 나선다",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322618",
+   "date": "2026-09-04 09:58:46"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "쿠팡로지스틱스서비스(CLS), 사회봉사 꾸준히 이어가",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322614",
+   "date": "2026-09-04 09:42:14"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "정부, 추석 택배 4주간 특별관리…'집화 제한·인력 5500명 투입'",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322613",
+   "date": "2026-09-04 09:13:21"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "“파렛트로 아시아 물류 잇는다”…제21차 APSF 총회 개최",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322611",
+   "date": "2026-09-04 09:11:34"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "우체국물류지원단, 현장 근로자 대상 응급처치 교육 진행",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322612",
+   "date": "2026-09-04 09:02:02"
+  },
+  {
+   "media": "물류신문",
+   "sector": "물류",
+   "tier": 2,
+   "title": "4대 항만공사 통합 소식에 노조, “노정 협의 중 기습 발표“",
+   "link": "https://www.klnews.co.kr/news/articleView.html?idxno=322610",
+   "date": "2026-09-03 23:53:38"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "'화재 참사' 안전공업 증거 위·변조한 4명 추가 입건",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50592",
+   "date": "2026-09-08 18:20:55"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "안전관리자? 이름부터 바로잡아야 한다",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50591",
+   "date": "2026-09-08 18:05:01"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "대한산업안전협회-플리토, 외국인 노동자 ‘언어장벽’낮춘다",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50588",
+   "date": "2026-09-08 15:23:10"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "노동감독관 5년간 194명 떠나…10명 중 4명 '3년 미만' 저연차",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50587",
+   "date": "2026-09-08 13:09:04"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "HL만도 사망사고 유족 &quot;조사 내용 공개하라&quot;",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50585",
+   "date": "2026-09-08 10:45:52"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "선박 격벽으로 통신…써니웨이브텍, 유럽 해양안전 시장 진출 시동",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50584",
+   "date": "2026-09-08 10:32:15"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "변화하는 경영환경 속, 안전문화 증진 전략 모색한다",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50583",
+   "date": "2026-09-08 10:28:01"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "[3분 안전뉴스] 반복되는 사고는 실수가 아니다",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50581",
+   "date": "2026-09-07 17:45:19"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "[오늘의 건강상식] 갑자기 바뀐 식습관, 치매 신호일 수 있다",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50565",
+   "date": "2026-09-07 12:52:42"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "건설현장 추락사고 예방 아이디어 찾는다…정부, 콘텐츠 공모전 개최",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50568",
+   "date": "2026-09-07 11:32:38"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "소방청, &quot;고향집에 소화기를 설치해주세요&quot;",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50569",
+   "date": "2026-09-07 11:22:58"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "“감전 위험 알면서도 위험성평가 안 해”…동일제강 전 대표, 2심도 유죄",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50571",
+   "date": "2026-09-07 11:12:46"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "美 마이애미공항서 화물기 활주로 이탈…5명 사망",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50572",
+   "date": "2026-09-07 11:10:29"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "부산 예인선 전복사고로 6명 실종…수색 엿새째",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50573",
+   "date": "2026-09-07 11:07:14"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "농어촌공사, 전국 건설현장 '불시 안전점검'…순찰차 확대 운영",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50574",
+   "date": "2026-09-07 11:02:01"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "물질안전보건자료(MSDS)",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50567",
+   "date": "2026-09-07 09:30:14"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "근골격계 질환 예방 안전수칙",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50566",
+   "date": "2026-09-07 09:20:32"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "[임무상의 그림산책] 겨울나그네",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50562",
+   "date": "2026-09-04 15:18:42"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "산재병원 장비 43%, '내용연수 초과'…시설·인력 문제도",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50553",
+   "date": "2026-09-04 15:11:02"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "스마트폰으로 모든 안전관리를…청년 AI 플랫폼 ‘국무총리상’",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50555",
+   "date": "2026-09-04 15:07:19"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "외국인노동자 고용허가 4회차 신청 접수…총1만2,357명",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50558",
+   "date": "2026-09-04 15:02:41"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "울산 에틸렌시설 건설현장서 노동자 1명 추락사",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50549",
+   "date": "2026-09-04 15:01:03"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "고위험 사업장 지원 늘리고 AI 활용…내년 산업안전 예산 ‘현장’에 방점",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50559",
+   "date": "2026-09-04 14:58:43"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "&quot;산업안전 해법 현장에서 찾아야&quot;",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50554",
+   "date": "2026-09-04 13:38:46"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "[하루 안전] 선풍기 틀고 자면 위험할까?",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50550",
+   "date": "2026-09-04 09:28:14"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "네팔·티베트 ‘빙하 홍수’…사망 1225명·실종 4757명으로 늘어",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50548",
+   "date": "2026-09-03 17:35:02"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "‘3명 사망’ 천안 대원산업 … 노동부·경찰, 강제수사 착수",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50546",
+   "date": "2026-09-03 16:00:44"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "소방청, 대규모 위험물 저장·취급 사업장 집중 검사",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50545",
+   "date": "2026-09-03 16:00:17"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "산재 신청부터 불복 절차까지 무료…'취약계층 대리인제' 국회 통과",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50544",
+   "date": "2026-09-03 15:49:07"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "사람은 왜 위험을 알면서도 위험한 행동을 하는가?",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50543",
+   "date": "2026-09-03 15:03:00"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "[3분 안전뉴스] 가을엔 지붕공사 추락주의!!",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50541",
+   "date": "2026-09-02 15:54:32"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "'아리셀 참사' 대책위 &quot;박순관 대표 엄벌&quot;…1981명 서명 탄원서 대법 제출",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50540",
+   "date": "2026-09-02 15:51:33"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "대한산업안전협회, 기관장 워크숍 개최…“신성장 전략 모색”",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50539",
+   "date": "2026-09-02 15:46:12"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "'대한민국 안전산업박람회' 개막…국내외 340개 기관·기업 참가",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50532",
+   "date": "2026-09-02 15:19:09"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "'불법 혼합 냉매 원인' 실외기 화재 급증…&quot;너무 싸면 의심&quot;",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50536",
+   "date": "2026-09-02 14:21:06"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "정부, 동일 유형사고 반복 사업장에 칼 빼들어…&quot;엄정 대응&quot;",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50535",
+   "date": "2026-09-02 14:15:24"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "경기광주 쿠팡 물류센터 끼임사고…경찰·노동부 압수수색",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50530",
+   "date": "2026-09-02 14:03:48"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "항공업계, 내년 안전투자 12.8조원…올해보다 26.4% 감소",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50531",
+   "date": "2026-09-02 14:03:35"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "“구독만 해도 기부”…대한산업안전협회, ‘안전미디어 나눔캠페인’ 전개",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50527",
+   "date": "2026-09-01 18:04:12"
+  },
+  {
+   "media": "안전저널",
+   "sector": "산업안전",
+   "tier": 2,
+   "title": "[안전쏙쏙 용어사전] 행동기반안전",
+   "link": "https://www.anjunj.com/news/articleView.html?idxno=50525",
+   "date": "2026-09-01 16:33:12"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "실크스마일라식 계획한다면…엘리타 장비와 안과 정밀검사 함께 확인해야",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34351",
+   "date": "2026-09-10 00:00:00"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "[특징주] 페니트리움바이오, 폐암·난소암 오가노이드 연구 결과 발표에 상한가 마감",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34371",
+   "date": "2026-09-09 18:23:12"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "두근거림과 어지럼증, 불면증 겪고 있다면 자율신경실조증 의심",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34370",
+   "date": "2026-09-09 17:24:35"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "AI가 설계한 폐질환 신약 ‘렌토서팁’, 임상서 노화 지표·장기 기능 개선 확인",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34369",
+   "date": "2026-09-09 17:10:45"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "야간 골절 진료 공백 줄인다… 호수병원 15일 개원",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34368",
+   "date": "2026-09-09 16:18:28"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "PDRN·레티놀의 바톤을 이을 ‘블루펩타이드’… 피부 스스로의 힘을 깨우는 안티에이징",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34367",
+   "date": "2026-09-09 16:09:20"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "무삭제 라미네이트, ‘삭제하지 않는 것’보다 중요한 것...치아 상태에 맞는 치료",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34366",
+   "date": "2026-09-09 15:59:28"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "GC녹십자, 오픈이노베이션 유공 포상 제약바이오협회장 표창",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34365",
+   "date": "2026-09-09 15:53:39"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "임상 승인이 끝이 아니다…제넨셀 사태가 남긴 ‘데이터 무결성’ 과제",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34362",
+   "date": "2026-09-09 15:35:35"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "헤어라인 모발이식, 여성과 남성과 다르게 디자인해야",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34364",
+   "date": "2026-09-09 15:16:01"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "걷다 보면 다리가 저리고 쉬면 괜찮아진다? 척추관협착증, 비수술 치료 방법은",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34363",
+   "date": "2026-09-09 15:09:56"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "CAR-T를 몸속에서 만든다…빅파마가 9조 원 베팅한 ‘인비보’, 세포치료제 판 바꾼다",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34360",
+   "date": "2026-09-09 14:16:22"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "한·불수교 140주년 특별기념전, 9월 15일 북한강 삼회리서 개막",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34361",
+   "date": "2026-09-09 14:04:42"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "보로노이, 한국보건산업진흥원장 표창 수상…글로벌 오픈이노베이션 성과 인정",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34359",
+   "date": "2026-09-09 13:23:24"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "바로팜, 증권신고서 제출…헬스케어 AX 플랫폼으로 도약",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34358",
+   "date": "2026-09-09 12:06:48"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "교통사고 후 통증 늦게 나타날 수 있어…후유증 초기부터 살펴야",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34357",
+   "date": "2026-09-09 11:57:20"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "무릎 관절염 말기 치료, 마코 로봇 인공관절수술로 정확도 높여",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34356",
+   "date": "2026-09-09 11:53:06"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "아주약품 ‘라티카점안액’,국내 44호 신약 지정…식약처 품목허가 획득",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34355",
+   "date": "2026-09-09 11:33:51"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "손목터널증후군, 근육 아닌 ‘신경’ 문제…근육 위축 오기 전에 치료해야",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34354",
+   "date": "2026-09-09 11:28:21"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "쓰리빌리언, AI 유전변이 해석 플랫폼 ‘제브라’ 글로벌 고객 확대",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34350",
+   "date": "2026-09-09 10:49:44"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "마크로젠, 10x지노믹스 공간생물학 플랫폼 ‘Atera’ 아시아 최초 도입",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34349",
+   "date": "2026-09-09 10:44:09"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "닥터제이엠, 서포트팩 6종 완성…생활 패턴별 제품 선택지 넓혀",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34348",
+   "date": "2026-09-09 10:37:19"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "닥터에버스의원 부산점 김홍석 원장, 2026 아시아모델페스티벌 ‘페이스 오브 대만’ 심사위원 참여",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34347",
+   "date": "2026-09-09 10:33:56"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "카카오헬스케어, 1형 당뇨 수험생에 ‘연속혈당측정 수신기’ 덱스콤 G7 리시버 무상 대여",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34346",
+   "date": "2026-09-09 10:26:20"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "페니트리움바이오, 폐암·난소암 오가노이드 비교 연구 결과 발표",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34345",
+   "date": "2026-09-09 10:05:18"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "다리 실핏줄 및 거미혈관 치료에 바리톤-S 활용...정맥 상태 확인이 우선",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34341",
+   "date": "2026-09-09 10:00:00"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "한국파스퇴르연구소, 한국형 ARPA-H 잠복결핵 대응 과제 주관",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34344",
+   "date": "2026-09-09 09:51:23"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "UAE EDE 수장, 바이오솔루션·헬릭스미스 방문…CGT·NAMs 규제협력 논의",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34343",
+   "date": "2026-09-09 09:45:08"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "플란치과 부산점, 지역 문화 행사 ‘와보이소 마츠리 2026’ 참여…지역사회와 소통 확대",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34294",
+   "date": "2026-09-09 09:00:00"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "목이 뻐근하더니 갑자기 머리가 지끈… &quot;두통, 목에서 시작될 수 있다&quot;",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34340",
+   "date": "2026-09-08 16:59:42"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "반려동물 영양제 브랜드 제스티 퍼스, 호주에서 한국으로 공식 진출",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34295",
+   "date": "2026-09-08 16:00:00"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "지에스엘텍, 의료기기 개발 본격 착수…서울대 바이오벤처와 인허가 로드맵 가동",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34336",
+   "date": "2026-09-08 15:39:21"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "여름 지나도 반복되는 환절기 여드름…종류에 맞는 치료 중요",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34334",
+   "date": "2026-09-08 15:06:38"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "부평그린마취통증의학과의원 박정우 원장, YTN2 ‘메디컬 인사이트’ 출연…대상포진 바로 알리기",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34333",
+   "date": "2026-09-08 15:00:29"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "“계단 내려갈 때 무릎 앞쪽 통증 반복된다면?”슬개골 연골연화증 증상과 치료",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34316",
+   "date": "2026-09-08 15:00:00"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "엣진, 제1회 프리 갈리앵 코리아 2026 ‘베스트 스타트업’ 후보 선정",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34330",
+   "date": "2026-09-08 14:17:21"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "㈜더파마, 건강기능식품 프리미엄 브랜드 더데이 공식 서포터즈 2기 모집",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34297",
+   "date": "2026-09-08 14:00:00"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "[이달의 K-바이오] 타그리소 내성 폐암에 반응률 100%…보로노이 차세대 신약, 아시아 4개국서 ‘진짜 검증’",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34329",
+   "date": "2026-09-08 13:57:19"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "“약만 좋으면 뭐하나”…빅파마가 RLT ‘공급망’에 수조원 쏟아붓는 이유",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34326",
+   "date": "2026-09-08 11:59:48"
+  },
+  {
+   "media": "바이오타임즈",
+   "sector": "바이오",
+   "tier": 2,
+   "title": "혈액 환경부터 살피는 건강한 노화… 혈장교환술의 가능성 강조",
+   "link": "https://www.biotimes.co.kr/news/articleView.html?idxno=34325",
+   "date": "2026-09-08 11:26:07"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "부산시 ‘미래도시 대전환’…국비·시민화합·사이버보안 3축 가동",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85781",
+   "date": "2026-09-09 23:13:52"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "박완수 ‘경남도 대전환’ 가속도…관광·우주항공·기본사회 삼축 가동",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85780",
+   "date": "2026-09-09 23:09:27"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "김해시, ‘건강·복지·환경’ 도시 경쟁력 제고",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85782",
+   "date": "2026-09-09 23:02:01"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "렛츠런파크 부산경남, 어린이 승마장 ‘포니 포레스트’로 새단장",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85779",
+   "date": "2026-09-09 23:00:22"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "온병원 “마음의 병, 나이 탓으로 치부하면 안 돼 ”",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85778",
+   "date": "2026-09-09 22:57:59"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "권형택 기보 이사장, 첫 현장 행보는 ‘규제 혁신’",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85776",
+   "date": "2026-09-09 22:53:48"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "‘AI 훈풍’에 코스피, 33거래일 만에 7000선 회복…장중 7112선 터치",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85775",
+   "date": "2026-09-09 18:30:27"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "은행권 금리인하요구권 ‘제각각’…수용률은 신한, 인하폭은 국민·하나 1위",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85774",
+   "date": "2026-09-09 18:25:45"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "오픈AI ‘아스트라’, 48단계 ‘난 로봇 아닙니다’ 테스트 통과…인간 인증?",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85773",
+   "date": "2026-09-09 18:24:17"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "[B트렌드] K-배터리, 북미 충격 넘어 ‘다음 수요’로… ESS·LFP·공급망 재편",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85769",
+   "date": "2026-09-09 17:53:25"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "현대차그룹, 추석 앞두고 협력사 납품대금 2조2562억원 조기 지급",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85771",
+   "date": "2026-09-09 17:47:29"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "삼성 웨딩 프로모션 참여한 N32…예비부부 대상 최대 20만원 리워드",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85770",
+   "date": "2026-09-09 17:35:28"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "신라면세점, 추석 맞아 쇼핑 성향 테스트…맞춤 혜택·경품 제공",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85768",
+   "date": "2026-09-09 17:25:12"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "韓, GDP 대비 과학기술 연구개발비 비율 세계 2위",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85767",
+   "date": "2026-09-09 17:20:07"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "배달의민족, 외식업 파트너와 추석 맞이 지역 어르신 나눔 봉사",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85766",
+   "date": "2026-09-09 17:07:42"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "이마트, 추석 주류 선물세트 판매…와인·양주 사전예약 매출 39%↑",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85763",
+   "date": "2026-09-09 17:07:13"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "삼성증권, 9년 도전 끝 드디어 '발행어음 시장 진출'",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85762",
+   "date": "2026-09-09 17:04:48"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "KB금융, BS그룹과 신재생에너지·AI 데이터센터 금융 협력",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85761",
+   "date": "2026-09-09 17:03:53"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "부산관광, ‘굿즈·대만·밤’으로 체류도시 승부수",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85760",
+   "date": "2026-09-09 17:02:24"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "노동진 수협회장 “여성 어업인, 수산업 변화 이끄는 주역”",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85755",
+   "date": "2026-09-09 16:46:48"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "신한은행, 2026년 하반기 신입행원 채용 실시",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85759",
+   "date": "2026-09-09 16:46:18"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "“장기기증은 시대정신”…부산 전역 생명나눔 확산",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85764",
+   "date": "2026-09-09 16:45:24"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "신세계푸드, 노브랜드 버거 복합시설 출점 확대…가맹점 1년 새 2배",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85765",
+   "date": "2026-09-09 16:44:45"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "LH, ‘2026 월드 스마트시티 엑스포’서 AI 기반 미래도시 모델 공개",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85758",
+   "date": "2026-09-09 16:43:15"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "맘스터치, ‘스매쉬버거’로 비프버거 시장 공략 강화",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85756",
+   "date": "2026-09-09 16:38:31"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "&quot;민간 위탁·원정 처리는 시한폭탄&quot;…서울시 '쓰레기 대란' 해법 투트랙 재편 시급",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85754",
+   "date": "2026-09-09 16:37:24"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "본지 문기수 기자, 게임 이용자 권익 조명해 ‘이달의 기자상’ 수상",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85751",
+   "date": "2026-09-09 16:18:04"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "KAI, 이집트 에어쇼 출격… 36대 규모 경공격기 수주 총력전",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85753",
+   "date": "2026-09-09 15:54:57"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "부산벌 달구는 2세마 진검승부…‘미래 경주왕’ 가린다",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85752",
+   "date": "2026-09-09 15:54:00"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "부산항·진해신항, 일본 물류망 품는다",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85749",
+   "date": "2026-09-09 15:43:23"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "고려아연 최윤범 회장, 임시주총서 웃었다…'승부처' 감사위원 분리선출 압승",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85748",
+   "date": "2026-09-09 15:32:12"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "고려아연 임시주총서 최윤범 측 3명 추가…영풍·MBK 2명 선임",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85747",
+   "date": "2026-09-09 15:30:23"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "권혁빈 스마일게이트 창업자 이혼 인용…법원 &quot;아내에게 2조5000억 원 규모 주식 35% 분할해야 &quot;",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85744",
+   "date": "2026-09-09 15:27:33"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "푸른손·동양그린에너지, 호주서 초음속 ‘보텍스’ 양산 실증… 글로벌 친환경 소재 시장 공략에 박차",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85745",
+   "date": "2026-09-09 15:08:52"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "마을서 만든 전기, 이웃과 나눈다… 제주 ‘에너지제로 마을’ 조성 본격 착수",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85746",
+   "date": "2026-09-09 15:04:17"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "[현장] &quot;사모펀드 약탈 막자&quot; vs &quot;투명한 감시 필요&quot;…고려아연-영풍·MBK, 임시주총서 격돌",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85743",
+   "date": "2026-09-09 13:42:09"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "개인정보 유출에도 끄떡없는 쿠팡…결제액 5조원 돌파 '팡팡 터진다'",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85742",
+   "date": "2026-09-09 11:41:50"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "국내 대기업 오너일가 주식가치, 공정자산 대비 10.2%",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85741",
+   "date": "2026-09-09 11:41:01"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "외국인이 먹여 살리는 韓 식품기업…‘성장판’은 이미 해외로",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85740",
+   "date": "2026-09-09 11:40:20"
+  },
+  {
+   "media": "인더스트리뉴스",
+   "sector": "산업·자동화",
+   "tier": 2,
+   "title": "삼성생명, 치료 횟수 따라 보장하는 가족건강보험 선보여",
+   "link": "https://www.industrynews.co.kr/news/articleView.html?idxno=85739",
+   "date": "2026-09-09 11:12:37"
+  }
+ ],
+ "errors": [
+  {
+   "media": "환경미디어",
+   "error": "HTTP 404"
+  }
+ ]
+}
