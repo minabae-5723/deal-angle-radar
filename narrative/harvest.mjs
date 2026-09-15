@@ -130,7 +130,9 @@ function statusOf(c) {
   // scout 없으면 로컬 게이트
   return c.gate === "eligible" ? "candidate" : "watch";
 }
+const approvedIds = new Set(reg.themes.filter(t => t.status === "approved").map(t => t.id));
 const candidates = [...candMap.values()]
+  .filter(c => !approvedIds.has(c.id))   // 이미 approved 편입된 테마는 reinforced 로만 집계 — 승격대상에서 제외
   .map(c => ({ ...c, status: statusOf(c) }))
   .sort((a, b) => (a.status === "candidate" ? 0 : 1) - (b.status === "candidate" ? 0 : 1)
     || (b.scout_verdict === "promote") - (a.scout_verdict === "promote") || b.score - a.score);

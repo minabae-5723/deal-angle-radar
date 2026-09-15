@@ -1,29 +1,133 @@
 {
-  "generated": "2026-08-19",
-  "note": "채널 C — 독립 톱다운 스카우트(IEA·IMF·BIS·S&P·Silver Institute·Clarksons·World Nuclear·정부공시 등 40+ 소스, 내 독서와 무관). harvest.mjs 가 병합. verdict: promote(정식편입 대상) | hold(니치·조건부, 보류) | drop(지금 부적합). blindspot=자산엔 없는데 외부근거 강함.",
+  "generated": "2026-09-15",
+  "note": "독립 톱다운 스카우트(채널 C). 내 독서와 무관한 권위 소스 기반. 2026-08-19 대비 갱신. 지난달 promote 5건(조선·원자력·첨단바이오·산업금속·불소화학)과 space-sat 은 narratives.json 에 approved 편입 완료 → 후보군에서 졸업 처리(제거).",
   "candidates": [
-    { "id": "power-semi", "title": "전력반도체 (SiC/GaN)", "verdict": "drop", "supply_elasticity": "mid", "blindspot": false, "evidence": "Yole 2026: 오버캐파 다운턴 2027~28, 상류 가동률 ~50%·디바이스 70%, EV 둔화. 장기수요는 구조적이나 지금 공급 과잉=탄력적 → 조건 불충족. 2027 재검토. (내 독서 빈도 1위였으나 스카우트가 반증 — 확증편향 사례)" },
-    { "id": "space-sat", "title": "우주 · 위성", "verdict": "hold", "supply_elasticity": "mid", "blindspot": false, "evidence": "우주경제 성장은 구조적이나 SpaceX 발사비 하락·NGSO 경쟁으로 공급 탄력화·마진압축. 지상국·부품·방산위성 니치만 선별." },
-    { "id": "stablecoin-fintech", "title": "스테이블코인 · 결제", "verdict": "hold", "supply_elasticity": "na", "blindspot": false, "evidence": "GENIUS Act(2025-07) 제도화로 구조변화 명백(시총 $308B, 결제침투 3%→10%). 단 소프트웨어=비병목형·한국 딜소싱 접점 약함. 결제인프라·수탁 인접만." },
-    { "id": "quantum", "title": "양자 컴퓨팅", "verdict": "drop", "supply_elasticity": "na", "blindspot": false, "evidence": "매출 전세계 ~$1B, 결함허용 2029년+. 병목이 공급이 아니라 기술성숙 → 3~5년 PE 타임라인 미달. 워치리스트 유지." },
-    { "id": "shipbuilding", "title": "조선 · 해양", "verdict": "promote", "supply_elasticity": "very_low", "blindspot": false, "evidence": "오더북 17년 최고(191M CGT=선대 17%), 한국 LNG선 66%, 신조선가 2008 근접, 야드 증설 다년. 공급 비탄력+수요 구조적 동시 충족. 한국 최적 (Clarksons 2025~26)." },
-    { "id": "nuclear-smr", "title": "원자력 · 핵연료주기", "verdict": "promote", "supply_elasticity": "very_low", "blindspot": false, "evidence": "대형원전+농축(SWU): 러 우라늄 46% 장악+수입금지 2028, 서방 농축 2030 대체불가, SWU 현물 $188(+20%, 전전比 3배). APR1400 체코 $18.6B. 순수 SMR은 실행리스크로 hold." },
-    { "id": "advanced-bio", "title": "바이오 CDMO (BIOSECURE+ADC)", "verdict": "promote", "supply_elasticity": "mid", "blindspot": false, "evidence": "BIOSECURE Act 2025-12 법제화로 중국 CDMO 디커플링($10~20B 이동), ADC 링커/컨쥬게이션 제조 병목. 삼바·롯데바이오 반사수혜. 신약자산 자체는 hold, 제조 병목만." },
-    { "id": "metals-deficit", "title": "산업금속 구조적 적자 (구리·은·전략금속)", "emoji": "🥇", "verdict": "promote", "supply_elasticity": "low", "blindspot": true, "evidence": "구리 S&P Global 2026-01 systemic 부족·IEA 2035 30%부족·광산 리드타임 10년+. 은 Silver Institute 6년연속·2026 적자 215Moz 사상최대(70% 부산물이라 증산불가). 안티모니/게르마늄 중국 정제 지배. 한국 고려아연·풍산 접점." },
-    { "id": "cdmo-note-merged", "title": "(advanced-bio 로 통합)", "verdict": "hold", "supply_elasticity": "mid", "blindspot": false, "evidence": "제약 CDMO 리쇼어링은 advanced-bio(바이오 CDMO) 테마에 통합." },
-    { "id": "fluorochem", "title": "불소화학 · 규제소재", "emoji": "🧪", "verdict": "promote", "supply_elasticity": "low", "blindspot": true, "evidence": "PFAS 규제(ECHA, 예외승인 소수 공급자 수혜)+형석 원료 병목(중국 고갈·CRMA)+냉매 F-gas 쿼터 2027 12.3%로 급감이 후성에 3중 수렴. 규제가 신규진입 봉쇄=공급 비탄력." },
-    { "id": "aviation-mro", "title": "상업항공 백로그 · 엔진/MRO", "emoji": "✈️", "verdict": "hold", "supply_elasticity": "very_low", "blindspot": true, "evidence": "Airbus+Boeing 백로그 17,000기(11년+), 엔진(GTF/LEAP) 병목으로 기존기 수명연장→MRO·리스 급등. 공급 매우 비탄력이나 한국 딜핏 중간(한화에어로 엔진부품·MRO 중소). 차기 승격 1순위 후보." },
-    { "id": "helium-gas", "title": "헬륨 · 특수가스 병목", "emoji": "🎈", "verdict": "hold", "supply_elasticity": "low", "blindspot": true, "evidence": "美 연방헬륨비축 판매 종료(공급 소멸)+반도체 헬륨수요 30%(2030). 특수가스는 reshoring 테마와 인접 — 중복 회피 위해 hold." },
-    { "id": "petcare", "title": "반려동물 헬스케어", "emoji": "🐾", "verdict": "hold", "supply_elasticity": "mid", "blindspot": true, "evidence": "반려동물 헬스케어 8~10% CAGR, 의료화·펫보험. 구조적이나 공급탄력성 중간(진입장벽 낮음). 롤업형 — 고령화 테마와 유사 성격, hold." },
-    { "id": "reinsurance-climate", "title": "재보험 · 기후 protection gap", "emoji": "🌀", "verdict": "hold", "supply_elasticity": "mid", "blindspot": true, "evidence": "BIS 구조적 경고, 4년연속 재해손실 $1,000억+. 금융/보험 테마는 funding-pool KSIC 게이트(64/65) 밖이라 외감 딜소싱 접점 약함. hold." },
-    { "id": "water-infra", "title": "노후 상수도 · 납관 교체", "emoji": "🚰", "verdict": "hold", "supply_elasticity": "low", "blindspot": true, "evidence": "美 EPA LCRI 2027 발효, 납관 400만개 10년내 교체(법정강제). 수처리는 env-reg 테마 노드로 흡수 가능 — 별도 승격은 보류." }
+    {
+      "id": "aviation-mro",
+      "title": "상업항공 백로그 · 엔진/MRO",
+      "emoji": "✈️",
+      "verdict": "promote",
+      "supply_elasticity": "very_low",
+      "evidence": "IATA 2026-06-24 'Urgent Action Needed to Ease Engine MRO Bottlenecks'(tier1 기관) — 엔진 MRO 수요가 2030 이전 공급능력 17%+ 초과 전망. Bain: 정비수요 2026 근접 피크 후 연말까지 제약 지속. GTF 지상대기 2025-03 648대(기재 28%). LEAP shop visit 연 600~800회(2025)→2040 5,000회+. 병목이 shop capacity·수리부품·면장정비사 3중이라 증설로 못 푼다(신규 라인 인증 수년). 한국: 사천 MRO 클러스터·항공부품 외감사(단조/가공/구조물) 다수, 정비층은 미개척.",
+      "blindspot": true
+    },
+    {
+      "id": "gas-turbine",
+      "title": "발전용 가스터빈 · 주기기 병목",
+      "emoji": "🌀",
+      "verdict": "promote",
+      "supply_elasticity": "very_low",
+      "evidence": "OEM 3사 과점(GE Vernova·Siemens Energy·MHI) 오더북 2029~30 소진. GEV 2026 2Q 계약분 116GW(확정 53GW+슬롯 63GW), 연말 125GW 전망, 생산 20GW/yr→2030 30GW 목표. Siemens 69GW, MHI 35GW·2028까지 완판. 리드타임 2~3년→5~7년, 가격 2019 대비 ~3배. IEA Electricity 2026: 데이터센터 전력 485TWh(2025)→950TWh(2030), 계통연계 대기 2,500GW+. 한국: 두산에너빌리티 H급 국산화(R&D 1.1조·누적 23기·美 빅테크 12기, 2029 제작물량 완판, 공급망안정화 선도사업자로 협력사 국산화 추진) → 터빈 협력사 외감사층이 정확히 PE 타겟. 기존 grid-power 노드는 T&D(변압기·케이블·개폐기)만 커버 — 발전 주기기층은 공백.",
+      "blindspot": true
+    },
+    {
+      "id": "superalloy-casting",
+      "title": "초내열합금 정밀주조 · 단조 (항공+터빈 공통 병목층)",
+      "emoji": "🔩",
+      "verdict": "promote",
+      "supply_elasticity": "very_low",
+      "evidence": "GE Aerospace 2026-09-08 Consolidated Precision Products $11.75B 인수 — 캐스팅 병목 내재화가 목적. 터빈 블레이드 40개 $600k·제작 60~90주. 공급자가 Howmet·PCC 등 극소수로 수렴, 단결정 Ni합금(Re·Ta·W·Co)·특수열처리·인증에 수년 소요 → 자본투입으로 단기 증설 불가. 항공엔진·발전 가스터빈·원전 주단조가 같은 설비층을 두고 경합(수요 3중 중첩). 한국: 특수강·정밀주조·대형단조 외감사 다수, 수요 3축(조선엔진·원전·터빈)이 국내에 다 있음. gas-turbine·aviation-mro·nuclear-smr 의 공통 하위노드로 편입해도 무방 — 다만 타겟 회사군은 별개.",
+      "blindspot": true
+    },
+    {
+      "id": "petchem-restructuring",
+      "title": "석유화학 사업재편 — 법정 설비감축 (한국 특화)",
+      "emoji": "⚗️",
+      "verdict": "promote",
+      "supply_elasticity": "very_low",
+      "evidence": "2025 석화 특별법(정보교환·공동행위·기업결합 특례)으로 '기업별'에서 '산업단위 동시 설비조정'으로 진전. 정부 목표 NCC 능력 18~25%(270~370만t) 감축. 1호 H&L어드밴스드(HD현대케미칼+롯데대산) 대산 NCC 110만t 가동중단 착수(2026-09), 2호 여천NCC 여수 2·3공장 중단+1공장 롯데 통합 승인. 금융지원 6,500억+(신규자금 4,500억·무보 2,000억). 공급이 '법으로' 제거되는 희귀 케이스 → 잔존설비·다운스트림 가격력 회복 + 카브아웃·유동성 니즈 동시 발생. 딜핏 국내 최상. 기존 special-situations 가 일부 겹치나 규모·제도 배경이 독립 테마급.",
+      "blindspot": true
+    },
+    {
+      "id": "helium-gas",
+      "title": "헬륨 · 특수가스 — 공급원 소멸 + 지정학 충격",
+      "emoji": "🎈",
+      "verdict": "promote",
+      "supply_elasticity": "low",
+      "evidence": "구조층: 美 연방헬륨비축 종료(2024-06 Messer 매각, 2024-12 국고이관) — 1925년 이후 처음 전략비축 부재. 충격층: 2026-03 Ras Laffan 피격·호르무즈 봉쇄로 카타르(세계 ~33%) 공급 차질. 수치 주의 — AGBI(tier2)는 '카타르 물량 30% 감소 = 세계 11%' 로 보수적, 유통사 블로그의 '세계 30~38% 증발'은 과장으로 판단(tier4, 채택 안 함). 현물 $1,000~1,200/Mcf vs 장기계약 $500~550. 신규 공급(Royal Helium Climax·North American Helium)은 2026 하반기부터 소량. 헬륨은 천연가스 부산물이라 가격신호로 증산 불가 = 비탄력. 한국 100% 수입 → 특수가스 유통·충전·회수(리사이클) 층에 PE 앵글. 카타르 재가동은 휴전 조건부라 되돌림 리스크 명시.",
+      "blindspot": true
+    },
+    {
+      "id": "api-onshoring",
+      "title": "원료의약품(API)·KSM 리쇼어링",
+      "emoji": "💊",
+      "verdict": "hold",
+      "supply_elasticity": "mid",
+      "evidence": "2026-04-02 Section 232 포고 — 특허의약품·API·KSM 100% 관세(대기업 2026-07-31, 중소 2026-09-29 발효), 온쇼어링 계획 승인 시 20%, MFN 가격협약 시 2029까지 0%. 리쇼어링 약정 $480B·22개 사이트. 다만 제네릭·바이오시밀러·그 원료는 현재 명시적 면제(1년 내 재검토 의무) → 한국 원료의약품사의 주력이 제네릭 API 라 직접 수혜 제한적. 미국 현지생산 없으면 오히려 배제. 승격 보류 — advanced-bio 하위노드(저분자 API·KSM)로 관찰하며 제네릭 재검토 결과(2027-04경) 확인 후 재판정.",
+      "blindspot": true
+    },
+    {
+      "id": "fertilizer-nitrogen",
+      "title": "질소비료 · 요소 — 중동 공급 충격",
+      "emoji": "🌾",
+      "verdict": "hold",
+      "supply_elasticity": "mid",
+      "evidence": "호르무즈 봉쇄로 중동(세계 요소 수출 ~1/4, 월 150만t) 차질. 이란 암모니아 중단, 카타르 요소·암모니아·황 생산중단, 중동 암모니아 플랜트 31기 영향. 요소 $400→$850/t(2026-04, 2022-04 이후 최고) 후 $453(6월)로 되돌림. World Bank: 2026 요소 ~60% 상승 후 2027 완화 전망(중동 수출 회복·가스가 안정) → 3~5년 구조변화 아님, 충격. 승격 보류. 단, '경제안보 품목 비축·공급선 다변화' 정책층은 기존 supplychain 테마로 이미 커버.",
+      "blindspot": true
+    },
+    {
+      "id": "water-infra",
+      "title": "노후 상수도 · 납관 교체",
+      "emoji": "🚰",
+      "verdict": "hold",
+      "supply_elasticity": "low",
+      "evidence": "美 LCRI: 2027-11-01 관재질 인벤토리 완료+교체 개시 법정 의무, EPA 2026-05 납관 교체 $2.9B 배정. 그러나 (a) FY2026 이 IIJA 보충재원 마지막 해 = 재원 절벽, (b) 2026-05-22 EPA 가 PFAS 음용수 규제 완화안 제안(7/20 의견수렴 종료) — 규제 강제수요의 방향이 후퇴, (c) 한국 딜소싱 접점 약함(국내 노후상수도 정비는 지자체 발주·영세 갱생업체). 규제 캘린더 자체는 유효하나 미국 테마 → compliance-demand·env-reg 로 흡수 가능. 승격 보류 유지.",
+      "blindspot": true
+    },
+    {
+      "id": "petcare",
+      "title": "반려동물 헬스케어",
+      "emoji": "🐾",
+      "verdict": "hold",
+      "supply_elasticity": "mid",
+      "evidence": "이번 스카우트에서 공급비탄력을 뒷받침할 tier1~2 신규 근거 확인 안 됨(정직 기재). 수요(의료화·펫보험 침투)는 계속 성장하나 동물병원·사료·용품 모두 진입장벽 낮음 → 롤업으로 장벽을 만드는 구조. aging 테마의 high-elasticity 롤업과 성격 동일. 승격 보류 유지, 별도 테마 필요성 낮음.",
+      "blindspot": true
+    },
+    {
+      "id": "stablecoin-fintech",
+      "title": "스테이블코인 · 결제 인프라",
+      "emoji": "🪙",
+      "verdict": "hold",
+      "supply_elasticity": "high",
+      "evidence": "美: GENIUS Act 시행규칙 급속 진행(OCC 2026-03 NPRM, Treasury 2026-08 NPRM), 다만 미인가 발행 판매금지 발효는 2028-07-18. 한국: 디지털자산기본법안 발의됐으나 FSC 가 정부 시한 놓치고 규제권한 충돌로 지연, 원화 스테이블코인은 8개 시중은행 컨소시엄이 공동 추진 = 제도적으로 은행·대기업에 배타 배정. 발행 라이선스층은 진입장벽이 높지만 그 장벽의 수혜자가 PE 접근 불가한 주체 → 딜핏 낮음. picks-and-shovels(수탁·PG·컴플라이언스)는 기존 compliance-demand·b2b-digital 로 커버. 승격 보류.",
+      "blindspot": false
+    },
+    {
+      "id": "reinsurance-climate",
+      "title": "재보험 · 기후 protection gap",
+      "emoji": "🌪️",
+      "verdict": "drop",
+      "supply_elasticity": "high",
+      "evidence": "반증 확보 — 2026-01 갱신에서 공급(자본)이 탄력적임이 증명됨. Guy Carpenter Global Property Cat RoL Index -12%(미국·APAC -12%, 유럽 -15%), Howden Re 리스크조정 -14.7%·retro -16.5% 로 2014년 이후 최대 낙폭. 전용 재보험 자본 2025년 +9%, cat bond 등 대체자본 유입 지속. Fitch 는 2027 추가 연화 전망. 수요(protection gap)는 여전하나 자본이 즉시 메워 가격력으로 전이되지 않음 → 공급탄력성 기준 불충족. 제외.",
+      "blindspot": false
+    },
+    {
+      "id": "power-semi",
+      "title": "전력반도체 (SiC/GaN)",
+      "emoji": "🔌",
+      "verdict": "drop",
+      "supply_elasticity": "mid",
+      "evidence": "재검증 결과 지난달 판정 유지. Yole(2025-12, 2026-02 갱신): 오버캐파 다운턴 2027~28 지속, 상류 가동률 ~50%·디바이스 ~70%, 중국이 2024 기준 SiC 웨이퍼/에피 캐파 ~40% 확보 후 디바이스로 확장 중. 8인치 전환이 원가를 더 낮춤 = 공급 추가 탄력화. 디바이스 시장 2030 ~$10B 로 장기수요는 구조적이나 지금 국면은 가격 하락 구간. 2027 재검토. (내 독서 빈도 1위 234점이었으나 스카우트가 2개월 연속 반증 — 확증편향 대표 사례로 보존)",
+      "blindspot": false
+    },
+    {
+      "id": "quantum",
+      "title": "양자 컴퓨팅",
+      "emoji": "⚛️",
+      "verdict": "drop",
+      "supply_elasticity": "na",
+      "evidence": "판정 유지. 매출 전세계 ~$1B 수준, 결함허용 연산 2029년+ 전망. 병목이 공급이 아니라 기술성숙 → 3~5년 PE 보유기간과 불일치. 워치리스트만 유지.",
+      "blindspot": false
+    }
   ],
   "blindspots": [
-    "구리·은·전략금속 구조적 적자 (tier 1: S&P·IEA·Silver Institute) — metals-deficit 로 편입",
-    "우라늄 농축/핵연료주기 — nuclear 테마 하위 병목층으로 편입",
-    "상업항공 백로그·엔진/MRO — 차기 승격 후보 (aviation-mro)",
-    "제약 CDMO 리쇼어링 BIOSECURE — advanced-bio 로 편입",
-    "불소화학(후성 3중 수렴: PFAS+형석+냉매) — fluorochem 로 편입",
-    "전력 하드웨어 세부층(GOES·HVDC 해저케이블·스위치기어)은 grid-power 테마 노드로 이미 커버"
+    "발전용 가스터빈 주기기 — OEM 3사 2029~30 완판·리드타임 5~7년·가격 3배. grid-power 노드가 T&D만 커버해 발전측 병목이 통째로 공백이었음. 두산 국산화 협력사층이 딜 타겟(gas-turbine)",
+    "초내열합금 정밀주조·단조 — GE Aerospace 의 CPP $11.75B 인수가 증거. 항공엔진·가스터빈·원전이 같은 소수 설비층을 경합. 공통 하위노드로 편입 가능하나 타겟 회사군은 독립(superalloy-casting)",
+    "석유화학 법정 설비감축 — 특별법으로 공급이 제도적으로 제거되는 한국 특화 케이스. 딜핏 최상인데 자산 하베스트에는 신호 없었음(petchem-restructuring)",
+    "상업항공 엔진 MRO — IATA 가 직접 '긴급조치 필요' 로 명시(2030 이전 수요가 공급 17% 초과). 정비층은 국내 미개척(aviation-mro)",
+    "헬륨 — 미 전략비축 영구 소멸(구조) + 카타르 피격/호르무즈(충격) 2층 구조. 유통사 자료의 '세계 30~38% 증발' 수치는 과장으로 채택 안 함(helium-gas)",
+    "매크로 전제 변경 — 호르무즈가 2026-02말 이후 사실상 폐쇄 상태 지속(9월 통항 정상대비 극소), Brent $107·전전 대비 40~50% 고위. 이 전제가 approved 다수를 동시 강화: shipbuilding(LNG선 오더북 400척+ = 가동선대 45~50%, 2026 인도 90~100척 사상최대, VLCC 중동-아시아 운임 1일 $47만), nuclear-smr·grid-power(에너지안보), metals-deficit, supplychain. 별도 테마 아님 — 기존 테마의 KPI 재검증 시 반영 필요",
+    "재보험은 반대방향 확인 — 2026-01 갱신 두 자릿수 연화로 공급 탄력성 입증, 후보에서 제외. '수요는 있는데 자본이 즉시 메우는' 구조를 거르는 사례",
+    "확인 안 됨 — 반려동물 헬스케어는 이번 스카우트에서 tier1~2 공급측 근거를 찾지 못함. 수요만으로는 승격 불가"
   ]
 }
