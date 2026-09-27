@@ -113,7 +113,7 @@ function Classify($item) {
 }
 
 $signals = @()
-foreach ($it in ($listB + $listD)) {
+foreach ($it in (@($listB) + @($listD))) {   # @() : single-item/empty results aren't arrays
     $c = Classify $it
     if ($c) { $signals += $c }
 }
